@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – L3.2 · IF/ELSE: esercizi svolti e varianti (testi completi)</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez3_1.html"; }
+    function nextSlide(){ window.location.href = "lez3_3.html"; } // placeholder
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const open = box.style.display === 'block';
+      box.style.display = open ? 'none' : 'block';
+      if(btn) btn.textContent = open ? 'Mostra soluzione ▼' : 'Nascondi soluzione ▲';
+    }
+  </script>
+  <style>
+    .trace { width:100%; border-collapse:collapse; margin-top:8px }
+    .trace th, .trace td { border:1px solid #ccc; padding:6px 8px; text-align:center }
+    .trace th { background:#f7f7f7 }
+    .trace td.l { text-align:left }
+    .note-ok { background:#eefbf1; border-left:4px solid #39a36d; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
+    .warn { background:#fff5e6; border-left:4px solid #f0a500; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
+    .spec { margin:.25rem 0 .5rem }
+    .spec b { display:inline-block; width:7.5rem }
+    .examples { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: .95em; background: #fafafa; border: 1px dashed #ddd; padding: .5rem .6rem; border-radius: 8px; }
+    .twocol {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(320px,1fr));}
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez3_1.html">Lezione 3.1: IF/ELSE & logica booleana</a></li>
+    <li><a href="lez3_2.html">Lezione 3.2: IF/ELSE – esercizi svolti</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>L3.2 — IF/ELSE: esercizi svolti su varianti e pattern (testi completi)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box">
+      <h2>Come useremo gli IF</h2>
+      <ul>
+        <li>Per ogni esercizio: <strong>Input</strong>, <strong>Output</strong>, <strong>Vincoli/Note</strong>, <strong>Esempi</strong>, quindi <strong>Soluzione</strong> a comparsa.</li>
+        <li>Varianti coperte: <em>if</em>, <em>if–else</em>, <em>else–if ladder</em>, <em>if annidati</em> con <em>guardie</em>.</li>
+      </ul>
+    </div>
+
+    <!-- E1 -->
+    <div class="inner-box">
+      <h2>E1 — Appartenenza a una unione di intervalli</h2>
+      <div class="spec"><b>Input:</b> un intero <code>x</code>.</div>
+      <div class="spec"><b>Output:</b> la stringa <code>"OK"</code> se <code>x ∈ [-10, -1] ∪ [10, 20]</code>, altrimenti <code>"NO"</code>.</div>
+      <div class="spec"><b>Vincoli/Note:</b> intervalli chiusi agli estremi indicati; usare un’unica condizione logica.</div>
+      <div class="examples">
+        Esempi: x=-10→OK; x=-1→OK; x=0→NO; x=10→OK; x=20→OK; x=21→NO.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi x
+cond ← ((x ≥ -10 ∧ x ≤ -1) ∨ (x ≥ 10 ∧ x ≤ 20))
+se cond allora stampa "OK" altrimenti stampa "NO"</code></pre>
+        <p class="note-ok"><strong>Frontiere:</strong> prova x = −10, −1, 10, 20.</p>
+      </div>
+    </div>
+
+    <!-- E2 -->
+    <div class="inner-box">
+      <h2>E2 — Classificazione punto nel piano (assi, origine, quadranti)</h2>
+      <div class="spec"><b>Input:</b> due reali <code>x</code>, <code>y</code>.</div>
+      <div class="spec"><b>Output:</b> una delle stringhe: <code>"Origine"</code>, <code>"Asse X"</code>, <code>"Asse Y"</code>, <code>"Q1"</code>, <code>"Q2"</code>, <code>"Q3"</code>, <code>"Q4"</code>.</div>
+      <div class="spec"><b>Vincoli/Note:</b> gestire prima i casi speciali (origine, assi), poi i quadranti.</div>
+      <div class="examples">
+        Esempi: (0,0)→Origine; (5,0)→Asse X; (0,-3)→Asse Y; (2,3)→Q1; (-1,4)→Q2; (-2,-2)→Q3; (3,-7)→Q4.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi x, y
+se (x = 0 ∧ y = 0) allora stampa "Origine"
+altrimenti se (y = 0) allora stampa "Asse X"
+altrimenti se (x = 0) allora stampa "Asse Y"
+altrimenti se (x &gt; 0 ∧ y &gt; 0) allora stampa "Q1"
+altrimenti se (x &lt; 0 ∧ y &gt; 0) allora stampa "Q2"
+altrimenti se (x &lt; 0 ∧ y &lt; 0) allora stampa "Q3"
+altrimenti stampa "Q4"</code></pre>
+        <p class="note-ok">Sequenza corretta: prima casi speciali, poi quadranti.</p>
+      </div>
+    </div>
+
+    <!-- E3 -->
+    <div class="inner-box">
+      <h2>E3 — Tariffa progressiva a scaglioni (costo totale)</h2>
+      <div class="spec"><b>Input:</b> intero <code>k</code> (kWh, <code>k ≥ 0</code>).</div>
+      <div class="spec"><b>Output:</b> reale <code>c</code>, costo totale: primi 100 a 0.20, da 101 a 300 a 0.25, da 301 in poi a 0.30.</div>
+      <div class="spec"><b>Vincoli/Note:</b> rifiutare <code>k &lt; 0</code> con messaggio d’errore; somma per scaglioni.</div>
+      <div class="examples">
+        Esempi: k=0→0.00; k=100→20.00; k=150→0.20·100+0.25·50=32.50; k=320→20+50+0.30·20=76.00.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi k
+se (k &lt; 0) allora stampa "errore"
+altrimenti
+    c ← 0
+    se (k ≤ 100) allora
+        c ← 0.20 * k
+    altrimenti se (k ≤ 300) allora
+        c ← 0.20 * 100 + 0.25 * (k - 100)
+    altrimenti
+        c ← 0.20 * 100 + 0.25 * 200 + 0.30 * (k - 300)
+    stampa c</code></pre>
+        <p class="note-ok"><strong>Frontiere:</strong> k = 100, 101, 300, 301.</p>
+      </div>
+    </div>
+
+    <!-- E4 -->
+    <div class="inner-box">
+      <h2>E4 — Giorni del mese con bisestile</h2>
+      <div class="spec"><b>Input:</b> intero <code>m</code> (1..12), intero <code>y</code> (anno gregoriano).</div>
+      <div class="spec"><b>Output:</b> intero: giorni del mese; per febbraio: 29 se anno bisestile, altrimenti 28.</div>
+      <div class="spec"><b>Vincoli/Note:</b> bisestile se <code>(y mod 400 = 0) ∨ ((y mod 4 = 0) ∧ (y mod 100 ≠ 0))</code>.</div>
+      <div class="examples">
+        Esempi: (2,2024)→29; (2,2100)→28; (4,2023)→30; (12,2022)→31; (13,2022)→errore.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e4" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi m, y
+se (m &lt; 1 ∨ m &gt; 12) allora stampa "errore"
+altrimenti se (m = 1 ∨ m = 3 ∨ m = 5 ∨ m = 7 ∨ m = 8 ∨ m = 10 ∨ m = 12) allora stampa 31
+altrimenti se (m = 4 ∨ m = 6 ∨ m = 9 ∨ m = 11) allora stampa 30
+altrimenti
+    bis ← (y mod 400 = 0) ∨ ((y mod 4 = 0) ∧ (y mod 100 ≠ 0))
+    se (bis) allora stampa 29 altrimenti stampa 28</code></pre>
+        <p class="note-ok">Gestione febbraio in ramo dedicato: chiaro e testabile.</p>
+      </div>
+    </div>
+
+    <!-- E5 -->
+    <div class="inner-box">
+      <h2>E5 — Fasce voto (0..100) con ladder ordinata</h2>
+      <div class="spec"><b>Input:</b> intero <code>v</code> (atteso 0..100).</div>
+      <div class="spec"><b>Output:</b> stringa: “insufficiente” (&lt;60), “sufficiente” (60–69), “buono” (70–84), “ottimo” (85–94), “eccellente” (95–100), altrimenti errore.</div>
+      <div class="spec"><b>Vincoli/Note:</b> usare soglie crescenti per evitare sovrapposizioni.</div>
+      <div class="examples">
+        Esempi: 59→insuff.; 60→suff.; 84→buono; 90→ottimo; 100→eccellente; -1→errore; 101→errore.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e5" onclick="toggleBox('btn-e5','box-e5')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e5" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi v
+se (v &lt; 0 ∨ v &gt; 100) allora stampa "errore"
+altrimenti se (v &lt; 60) allora stampa "insufficiente"
+altrimenti se (v &lt; 70) allora stampa "sufficiente"
+altrimenti se (v &lt; 85) allora stampa "buono"
+altrimenti se (v &lt; 95) allora stampa "ottimo"
+altrimenti stampa "eccellente"</code></pre>
+        <p class="note-ok">Ladder in soglie crescenti ⇒ intervalli contigui, nessun buco.</p>
+      </div>
+    </div>
+
+    <!-- E6 -->
+    <div class="inner-box">
+      <h2>E6 — Mediana di tre numeri senza ordinare l’intera terna</h2>
+      <div class="spec"><b>Input:</b> tre numeri <code>a</code>, <code>b</code>, <code>c</code> (reali).</div>
+      <div class="spec"><b>Output:</b> la <em>mediana</em> (il valore centrale tra i tre).</div>
+      <div class="spec"><b>Vincoli/Note:</b> risolvere con <strong>if annidati</strong>, evitando un sort generale.</div>
+      <div class="examples">
+        Esempi: (3,1,2)→2; (5,5,7)→5; (−2,10,0)→0.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e6" onclick="toggleBox('btn-e6','box-e6')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e6" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi a, b, c
+se (a ≤ b) allora
+    se (b ≤ c) allora med ← b
+    altrimenti se (a ≤ c) allora med ← c
+    altrimenti med ← a
+altrimenti
+    se (a ≤ c) allora med ← a
+    altrimenti se (b ≤ c) allora med ← c
+    altrimenti med ← b
+stampa med</code></pre>
+        <p class="note-ok">Massimo 4 confronti; copre tutte le permutazioni.</p>
+      </div>
+    </div>
+
+    <!-- E7 -->
+    <div class="inner-box">
+      <h2>E7 — Conversione di temperatura con controllo unità</h2>
+      <div class="spec"><b>Input:</b> valore reale <code>t</code>, carattere <code>u</code> in {'C','F'}.</div>
+      <div class="spec"><b>Output:</b> valore convertito e unità risultante (F se input in C, C se input in F); errore se <code>u</code> non valido.</div>
+      <div class="spec"><b>Vincoli/Note:</b> usare <strong>if–else</strong> con ramo di errore.</div>
+      <div class="examples">
+        Esempi: (0,'C')→32 F; (212,'F')→100 C; (10,'X')→errore.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e7" onclick="toggleBox('btn-e7','box-e7')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e7" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi t, u
+se (u = 'C') allora
+    f ← t * 9/5 + 32
+    stampa f, 'F'
+altrimenti se (u = 'F') allora
+    c ← (t - 32) * 5/9
+    stampa c, 'C'
+altrimenti
+    stampa "errore unità"</code></pre>
+        <p class="note-ok">Classico <em>if–else-if</em> con ramo “altrimenti” di errore.</p>
+      </div>
+    </div>
+
+    <!-- E8 -->
+    <div class="inner-box">
+      <h2>E8 — Validazione di range con De&nbsp;Morgan</h2>
+      <div class="spec"><b>Input:</b> interi <code>a</code>, <code>b</code> con <code>a ≤ b</code>, intero <code>x</code>.</div>
+      <div class="spec"><b>Output:</b> “ok” se <code>x ∈ [a,b]</code>, “fuori range” altrimenti.</div>
+      <div class="spec"><b>Vincoli/Note:</b> evitare NOT esterno riscrivendo <code>¬(x&lt;a ∨ x&gt;b)</code> con De Morgan.</div>
+      <div class="examples">
+        Esempi: a=3, b=7: x=3→ok; x=7→ok; x=2→fuori; x=8→fuori.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e8" onclick="toggleBox('btn-e8','box-e8')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e8" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi a, b, x
+se (x ≥ a ∧ x ≤ b) allora stampa "ok" altrimenti stampa "fuori range"</code></pre>
+        <p class="note-ok">Uso esplicito di De Morgan: ¬(x&lt;a ∨ x&gt;b) ≡ (x≥a) ∧ (x≤b).</p>
+      </div>
+    </div>
+
+    <!-- E9 -->
+    <div class="inner-box">
+      <h2>E9 — Multipli: scelta dal più specifico al generale</h2>
+      <div class="spec"><b>Input:</b> intero <code>n</code>.</div>
+      <div class="spec"><b>Output:</b> “multiplo di 6” se <code>n</code> è multiplo di 6; altrimenti se multiplo di 3; altrimenti se multiplo di 2; altrimenti “nessuno”.</div>
+      <div class="spec"><b>Vincoli/Note:</b> ordinare i test per specificità per evitare rami errati.</div>
+      <div class="examples">
+        Esempi: 12→“multiplo di 6”; 9→“multiplo di 3”; 8→“multiplo di 2”; 25→“nessuno”.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e9" onclick="toggleBox('btn-e9','box-e9')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e9" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi n
+se (n mod 6 = 0) allora stampa "multiplo di 6"
+altrimenti se (n mod 3 = 0) allora stampa "multiplo di 3"
+altrimenti se (n mod 2 = 0) allora stampa "multiplo di 2"
+altrimenti stampa "nessuno"</code></pre>
+        <p class="note-ok">Prima 6 (più specifico), poi 3, poi 2.</p>
+      </div>
+    </div>
+
+    <!-- E10 -->
+    <div class="inner-box">
+      <h2>E10 — Autorizzazione di accesso con guardie multiple</h2>
+      <div class="spec"><b>Input:</b> booleano <code>utenteAutenticato</code>, stringa <code>ruolo</code> in {“admin”, “docente”, “studente”, …}, intero <code>orario</code> (0..23).</div>
+      <div class="spec"><b>Output:</b> “ACCESSO OK” se <code>utenteAutenticato</code> è vero e (ruolo ∈ {admin, docente} oppure orario ∈ [8,18]); altrimenti “NEGATO”.</div>
+      <div class="spec"><b>Vincoli/Note:</b> controllare prima l’autenticazione (guardia), poi i criteri di ruolo/orario.</div>
+      <div class="examples">
+        Esempi: (true, “studente”, 9)→OK; (true, “admin”, 2)→OK; (false, “admin”, 10)→NEGATO; (true, “studente”, 20)→NEGATO.
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e10" onclick="toggleBox('btn-e10','box-e10')">Mostra soluzione ▼</button>
+      </div>
+      <div id="box-e10" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi utenteAut, ruolo, orario
+perm ← utenteAut ∧ ( (ruolo = "admin" ∨ ruolo = "docente") ∨ (orario ≥ 8 ∧ orario ≤ 18) )
+se perm allora stampa "ACCESSO OK" altrimenti stampa "NEGATO"</code></pre>
+        <p class="warn"><strong>Frontiere:</strong> orario=8 e 18 inclusi; utente non autenticato nega sempre.</p>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Checklist finale</h2>
+      <ul>
+        <li><strong>Guardie</strong> in testa per evitare stati illegali (divisioni, range, unità).</li>
+        <li><strong>Parentesi</strong> per chiarire la precedenza negli OR/AND.</li>
+        <li><strong>Ladder ordinate</strong> per intervalli contigui; dal caso più specifico al più generale.</li>
+        <li><strong>Frontiere</strong> sempre testate (estremi inclusi/esclusi).</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – L4.2 · Cicli a contatore: for (e prime nidificazioni)</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez4_1.html"; }
+    function nextSlide(){ window.location.href = "lez4_3.html"; } // placeholder
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const open = box.style.display === 'block';
+      box.style.display = open ? 'none' : 'block';
+      if(btn) btn.textContent = open ? 'Mostra soluzione ▼' : 'Nascondi soluzione ▲';
+    }
+  </script>
+  <style>
+    /* Stili locali per flowchart e tabelle */
+    .fc-wrap {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); margin-top:8px}
+    .fc-card {background:var(--panel,#fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .fc-title{font-weight:600; margin:4px 0 8px}
+    .fc-svg{width:100%; height:auto}
+    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
+    .fc-text{font:12px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; fill:#111}
+    .fc-small{font-size:11px; color:#333}
+    .fc-yes{font-weight:600; fill:#0b6}
+    .fc-no{font-weight:600; fill:#c33}
+    .fc-marker path{fill:#222}
+    .trace { width:100%; border-collapse:collapse; margin-top:8px }
+    .trace th, .trace td { border:1px solid #ccc; padding:6px 8px; text-align:center }
+    .trace th { background:#f7f7f7 }
+    .trace td.l { text-align:left }
+    .note-ok { background:#eefbf1; border-left:4px solid #39a36d; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
+    .warn { background:#fff5e6; border-left:4px solid #f0a500; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
+    .spec { margin:.25rem 0 .5rem }
+    .spec b { display:inline-block; width:7.8rem }
+    .examples { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.95em; background:#fafafa; border:1px dashed #ddd; padding:.5rem .6rem; border-radius:8px }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez4_1.html">Lezione 4.1: Iterazione I (while, repeat–until)</a></li>
+    <li><a href="lez4_2.html">Lezione 4.2: Cicli a contatore – for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>L4.2 — Cicli a contatore: <code>for</code> (e prime nidificazioni)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- 1) Motivazione -->
+    <div class="inner-box">
+      <h2>Perché il <code>for</code>?</h2>
+      <p>
+        Quando il numero di iterazioni è <strong>noto o calcolabile a priori</strong> (o quando iteriamo su un range / collezione),
+        il <code>for</code> rende il codice più <em>compatto</em> e <em>leggibile</em> di un <code>while</code> equivalente.
+        La sua struttura separa chiaramente <strong>inizializzazione</strong>, <strong>test</strong> e <strong>aggiornamento</strong>.
+      </p>
+      <ul>
+        <li>Range tipici: <code>i = 1..n</code> (inclusivo) oppure <code>i = 0..n-1</code> (esclusivo, comodo per array).</li>
+        <li>Step generici: <code>i += step</code>, anche <strong>negativi</strong> (conteggio inverso).</li>
+      </ul>
+    </div>
+
+    <!-- 2) Struttura e desugaring -->
+    <div class="inner-box">
+      <h2>Struttura del <code>for</code> e trasformazione in <code>while</code></h2>
+<pre><code class="language-text">// forma generale
+for (init; test; update) do
+    corpo
+
+// trasformazione meccanica (equivalente)
+init;
+while (test) do
+    corpo
+    update</code></pre>
+      <ul>
+        <li><strong>init</strong>: eseguito una volta prima del ciclo.</li>
+        <li><strong>test</strong>: valutato all’inizio di ogni iterazione (se falso → si esce).</li>
+        <li><strong>update</strong>: eseguito <em>dopo</em> il corpo, prima della valutazione successiva del test.</li>
+      </ul>
+      <p class="warn"><strong>Attenzione:</strong> spostare per errore <code>update</code> dentro il corpo o prima del corpo cambia la semantica (tipico bug da off-by-one).</p>
+    </div>
+
+    <!-- 3) Flowchart -->
+    <div class="inner-box">
+      <h2>Flowchart del <code>for</code> (spazio verticale ampio)</h2>
+      <div class="fc-wrap">
+
+        <!-- FOR base -->
+        <div class="fc-card">
+          <div class="fc-title">FOR (init → test → corpo → update)</div>
+          <svg class="fc-svg" viewBox="0 0 540 380" role="img" aria-label="Flowchart FOR">
+            <defs>
+              <marker id="arrF" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z"></path>
+              </marker>
+            </defs>
+
+            <ellipse class="fc-shape" cx="80" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="80" y="34" text-anchor="middle">Start</text>
+
+            <!-- init -->
+            <rect class="fc-shape" x="40" y="80" width="120" height="36" rx="6"></rect>
+            <text class="fc-text" x="100" y="102" text-anchor="middle">init</text>
+
+            <!-- test -->
+            <polygon class="fc-shape" points="260,140 300,180 260,220 220,180"></polygon>
+            <text class="fc-text" x="260" y="184" text-anchor="middle">test?</text>
+            <text class="fc-text fc-yes" x="302" y="176">Sì</text>
+            <text class="fc-text fc-no"  x="218" y="176" text-anchor="end">No</text>
+
+            <!-- corpo -->
+            <rect class="fc-shape" x="360" y="250" width="140" height="36" rx="6"></rect>
+            <text class="fc-text" x="430" y="272" text-anchor="middle">corpo</text>
+
+            <!-- update -->
+            <rect class="fc-shape" x="360" y="310" width="140" height="36" rx="6"></rect>
+            <text class="fc-text" x="430" y="332" text-anchor="middle">update</text>
+
+            <!-- End -->
+            <ellipse class="fc-shape" cx="160" cy="340" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="160" y="344" text-anchor="middle">End</text>
+
+            <!-- frecce -->
+            <line x1="80" y1="46" x2="100" y2="80" stroke="#222" stroke-width="2" marker-end="url(#arrF)"/>
+            <line x1="160" y1="98" x2="220" y2="180" stroke="#222" stroke-width="2" marker-end="url(#arrF)"/>
+            <polyline points="300,180 360,180 360,250" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrF)"/>
+            <line x1="430" y1="286" x2="430" y2="310" stroke="#222" stroke-width="2" marker-end="url(#arrF)"/>
+            <!-- back-edge verso sinistra a segmenti -->
+            <polyline points="360,328 260,328 260,220" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrF)"/>
+            <!-- no -> End -->
+            <polyline points="220,180 160,180 160,324" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrF)"/>
+          </svg>
+          <p class="fc-small">Il back-edge torna al test con una spezzata verso sinistra per evitare intersezioni.</p>
+        </div>
+
+        <!-- FOR con step negativo -->
+        <div class="fc-card">
+          <div class="fc-title">FOR decrescente (step negativo)</div>
+          <svg class="fc-svg" viewBox="0 0 540 380" role="img" aria-label="Flowchart FOR decrescente">
+            <defs>
+              <marker id="arrFD" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z"></path>
+              </marker>
+            </defs>
+
+            <ellipse class="fc-shape" cx="80" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="80" y="34" text-anchor="middle">Start</text>
+
+            <!-- init -->
+            <rect class="fc-shape" x="40" y="80" width="180" height="36" rx="6"></rect>
+            <text class="fc-text" x="130" y="102" text-anchor="middle">i ← n</text>
+
+            <!-- test -->
+            <polygon class="fc-shape" points="300,140 340,180 300,220 260,180"></polygon>
+            <text class="fc-text" x="300" y="184" text-anchor="middle">i ≥ 1 ?</text>
+            <text class="fc-text fc-yes" x="342" y="176">Sì</text>
+            <text class="fc-text fc-no"  x="258" y="176" text-anchor="end">No</text>
+
+            <!-- corpo -->
+            <rect class="fc-shape" x="400" y="250" width="120" height="36" rx="6"></rect>
+            <text class="fc-text" x="460" y="272" text-anchor="middle">corpo</text>
+
+            <!-- update -->
+            <rect class="fc-shape" x="400" y="310" width="120" height="36" rx="6"></rect>
+            <text class="fc-text" x="460" y="332" text-anchor="middle">i ← i − 1</text>
+
+            <!-- End -->
+            <ellipse class="fc-shape" cx="180" cy="340" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="180" y="344" text-anchor="middle">End</text>
+
+            <!-- frecce -->
+            <line x1="80" y1="46" x2="130" y2="80" stroke="#222" stroke-width="2" marker-end="url(#arrFD)"/>
+            <line x1="220" y1="98" x2="260" y2="180" stroke="#222" stroke-width="2" marker-end="url(#arrFD)"/>
+            <polyline points="340,180 400,180 400,250" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrFD)"/>
+            <line x1="460" y1="286" x2="460" y2="310" stroke="#222" stroke-width="2" marker-end="url(#arrFD)"/>
+            <polyline points="400,328 300,328 300,220" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrFD)"/>
+            <polyline points="260,180 180,180 180,324" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrFD)"/>
+          </svg>
+          <p class="fc-small">Scegli il verso del test coerente con lo step (<code>i ≥ 1</code> con <code>i ← i−1</code>).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4) Tracce ed esempi -->
+    <div class="inner-box">
+      <h2>Esempi con tabella di traccia</h2>
+
+      <h3>Somma dei quadrati: \( S = \sum_{i=1}^{n} i^2 \)</h3>
+<pre><code class="language-text">leggi n
+S ← 0
+for (i ← 1; i ≤ n; i ← i + 1) do
+    S ← S + i*i
+stampa S</code></pre>
+      <table class="trace">
+        <thead><tr><th>iter</th><th>i (prima)</th><th>i*i</th><th>S (prima)</th><th>S (dopo)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+          <tr><td>2</td><td>2</td><td>4</td><td>1</td><td>5</td></tr>
+          <tr><td>3</td><td>3</td><td>9</td><td>5</td><td>14</td></tr>
+          <tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+          <tr><td>n</td><td>n</td><td>n²</td><td>…</td><td>…+n²</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Conteggio multipli di 3 in un intervallo [a,b]</h3>
+<pre><code class="language-text">leggi a, b   // assumiamo a ≤ b
+cont ← 0
+for (x ← a; x ≤ b; x ← x + 1) do
+    se (x mod 3 = 0) allora cont ← cont + 1
+stampa cont</code></pre>
+      <p class="note-ok">Frontiere: prova <code>a=b</code>, <code>a</code> o <code>b</code> multipli di 3, intervalli piccoli.</p>
+    </div>
+
+    <!-- 5) Errori tipici -->
+    <div class="inner-box">
+      <h2>Errori tipici & checklist</h2>
+      <ul>
+        <li><strong>Off-by-one</strong>: confusione tra <code>i &lt; n</code> e <code>i ≤ n</code> (decidere se includere l’estremo).</li>
+        <li><strong>Update mancante/errato</strong> nella riscrittura come <code>while</code>.</li>
+        <li><strong>Step e test incoerenti</strong> (step negativo con test che cresce, o viceversa).</li>
+        <li><strong>Casi limite</strong>: <code>n=0</code>, <code>a=b</code>, step diverso da 1, conteggi decrescenti.</li>
+      </ul>
+    </div>
+
+    <!-- 6) Esercizi -->
+    <div class="inner-box">
+      <h2>Esercizi guidati (testi completi + soluzioni)</h2>
+      <ol>
+        <!-- E1 -->
+        <li><strong>E1 — Somma con for (due varianti di range)</strong>
+          <div class="spec"><b>Input:</b> intero <code>n ≥ 0</code>.</div>
+          <div class="spec"><b>Output:</b> <code>S = 1 + 2 + … + n</code> (convenz.: <code>0</code> se <code>n=0</code>).</div>
+          <div class="spec"><b>Vincoli/Note:</b> mostra sia la versione <code>i=1..n</code> sia <code>i=0..n-1</code> con <code>S += i+1</code>.</div>
+          <div class="examples">Esempi: n=0→0, n=1→1, n=5→15.</div>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra soluzione ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-text">// Variante A: 1..n
+S ← 0
+for (i ← 1; i ≤ n; i ← i+1) do S ← S + i
+
+// Variante B: 0..n-1
+S ← 0
+for (i ← 0; i &lt; n; i ← i+1) do S ← S + (i+1)</code></pre>
+            <p class="note-ok">Stessa semantica, diverso range: scegli quella più naturale rispetto ai dati.</p>
+          </div>
+        </li>
+
+        <!-- E2 -->
+        <li><strong>E2 — Fattoriale con for</strong>
+          <div class="spec"><b>Input:</b> intero <code>n ≥ 0</code>.</div>
+          <div class="spec"><b>Output:</b> <code>n!</code> (per <code>n=0</code>, <code>0!=1</code>).</div>
+          <div class="spec"><b>Vincoli/Note:</b> usa accumulatore moltiplicativo; attenzione a overflow su interi piccoli.</div>
+          <div class="examples">Esempi: 0→1; 1→1; 5→120.</div>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra soluzione ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi n
+P ← 1
+for (i ← 2; i ≤ n; i ← i+1) do
+    P ← P * i
+stampa P</code></pre>
+            <p class="note-ok">Range minimo: da 2 a n (moltiplicare per 1 è inutile).</p>
+          </div>
+        </li>
+
+        <!-- E3 -->
+        <li><strong>E3 — Somma dei soli pari in [1,n]</strong>
+          <div class="spec"><b>Input:</b> intero <code>n ≥ 1</code>.</div>
+          <div class="spec"><b>Output:</b> somma dei numeri pari tra 1 e n (inclusi).</div>
+          <div class="spec"><b>Vincoli/Note:</b> mostra due soluzioni: (A) <code>if</code> interno; (B) step=2.</div>
+          <div class="examples">Esempi: n=6 → 2+4+6=12; n=5 → 2+4=6.</div>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra soluzione ▼</button></div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-text">// (A) if interno
+S ← 0
+for (i ← 1; i ≤ n; i ← i+1) do
+    se (i mod 2 = 0) allora S ← S + i
+
+// (B) step = 2
+S ← 0
+for (i ← 2; i ≤ n; i ← i+2) do
+    S ← S + i</code></pre>
+            <p class="note-ok">La (B) evita il test dentro il ciclo: spesso più efficiente e chiara.</p>
+          </div>
+        </li>
+
+        <!-- E4 -->
+        <li><strong>E4 — Quanti multipli di k in [a,b]</strong>
+          <div class="spec"><b>Input:</b> interi <code>a</code>, <code>b</code> con <code>a ≤ b</code>; intero <code>k&gt;0</code>.</div>
+          <div class="spec"><b>Output:</b> numero di interi <code>x∈[a,b]</code> tali che <code>x mod k = 0</code>.</div>
+          <div class="spec"><b>Vincoli/Note:</b> soluzione con <code>for</code>; opzionale: formula aritmetica senza ciclo.</div>
+          <div class="examples">Esempi: a=1,b=10,k=3 → 3 (3,6,9); a=5,b=5,k=5 → 1; a=5,b=5,k=2 → 0.</div>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra soluzione ▼</button></div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+<pre><code class="language-text">cont ← 0
+for (x ← a; x ≤ b; x ← x+1) do
+    se (x mod k = 0) allora cont ← cont + 1
+stampa cont
+
+// (opzionale, senza ciclo) cont = ⌊b/k⌋ − ⌊(a−1)/k⌋</code></pre>
+            <p class="note-ok">La formula aritmetica è utile per validare i risultati del ciclo.</p>
+          </div>
+        </li>
+
+        <!-- E5 -->
+        <li><strong>E5 — Prime nidificazioni: tabella p×q</strong>
+          <div class="spec"><b>Input:</b> interi <code>p≥1</code> (righe), <code>q≥1</code> (colonne).</div>
+          <div class="spec"><b>Output:</b> stampa una griglia di dimensione <code>p×q</code> con gli indici <code>(r,c)</code>.</div>
+          <div class="spec"><b>Vincoli/Note:</b> usa due cicli <em>annidati</em> (esterno sulle righe, interno sulle colonne).</div>
+          <div class="examples">Esempio: p=2,q=3 → righe: (1,1)(1,2)(1,3) e (2,1)(2,2)(2,3).</div>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e5" onclick="toggleBox('btn-e5','box-e5')">Mostra soluzione ▼</button></div>
+          <div id="box-e5" style="display:none;margin-top:8px">
+<pre><code class="language-text">leggi p, q
+for (r ← 1; r ≤ p; r ← r+1) do
+    // inizio riga r
+    for (c ← 1; c ≤ q; c ← c+1) do
+        stampa "(" , r , "," , c , ")" senza newline
+    stampa newline</code></pre>
+            <p class="note-ok">Il ciclo esterno determina <em>quante righe</em>, l’interno quante “celle” per riga.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- 7) Takeaways -->
+    <div class="inner-box">
+      <h2>Takeaways</h2>
+      <ul>
+        <li>Usa <strong>for</strong> quando conosci il numero di iterazioni; preferisci <code>0..n-1</code> con array o indici zero-based.</li>
+        <li>Allinea <strong>test</strong> e <strong>step</strong> (crescente con <code>≤</code>/<code>&lt;</code> coerenti; decrescente con <code>≥</code>).</li>
+        <li>Verifica i <strong>casi limite</strong> (<code>n=0/1</code>, intervalli vuoti, step≠1) e prepara una <strong>traccia</strong> breve per validare.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

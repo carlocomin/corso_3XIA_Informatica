@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 1 – Il concetto di algoritmo</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../default.css">
+    <script src="../highlight.js"></script>
+    <script>try{hljs.highlightAll();}catch(e){}</script>
+    <script>
+        function prevSlide(){ window.location.href = "lez1_3.html"; }
+        function nextSlide(){ window.location.href = "lez1_5.html"; } /* placeholder prossima slide */
+        function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+        function toggleBox(btnId, boxId){
+            const box = document.getElementById(boxId);
+            const btn = document.getElementById(btnId);
+            const open = box.style.display === 'block';
+            box.style.display = open ? 'none' : 'block';
+            btn.textContent = open ? 'Mostra la risposta ▼' : 'Nascondi la risposta ▲';
+        }
+    </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+    <h2>Menu Lezioni</h2>
+    <ul>
+        <li><a href="lez1.html">Lezione 1: Il concetto di problema</a></li>
+        <li><a href="lez1_2.html">Lezione 1c: Il problema del contadino</a></li>
+        <li><a href="lez1_3.html">Lezione 1d: Il problema della bilancia</a></li>
+        <li><a href="lez1_4.html">Lezione 1e: Il concetto di algoritmo</a></li>
+    </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+    <h1>Il concetto di <em>algoritmo</em></h1>
+    <div class="nav-buttons" style="margin-bottom:10px">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
+    </div>
+
+    <div class="content-box">
+        <!-- Pipeline -->
+        <div class="inner-box">
+            <h2>Dalla situazione reale alla soluzione</h2>
+            <p>
+                <strong>Problema</strong> → <strong>Analisi</strong> → <strong>Idea/strategia</strong> → <strong>Algoritmo</strong> → Programma → Esecuzione.
+                L’algoritmo è la <em>procedura generale</em> che, data un’istanza valida, produce l’output corretto.
+            </p>
+        </div>
+
+        <!-- Definizione -->
+        <div class="inner-box">
+            <h2>Definizione</h2>
+            <p>
+                Un <strong>algoritmo</strong> è una <strong>sequenza finita</strong> di <strong>istruzioni non ambigue</strong> ed
+                <strong>eseguibili</strong>, ordinate, che trasformano un <em>input</em> in un <em>output</em>.
+            </p>
+            <p style="margin-top:6px">
+                Vista formale: dato un problema come <code>(I, O, R)</code>, un algoritmo è una procedura che,
+                per ogni <code>i ∈ I</code>, produce un <code>o ∈ O</code> tale che <code>(i,o) ∈ R</code>.
+            </p>
+        </div>
+		
+				<!-- FIGURE E RAPPRESENTAZIONI -->
+        <div class="inner-box" style="text-align:center">
+            <h2>Algoritmo</h2>
+            <p>Illustrazione di un algoritmo:</p>
+            <img src="img/algo_tree.png" alt="Illustrazione di un algoritmo" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+        </div>
+
+        <!-- Caratteristiche -->
+        <div class="inner-box">
+            <h2>Caratteristiche essenziali</h2>
+            <ul>
+                <li><strong>Generalità</strong>: risolve <em>tutte</em> le istanze del dominio definito.</li>
+                <li><strong>Finitezza / Terminazione</strong>: termina dopo un numero finito di passi.</li>
+                <li><strong>Efficacia</strong>: istruzioni elementari, realizzabili dall’esecutore.</li>
+                <li><strong>Non ambiguità</strong>: ogni passo è interpretabile in un solo modo.</li>
+                <li><strong>Completezza</strong>: copre tutti i casi che possono verificarsi.</li>
+                <li><strong>Riproducibilità (determinismo)</strong>: stesse premesse ⇒ stesso esito
+                    <em>(nota: esistono anche algoritmi probabilistici; qui consideriamo il caso deterministico)</em>.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Algoritmo vs Programma vs Esecutore -->
+        <div class="inner-box">
+            <h2>Algoritmo, Programma, Esecutore</h2>
+            <ul>
+                <li><strong>Algoritmo</strong>: idea procedurale astratta, indipendente dal linguaggio.</li>
+                <li><strong>Programma</strong>: implementazione dell’algoritmo in un <em>linguaggio</em> per uno specifico ambiente.</li>
+                <li><strong>Esecutore</strong>: chi/che cosa esegue le istruzioni (umano, calcolatore, automa).</li>
+            </ul>
+            <p><strong>Schema I/O</strong>: <em>input</em> → <em>elaborazione</em> (algoritmo/programma) → <em>output</em>.</p>
+        </div>
+
+        <!-- Esempio quotidiano -->
+        <div class="inner-box">
+            <h2>Esempio quotidiano</h2>
+            <p>
+                Una <strong>ricetta</strong> è un algoritmo: dati gli ingredienti (input),
+                una sequenza ordinata di passi produce il piatto (output).
+                Se i passi sono ambigui (“q.b.”) l’esecutore potrebbe fallire: serve precisione.
+            </p>
+        </div>
+
+		<div class="inner-box">
+	  <h2>Definizione di MCD e spiegazione</h2>
+	  <p><strong>MCD (Massimo Comun Divisore)</strong>: dato un paio di interi <em>a</em>, <em>b</em> (non entrambi nulli), il MCD è il massimo intero positivo <em>d</em> tale che <em>d</em> divide sia <em>a</em> sia <em>b</em> (cioè <code>a mod d = 0</code> e <code>b mod d = 0</code>).</p>
+
+	  <h3>1) Operatore <code>mod</code></h3>
+	  <p>L’operatore <code>mod</code> (modulo) restituisce il <strong>resto</strong> della divisione intera:
+	  <code>a mod b = r</code> se e solo se <code>a = q·b + r</code> con <code>0 ≤ r &lt; |b|</code>. <br>
+	  Esempio: <code>17 mod 5 = 2</code> perché <code>17 = 3·5 + 2</code>.</p>
+
+	  <h3>2) Algoritmo di Euclide (in linguaggio naturale)</h3>
+	  <p>L’algoritmo di Euclide per calcolare il MCD si basa su un principio semplice: il MCD di due numeri non cambia se si sostituisce il numero più grande con il resto della divisione per il più piccolo. Quindi:</p>
+	  <ol>
+		<li>Prendi due numeri <code>a</code> e <code>b</code> con <code>a ≥ b</code>.</li>
+		<li>Dividi <code>a</code> per <code>b</code> e calcola il resto <code>r = a mod b</code>.</li>
+		<li>Se <code>r = 0</code>, allora <code>b</code> è il MCD.</li>
+		<li>Altrimenti sostituisci <code>a</code> con <code>b</code> e <code>b</code> con <code>r</code> e ripeti dal passo 2.</li>
+	  </ol>
+	  <p>Il processo termina dopo un numero finito di passi, perché i resti diventano via via più piccoli fino a 0. L’ultimo divisore non nullo è il MCD.</p>
+	</div>
+
+        <!-- Pseudocodice classico -->
+        <div class="inner-box">
+            <h2>Esempio in pseudocodice: MCD (Euclide)</h2>
+<pre><code># Input: interi a, b con a ≥ 0, b ≥ 0, non entrambi 0
+# Output: MCD(a,b)
+function MCD(a, b):
+    while b ≠ 0:
+        (a, b) ← (b, a mod b)
+    return a
+</code></pre>
+            <p><em>Correttezza</em>: invariante <code>MCD(a,b)</code> non cambia al passo. <em>Complessità</em>: O(log min(a,b)).</p>
+        </div>
+
+        <!-- Complessità dell'algoritmo di Euclide: dimostrazione intuitiva -->
+        <div class="inner-box">
+            <h2>Perché la complessità è <em>O(log&nbsp;min(a,b))</em>? (intuizione)</h2>
+
+            <p><strong>Idea del dimezzamento in due passi.</strong> Sia <code>a ≥ b &gt; 0</code>. In una iterazione Euclide sostituisce
+               <code>(a,b)</code> con <code>(b, r)</code> dove <code>a = q·b + r</code> e <code>0 ≤ r &lt; b</code>.</p>
+
+            <ol>
+                <li><strong>Se q ≥ 2</strong>, allora <code>b ≤ a/2</code>. Quindi in <em>un solo passo</em> il massimo dei due valori
+                    scende almeno a metà.</li>
+                <li><strong>Se q = 1</strong>, allora <code>a = b + r</code> con <code>r &lt; b</code>. Il passo successivo confronta
+                    <code>(b,r)</code> e calcola <code>b = 1·r + s</code> con <code>0 ≤ s &lt; r</code>. Da <code>r &gt; b/2</code> segue
+                    <code>s = b − r &lt; b/2</code>. Quindi in <em>due passi</em> il massimo scende almeno a metà.</li>
+            </ol>
+
+            <p>Conclusione: <strong>ogni due iterazioni</strong> il valore più grande si riduce di almeno un fattore 2.
+               Partendo da <code>M = min(a,b)</code>, servono al più <code>2·⌊log₂ M⌋ + 1</code> iterazioni
+               &rarr; complessità in tempo <strong>O(log&nbsp;min(a,b))</strong>.</p>
+
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn-fib" onclick="toggleBox('btn-fib','box-fib')">Mostra approfondimento (caso peggiore) ▼</button>
+            </div>
+            <div id="box-fib" style="display:none; margin-top:10px">
+                <p><strong>Approfondimento (limite “tight”).</strong> Il caso peggiore si ottiene quando le coppie
+                   successive sono <em>numeri di Fibonacci consecutivi</em>:
+                   se l’algoritmo usa <code>k</code> passi, allora <code>min(a,b) ≥ F_{k+1}</code>.
+                   Quindi <code>k ≤ log_φ(min(a,b)) + O(1)</code> (con <code>φ</code> numero aureo), che conferma il
+                   comportamento <strong>Θ(log&nbsp;min(a,b))</strong>.</p>
+                <p style="opacity:.9"><em>Intuizione:</em> quando i quozienti sono tutti 1 (divisioni “a resti grandi”),
+                   la catena di resti decresce come la successione di Fibonacci: è la sequenza che rallenta di più la riduzione.</p>
+            </div>
+        </div>
+
+        <!-- Quesito con risposta a comparsa -->
+        <div class="inner-box">
+            <h2>Quesito</h2>
+            <p><strong>Qual è la differenza</strong> tra <em>algoritmo</em> e <em>programma</em>? E che ruolo ha l’<em>esecutore</em>?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn-q1" onclick="toggleBox('btn-q1','ans-q1')">Mostra la risposta ▼</button>
+            </div>
+            <div id="ans-q1" style="display:none; margin-top:10px">
+                <ul>
+                    <li>L’<strong>algoritmo</strong> è la soluzione generale, indipendente dal linguaggio e dalla macchina.</li>
+                    <li>Il <strong>programma</strong> è l’algoritmo tradotto in istruzioni eseguibili in un certo ambiente.</li>
+                    <li>L’<strong>esecutore</strong> interpreta ed esegue le istruzioni; determina quali operazioni sono “elementari”.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
+    </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

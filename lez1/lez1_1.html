@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 1 – Che cos'è un PROBLEMA (computazionale/algoritmico)</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../default.css">
+    <script src="../highlight.js"></script>
+    <script>try{hljs.highlightAll();}catch(e){}</script>
+    <script>
+        function prevSlide(){ window.location.href = "../programma.html"; }
+        function nextSlide(){ window.location.href = "lez1_2.html"; }
+        function toggleMenu(){ const m=document.getElementById('menu'); m.classList.toggle('open'); }
+    </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+    <h2>Menu Lezioni</h2>
+    <ul>
+        <li><a href="lez1_1.html">Lezione 1_1: Il concetto di problema</a></li>
+        <li><a href="lez1_2.html">Lezione 1_2: Il problema del contadino</a></li>
+    </ul>
+</div>
+<!-- END MENU -->
+
+
+<div class="slide">
+    <h1>Lezione 1 — Che cos'è un <em>problema</em> in informatica</h1>
+    <p><strong>Obiettivo:</strong> formalizzare il concetto di <em>problema computazionale</em> / <em>problema algoritmico</em> per poter progettare e analizzare algoritmi e programmi.</p>
+ <div class="nav-buttons" style="margin-bottom: 10px;">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
+    </div>
+    <div class="content-box">
+	
+	<div class="inner-box" style="text-align:center">
+            <h2>Mappa concettuale</h2>
+            <p style="margin-bottom:8px">Dalla situazione reale → <strong>Problema</strong> → <strong>Analisi</strong> → <strong>Strategia</strong> → <strong>Soluzione/Algoritmo</strong> → Linguaggio (flow-chart / pseudocodice / codice).</p>
+            <img src="img/mappaL1.png" alt="Mappa concettuale: dal problema alla descrizione algoritmica" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+        </div>
+
+        <div class="inner-box">
+            <h2>Definizione (informale → formale)</h2>
+            <ul>
+                <li><strong>Problema (informale):</strong> una domanda generale a cui vogliamo poter rispondere in modo sistematico per <em>tutte</em> le situazioni di un certo tipo.</li>
+                <li><strong>Istanza:</strong> un caso specifico del problema (gli input).</li>
+                <li><strong>Soluzione:</strong> l’output corretto associato a una data istanza.</li>
+                <li><strong>Problema computazionale (formale):</strong> una relazione (o funzione) che associa ad ogni <em>istanza valida</em> una <em>soluzione</em> secondo regole precise.
+                    <ul>
+                        <li><em>Decisione</em>: risposta sì/no. Es.: “il numero n è primo?”</li>
+                        <li><em>Ricerca</em>: trovare un oggetto. Es.: “trova un divisore di n &gt; 1”</li>
+                        <li><em>Ottimizzazione</em>: trovare la soluzione “migliore”. Es.: “il percorso più corto da A a B”</li>
+                        <li><em>Enumerazione</em>: elencare tutte le soluzioni. Es.: “tutte le fattorizzazioni di n”</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+	<div class="inner-box">
+		<h2>Il concetto di problema</h2>
+		<p>
+			Il <strong>matematico</strong> e l’<strong>informatico</strong> identificano con la parola <em>problema</em> 
+			una questione (o quesito) che deve essere risolta, della quale viene data:
+		</p>
+		<ul>
+			<li>una <strong>situazione iniziale</strong> con dati noti,</li>
+			<li>un <strong>obiettivo</strong> da raggiungere (la soluzione desiderata).</li>
+		</ul>
+		<p>
+			La <strong>soluzione</strong> di un problema consiste nella definizione della <strong>procedura</strong> 
+			ovvero dell’insieme di operazioni da eseguire per raggiungere lo scopo desiderato.
+		</p>
+	</div>
+
+
+<div class="inner-box">
+  <h2>Ben-formulazione (Well-posedness)</h2>
+  <p>Un problema computazionale può essere rappresentato formalmente come una tripla: <strong>(I, O, R)</strong></p>
+
+  <dl>
+    <dt>I</dt><dd>insieme delle istanze di input</dd>
+    <dt>O</dt><dd>insieme delle soluzioni possibili (output)</dd>
+    <dt>R</dt><dd>insieme di vincoli o relazioni che legano input e output</dd>
+  </dl>
+
+  <p>Risolvere il problema significa: &forall; <em>i</em> &in; <em>I</em>, trovare almeno un <em>o</em> &in; <em>O</em> tale che ( <em>i</em>, <em>o</em> ) &in; <em>R</em>.</p>
+
+  <h3>Definizione matematica di relazione</h3>
+  <p>Una <strong>relazione binaria</strong> <em>R</em> tra due insiemi <em>I</em> e <em>O</em> è un sottoinsieme del prodotto cartesiano:<br>
+  <em>R</em> &subseteq; <em>I</em> &times; <em>O</em>.</p>
+
+  <p>Ogni elemento di <em>R</em> è una coppia ordinata ( <em>i</em>, <em>o</em> ) con <em>i</em> &in; <em>I</em> e <em>o</em> &in; <em>O</em>. Dire che ( <em>i</em>, <em>o</em> ) &in; <em>R</em> significa che <em>o</em> è una soluzione valida per l’istanza <em>i</em>.</p>
+
+  <h3>Esempi di relazioni</h3>
+  <ol>
+    <li>
+      <p><strong>Problema del massimo in un insieme finito</strong></p>
+      <ul>
+        <li><em>I</em> = { insiemi finiti di numeri reali }</li>
+        <li><em>O</em> = &reals;</li>
+        <li><em>R</em> = { ( <em>S</em>, <em>x</em> ) | <em>x</em> &in; <em>S</em> &and; <em>x</em> &ge; <em>y</em> &nbsp;&forall; <em>y</em> &in; <em>S</em> }</li>
+      </ul>
+      <p>Esempi: ( {3, 7, 5}, 7 ) &in; <em>R</em> &nbsp;&nbsp;ma&nbsp;&nbsp; ( {3, 7, 5}, 5 ) &notin; <em>R</em>.</p>
+    </li>
+
+    <li>
+      <p><strong>Problema della somma di due numeri</strong></p>
+      <ul>
+        <li><em>I</em> = &reals; &times; &reals;</li>
+        <li><em>O</em> = &reals;</li>
+        <li><em>R</em> = { ( ( <em>a</em>, <em>b</em> ), <em>s</em> ) | <em>s</em> = <em>a</em> + <em>b</em> }</li>
+      </ul>
+      <p>Esempi: ( (2, 3), 5 ) &in; <em>R</em>, &nbsp; ( (2, 3), 4 ) &notin; <em>R</em>.</p>
+    </li>
+
+    <li>
+      <p><strong>Problema di decisione (parità)</strong></p>
+      <ul>
+        <li><em>I</em> = &naturals;</li>
+        <li><em>O</em> = { true, false }</li>
+        <li><em>R</em> = { ( <em>n</em>, true ) | <em>n</em> è pari } &cup; { ( <em>n</em>, false ) | <em>n</em> è dispari }</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3>Proprietà di una buona formulazione</h3>
+  <ul>
+    <li><strong>Specificità:</strong> il dominio degli input <em>I</em> è chiaramente definito (tipi, formato, vincoli).</li>
+    <li><strong>Non ambiguità:</strong> la relazione <em>R</em> è definita in modo univoco.</li>
+    <li><strong>Totalità:</strong> &forall; <em>i</em> &in; <em>I</em> esiste almeno un <em>o</em> valido tale che ( <em>i</em>, <em>o</em> ) &in; <em>R</em>.</li>
+    <li><strong>Verificabilità:</strong> data una coppia ( <em>i</em>, <em>o</em> ) è possibile verificare meccanicamente se ( <em>i</em>, <em>o</em> ) &in; <em>R</em>.</li>
+    <li><strong>Misurabilità:</strong> le risorse per trovare <em>o</em> (tempo, spazio) sono valutabili/analizzabili.</li>
+  </ul>
+</div>
+
+
+        <div class="inner-box">
+            <h2>Dal problema all’algoritmo</h2>
+            <ol>
+                <li><strong>Analisi del contesto</strong> (problema reale) → <em>modello</em> semplificato.</li>
+                <li><strong>Formalizzazione</strong> (input, output, vincoli, obiettivo).</li>
+                <li><strong>Algoritmo</strong> (procedura finita, non ambigua, efficace).</li>
+                <li><strong>Programma</strong> (implementazione in un linguaggio).</li>
+                <li><strong>Verifica</strong>: correttezza → termina? produce l’output corretto?</li>
+                <li><strong>Analisi</strong>: costo in funzione della <em>taglia</em> dell’input (|input|).</li>
+            </ol>
+            <p style="margin-top:8px"><em>Nota:</em> l’algoritmo è indipendente dal linguaggio; il programma dipende da linguaggio, librerie e macchina.</p>
+        </div>
+
+        <div class="inner-box">
+            <h2>Modello di calcolo &amp; misura della complessità (spoiler)</h2>
+            <ul>
+                <li><strong>Modello</strong>: definisce quali operazioni hanno costo unitario (es. RAM astratta).</li>
+                <li><strong>Tempo</strong>: numero di passi elementari in funzione di n = |input|.</li>
+                <li><strong>Spazio</strong>: memoria addizionale necessaria.</li>
+                <li><strong>Altre risorse</strong>: I/O, chiamate di rete, energia, comunicazione...</li>
+            </ul>
+        </div>
+
+        <div class="inner-box">
+            <h2>Esempi lampo</h2>
+            <ul>
+                <li><strong>Somma di due interi</strong> (funzione): input (a,b), output a+b.</li>
+                <li><strong>Ordinamento</strong> (ottimizzazione/ricerca): input lista L, output L ordinata; obiettivo: minimizzare confronti.</li>
+                <li><strong>Cammino più corto</strong> (ottimizzazione): input grafo G, nodi s,t; output distanza minima e percorso.</li>
+                <li><strong>Primalità</strong> (decisione/ricerca): “n è primo?”, oppure “trova un divisore &gt; 1”.</li>
+            </ul>
+        </div>
+
+        <div class="inner-box">
+            <h2>Attività (in classe)</h2>
+            <ol>
+                <li><strong>Formalizza</strong> il classico problema del “contadino, lupo, capra, cavolo”:
+                    <ul>
+                        <li>precisa <em>stato</em>, <em>mosse lecite</em>, <em>vincoli</em>, <em>obiettivo</em>;</li>
+                        <li>classificalo: decisione/ricerca/ottimizzazione?</li>
+                    </ul>
+                </li>
+                <li><strong>Specifica I/O</strong> per: “dato un numero n, stabilisci se è perfetto”.</li>
+                <li><strong>Extra</strong> (a casa): scrivi uno <em>pseudocodice</em> per il controllo di primalità per tentativi.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
+    </div>
+</div>
+</body>
+</html>

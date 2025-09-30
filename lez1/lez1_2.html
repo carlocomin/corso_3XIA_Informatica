@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 1 – Il problema del contadino (lupo, capra, cavolo)</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../default.css">
+    <script src="../highlight.js"></script>
+    <script>try{hljs.highlightAll();}catch(e){}</script>
+    <script>
+        function prevSlide(){ window.location.href = "lez1_1.html"; }
+        function nextSlide(){ window.location.href = "lez1_3.html"; }
+        function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+    <h2>Menu Lezioni</h2>
+    <ul>
+        <li><a href="lez1_1.html">Lezione 1_1: Il concetto di problema</a></li>
+        <li><a href="lez1_2.html">Lezione 1_2: Il problema del contadino</a></li>
+    </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+    <h1>Il problema del contadino <small>(lupo, capra, cavolo)</small></h1>
+    <div class="nav-buttons" style="margin-bottom: 10px;">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
+    </div>
+
+    <div class="content-box">
+
+        <!-- PROBLEMA (enunciato) -->
+        <div class="inner-box">
+            <h2>Il problema</h2>
+            <p>
+                Su una riva di un fiume ci sono un <strong>contadino</strong>, un <strong>lupo</strong>, una <strong>capra</strong> e un <strong>cavolo</strong>.
+                Il contadino dispone di una barca su cui può portare con sé <em>una sola cosa alla volta</em>.
+                Come può attraversare il fiume salvando capra e cavolo, sapendo che:
+            </p>
+            <ul>
+                <li>se restano da soli <strong>lupo</strong> e <strong>capra</strong> → il lupo mangia la capra;</li>
+                <li>se restano da soli <strong>capra</strong> e <strong>cavolo</strong> → la capra mangia il cavolo.</li>
+            </ul>
+        </div>
+		
+		<!-- FIGURE E RAPPRESENTAZIONI -->
+        <div class="inner-box" style="text-align:center">
+            <h2>Problema del contadino</h2>
+            <p>Situazione iniziale nel problema del contadino:</p>
+            <img src="img/contadino_prob.png" alt="Situazione iniziale nel problema del contadino" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+        </div>
+
+        <!-- ANALISI DELLA SITUAZIONE -->
+        <div class="inner-box">
+            <h2>Analisi della situazione</h2>
+            <ul>
+                <li><strong>Stato</strong>: distribuzione di {lupo, capra, cavolo, contadino} tra riva <code>A</code>, barca, riva <code>B</code>.</li>
+                <li><strong>Mosse lecite</strong>: il contadino guida sempre la barca; può imbarcare al più un elemento tra {L,Ca,Cv}.</li>
+                <li><strong>Vincoli</strong> (sicurezza): mai lasciare <code>lupo</code> con <code>capra</code> senza contadino; mai lasciare <code>capra</code> con <code>cavolo</code> senza contadino.</li>
+                <li><strong>Obiettivo</strong>: raggiungere uno stato terminale con tutti e quattro sulla riva <code>B</code>.</li>
+            </ul>
+        </div>
+
+        <!-- RAPPRESENTAZIONE FORMALE I,O,R -->
+        <div class="inner-box">
+            <h2>Rappresentazione formale del problema</h2>
+            <p>Modelliamo il problema come una tripla <strong>(I, O, R)</strong>:</p>
+            <ul>
+                <li><strong>I</strong> = insiemi di stati iniziali validi (qui lo stato con tutti in <code>A</code> e barca in <code>A</code>).</li>
+                <li><strong>O</strong> = insiemi di stati obiettivo (tutti in <code>B</code>).</li>
+                <li><strong>R</strong> = relazione “è una sequenza lecita di mosse” che rispetta i vincoli di sicurezza.</li>
+            </ul>
+            <p>Risolvere il problema = trovare una sequenza di stati <code>s0, s1, ..., sk</code> tale che
+               <code>s0 ∈ I</code>, <code>sk ∈ O</code>, e per ogni passo <code>(s_t, s_{t+1}) ∈ R</code>.</p>
+        </div>
+
+        <!-- STRATEGIA RISOLUTIVA -->
+        <div class="inner-box">
+            <h2>Una strategia risolutiva corretta (7 mosse)</h2>
+            <ol>
+                <li>Porta la <strong>capra</strong> da A a B.</li>
+                <li>Torna da solo a A.</li>
+                <li>Porta il <strong>cavolo</strong> da A a B.</li>
+                <li>Riporta la <strong>capra</strong> da B ad A.</li>
+                <li>Porta il <strong>lupo</strong> da A a B.</li>
+                <li>Torna da solo a A.</li>
+                <li>Porta la <strong>capra</strong> da A a B (tutti salvi in B).</li>
+            </ol>
+            <p style="margin-top:8px"><em>Nota:</em> il problema ammette più soluzioni; quella sopra è una delle sequenze minime corrette.</p>
+        </div>
+
+        <!-- FIGURE E RAPPRESENTAZIONI -->
+        <div class="inner-box" style="text-align:center">
+            <h2>Sequenza grafica delle mosse</h2>
+            <p>Una possibile rappresentazione visiva della soluzione passo-passo:</p>
+            <img src="img/contadino_sol.png" alt="Sequenza di mosse del problema del contadino" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+        </div>
+
+        <!-- LINGUAGGIO, ESECUTORE, PSEUDOCODICE -->
+        <div class="inner-box">
+            <h2>Dalla soluzione all’algoritmo</h2>
+            <p>
+                Possiamo descrivere la strategia in <strong>linguaggio naturale</strong>, con <strong>diagrammi</strong> o in <strong>pseudocodice</strong>.
+                L’<strong>esecutore</strong> (umano o macchina) deve poterla comprendere ed eseguire.
+            </p>
+<pre><code class="language-none"># Pseudocodice (sequenza di operazioni)
+porta(CAPRA, A→B)
+torna_solo(B→A)
+porta(CAVOLO, A→B)
+riporta(CAPRA, B→A)
+porta(LUPO, A→B)
+torna_solo(B→A)
+porta(CAPRA, A→B)
+</code></pre>
+            <p>La correttezza discende dal rispetto dei vincoli di sicurezza in ogni stato intermedio.</p>
+        </div>
+
+    <div class="nav-buttons">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
+    </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

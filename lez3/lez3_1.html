@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – L3.1 · Decisioni e condizioni booleane (IF/ELSE) nei Flowchart</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "../programma.html"; }
+    function nextSlide(){ window.location.href = "lez3_2.html"; } // placeholder
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const open = box.style.display === 'block';
+      box.style.display = open ? 'none' : 'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* Stili locali per i diagrammi */
+    .fc-wrap {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); margin-top:8px}
+    .fc-card {background:var(--panel, #fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .fc-title{font-weight:600; margin:4px 0 8px}
+    .fc-svg{width:100%; height:auto}
+    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
+    .fc-text{font: 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill:#111}
+    .fc-small{font-size:11px; fill:#333}
+    .fc-yes{font-weight:600; fill:#0b6}
+    .fc-no{font-weight:600; fill:#c33}
+    .fc-marker path{fill:#222}
+    .trace { width:100%; border-collapse:collapse; margin-top:8px }
+    .trace th, .trace td { border:1px solid #ccc; padding:6px 8px; text-align:center }
+    .trace th { background:#f7f7f7 }
+    .trace td.l { text-align:left }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez3_1.html">Lezione 3.1: IF/ELSE & logica booleana</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>L3.1 — Decisioni & condizioni booleane (<em>IF/ELSE</em>) nei Flowchart</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box">
+      <h2>Obiettivi</h2>
+      <ul>
+        <li>Usare predicati e operatori <strong>relazionali</strong> e <strong>logici</strong> con precedenza corretta.</li>
+        <li>Disegnare pattern <strong>IF</strong>, <strong>IF–ELSE</strong>, <strong>ELSE–IF ladder</strong> e <strong>annidamento</strong>.</li>
+        <li>Semplificare condizioni con le <strong>leggi di De Morgan</strong> e progettare test di <em>frontiera</em>.</li>
+      </ul>
+    </div>
+
+    <div class="inner-box">
+      <h2>Logica di base: predicati, operatori, precedenza</h2>
+      <ul>
+        <li><strong>Predicato</strong>: espressione booleana che vale <code>vero</code> o <code>falso</code>.</li>
+        <li><strong>Relazionali</strong>: <code>&lt;, ≤, =, ≠, ≥, &gt;</code> (su numeri/char). Per stringhe: ordine lessicografico.</li>
+        <li><strong>Logici</strong>: <code>¬</code> (NOT), <code>∧</code> (AND), <code>∨</code> (OR). Precedenza tipica: <code>¬</code> &gt; <code>∧</code> &gt; <code>∨</code>. Usa <strong>parentesi</strong> per chiarezza.</li>
+      </ul>
+      <table class="trace">
+        <thead><tr><th>A</th><th>B</th><th>¬A</th><th>A ∧ B</th><th>A ∨ B</th></tr></thead>
+        <tbody>
+          <tr><td>F</td><td>F</td><td>V</td><td>F</td><td>F</td></tr>
+          <tr><td>F</td><td>V</td><td>V</td><td>F</td><td>V</td></tr>
+          <tr><td>V</td><td>F</td><td>F</td><td>F</td><td>V</td></tr>
+          <tr><td>V</td><td>V</td><td>F</td><td>V</td><td>V</td></tr>
+        </tbody>
+      </table>
+      <p class="note"><strong>De Morgan</strong>: <code>¬(A ∨ B) ≡ (¬A ∧ ¬B)</code>, <code>¬(A ∧ B) ≡ (¬A ∨ ¬B)</code>.</p>
+    </div>
+
+    <!-- PATTERN DIAGRAMMI -->
+    <div class="inner-box">
+      <h2>Pattern di Flowchart (spazi verticali ampi)</h2>
+      <div class="fc-wrap">
+
+        <!-- IF semplice -->
+        <div class="fc-card">
+          <div class="fc-title">IF (solo se)</div>
+          <svg class="fc-svg" viewBox="0 0 520 280" role="img" aria-label="IF semplice">
+            <defs>
+              <marker id="arrA" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z"></path>
+              </marker>
+            </defs>
+            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+            <polygon class="fc-shape" points="260,90 300,130 260,170 220,130"></polygon>
+            <text class="fc-text" x="260" y="134" text-anchor="middle">condizione?</text>
+            <text class="fc-text fc-yes" x="302" y="126">Sì</text>
+            <text class="fc-text fc-no"  x="218" y="126" text-anchor="end">No</text>
+
+            <rect class="fc-shape" x="350" y="200" width="130" height="36" rx="6"></rect>
+            <text class="fc-text" x="415" y="222" text-anchor="middle">azione</text>
+
+            <rect class="fc-shape" x="205" y="230" width="110" height="36" rx="6"></rect>
+            <text class="fc-text" x="260" y="252" text-anchor="middle">flusso</text>
+
+            <line x1="260" y1="46" x2="260" y2="90" stroke="#222" stroke-width="2" marker-end="url(#arrA)"/>
+            <polyline points="300,130 350,130 350,200" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrA)"/>
+            <polyline points="220,130 220,230 205,230" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrA)"/>
+            <polyline points="415,236 415,230 315,230" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrA)"/>
+          </svg>
+        </div>
+
+        <!-- IF–ELSE -->
+        <div class="fc-card">
+          <div class="fc-title">IF–ELSE</div>
+          <svg class="fc-svg" viewBox="0 0 520 300" role="img" aria-label="IF-ELSE">
+            <defs>
+              <marker id="arrB" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z"></path>
+              </marker>
+            </defs>
+            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+            <polygon class="fc-shape" points="260,90 300,130 260,170 220,130"></polygon>
+            <text class="fc-text" x="260" y="134" text-anchor="middle">condizione?</text>
+            <text class="fc-text fc-yes" x="302" y="126">Sì</text>
+            <text class="fc-text fc-no"  x="218" y="126" text-anchor="end">No</text>
+
+            <rect class="fc-shape" x="350" y="200" width="130" height="36" rx="6"></rect>
+            <text class="fc-text" x="415" y="222" text-anchor="middle">azione sì</text>
+
+            <rect class="fc-shape" x="40" y="200" width="130" height="36" rx="6"></rect>
+            <text class="fc-text" x="105" y="222" text-anchor="middle">azione no</text>
+
+            <rect class="fc-shape" x="205" y="250" width="110" height="36" rx="6"></rect>
+            <text class="fc-text" x="260" y="272" text-anchor="middle">flusso</text>
+
+            <line x1="260" y1="46" x2="260" y2="90" stroke="#222" stroke-width="2" marker-end="url(#arrB)"/>
+            <polyline points="300,130 350,130 350,200" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrB)"/>
+            <polyline points="220,130 170,130 170,200" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrB)"/>
+            <polyline points="415,236 415,250 315,250" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrB)"/>
+            <polyline points="105,236 105,250 205,250" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrB)"/>
+          </svg>
+        </div>
+
+        <!-- ELSE–IF ladder -->
+        <div class="fc-card">
+          <div class="fc-title">ELSE–IF ladder</div>
+          <svg class="fc-svg" viewBox="0 0 520 360" role="img" aria-label="ELSE-IF ladder">
+            <defs>
+              <marker id="arrC" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z"></path>
+              </marker>
+            </defs>
+            <!-- Start -->
+            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+            <!-- D1 -->
+            <polygon class="fc-shape" points="260,90 300,130 260,170 220,130"></polygon>
+            <text class="fc-text" x="260" y="134" text-anchor="middle">cond1?</text>
+            <text class="fc-text fc-yes" x="302" y="126">Sì</text>
+            <text class="fc-text fc-no"  x="218" y="126" text-anchor="end">No</text>
+
+            <!-- P1 -->
+            <rect class="fc-shape" x="350" y="200" width="130" height="36" rx="6"></rect>
+            <text class="fc-text" x="415" y="222" text-anchor="middle">azione1</text>
+
+            <!-- D2 (alla destra del ramo "No") -->
+            <polygon class="fc-shape" points="170,200 210,240 170,280 130,240"></polygon>
+            <text class="fc-text" x="170" y="244" text-anchor="middle">cond2?</text>
+            <text class="fc-text fc-yes" x="212" y="236">Sì</text>
+            <text class="fc-text fc-no"  x="128" y="236" text-anchor="end">No</text>
+
+            <!-- P2 -->
+            <rect class="fc-shape" x="260" y="310" width="130" height="36" rx="6"></rect>
+            <text class="fc-text" x="325" y="332" text-anchor="middle">azione2</text>
+
+            <!-- Default -->
+            <rect class="fc-shape" x="30" y="310" width="130" height="36" rx="6"></rect>
+            <text class="fc-text" x="95" y="332" text-anchor="middle">azioneDefault</text>
+
+            <!-- Flussi -->
+            <line x1="260" y1="46" x2="260" y2="90" stroke="#222" stroke-width="2" marker-end="url(#arrC)"/>
+            <polyline points="300,130 350,130 350,200" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrC)"/>
+            <polyline points="220,130 170,130 170,200" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrC)"/>
+            <polyline points="212,240 260,240 260,310" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrC)"/>
+            <polyline points="128,240 95,240 95,310" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrC)"/>
+          </svg>
+          <p class="fc-small">Usa la ladder quando i casi sono <em>mutuamente esclusivi</em> e ordinati.</p>
+        </div>
+
+        <!-- IF annidati -->
+        <div class="fc-card">
+          <div class="fc-title">IF annidati (nidificazione)</div>
+          <svg class="fc-svg" viewBox="0 0 520 340" role="img" aria-label="IF annidati">
+            <defs>
+              <marker id="arrD" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z"></path>
+              </marker>
+            </defs>
+            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+            <polygon class="fc-shape" points="260,90 300,130 260,170 220,130"></polygon>
+            <text class="fc-text" x="260" y="134" text-anchor="middle">A?</text>
+            <text class="fc-text fc-yes" x="302" y="126">Sì</text>
+            <text class="fc-text fc-no"  x="218" y="126" text-anchor="end">No</text>
+
+            <polygon class="fc-shape" points="350,210 390,250 350,290 310,250"></polygon>
+            <text class="fc-text" x="350" y="254" text-anchor="middle">B?</text>
+            <text class="fc-text fc-yes" x="392" y="246">Sì</text>
+            <text class="fc-text fc-no"  x="308" y="246" text-anchor="end">No</text>
+
+            <rect class="fc-shape" x="430" y="230" width="80" height="36" rx="6"></rect>
+            <text class="fc-text" x="470" y="252" text-anchor="middle">P</text>
+
+            <rect class="fc-shape" x="30" y="230" width="80" height="36" rx="6"></rect>
+            <text class="fc-text" x="70" y="252" text-anchor="middle">Q</text>
+
+            <line x1="260" y1="46" x2="260" y2="90" stroke="#222" stroke-width="2" marker-end="url(#arrD)"/>
+            <polyline points="300,130 350,130 350,210" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrD)"/>
+            <polyline points="392,250 430,250" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrD)"/>
+            <polyline points="308,250 120,250 120,250 110,250 110,230" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrD)"/>
+            <polyline points="220,130 70,130 70,230" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrD)"/>
+          </svg>
+          <p class="fc-small">Usa annidamento quando la scelta <em>B</em> dipende dal fatto che <em>A</em> sia vera.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Semplificazione & short-circuit -->
+    <div class="inner-box">
+      <h2>Semplificare condizioni & short-circuit</h2>
+      <ul>
+        <li><strong>In-range</strong>: <code>a ≤ x ≤ b</code> ⇔ <code>(x ≥ a) ∧ (x ≤ b)</code>.</li>
+        <li><strong>De Morgan</strong>: <code>¬(x∈A ∨ x∈B)</code> ⇔ <code>(x∉A) ∧ (x∉B)</code> (evita doppie decisioni).</li>
+        <li><strong>Short-circuit</strong>: in <code>A ∧ B</code>, se <code>A</code> è falso non si valuta <code>B</code>; in <code>A ∨ B</code>, se <code>A</code> è vero non si valuta <code>B</code>. Utile per <em>guardie</em> (es. <code>b≠0</code> prima di <code>a/b</code>).</li>
+      </ul>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box">
+      <h2>Esercizi (show/hide soluzioni)</h2>
+      <ol>
+        <li><strong>Appartenenza a intervallo chiuso</strong> — Dati <code>x,a,b</code> (con <code>a≤b</code>): stampa “OK” se <code>x∈[a,b]</code>, altrimenti “NO”.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-s1" onclick="toggleBox('btn-s1','box-s1')">Mostra soluzione ▼</button>
+          </div>
+          <div id="box-s1" style="display:none;margin-top:8px">
+<pre><code class="language-text">condizione: (x ≥ a) ∧ (x ≤ b)
+IF condizione THEN stampa "OK" ELSE stampa "NO"</code></pre>
+          </div>
+        </li>
+
+        <li><strong>Anno bisestile</strong> — Intero <code>y</code>: vero se (multiplo di 400) oppure (multiplo di 4 e non di 100).
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-s2" onclick="toggleBox('btn-s2','box-s2')">Mostra soluzione ▼</button>
+          </div>
+          <div id="box-s2" style="display:none;margin-top:8px">
+<pre><code class="language-text">cond: (y mod 400 = 0) ∨ ((y mod 4 = 0) ∧ (y mod 100 ≠ 0))
+IF cond THEN stampa "BISESTILE" ELSE "NORMALE"</code></pre>
+          </div>
+        </li>
+
+        <li><strong>Massimo di tre</strong> — Dati <code>a,b,c</code>, stampa il massimo (ladder).
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-s3" onclick="toggleBox('btn-s3','box-s3')">Mostra soluzione ▼</button>
+          </div>
+          <div id="box-s3" style="display:none;margin-top:8px">
+<pre><code class="language-text">IF (a ≥ b ∧ a ≥ c) THEN max ← a
+ELSE IF (b ≥ a ∧ b ≥ c) THEN max ← b
+ELSE max ← c
+stampa max</code></pre>
+          </div>
+        </li>
+
+        <li><strong>Divisione sicura</strong> — Leggi <code>a,b</code>; se <code>b ≠ 0</code> stampa <code>a/b</code>, altrimenti messaggio di errore.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-s4" onclick="toggleBox('btn-s4','box-s4')">Mostra soluzione ▼</button>
+          </div>
+          <div id="box-s4" style="display:none;margin-top:8px">
+<pre><code class="language-text">IF (b ≠ 0) THEN q ← a / b; stampa q
+ELSE stampa "errore: divisione per zero"</code></pre>
+          </div>
+        </li>
+
+        <li><strong>Classificazione voto</strong> — Intero <code>v</code> 0..10: stampa “insufficiente” (&lt;6), “sufficiente” (6), “buono” (7–8), “ottimo” (9–10).
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-s5" onclick="toggleBox('btn-s5','box-s5')">Mostra soluzione ▼</button>
+          </div>
+          <div id="box-s5" style="display:none;margin-top:8px">
+<pre><code class="language-text">IF (v &lt; 6)        THEN stampa "insufficiente"
+ELSE IF (v = 6)   THEN stampa "sufficiente"
+ELSE IF (v ≤ 8)   THEN stampa "buono"      // implica v=7 o 8
+ELSE              stampa "ottimo"          // 9 o 10</code></pre>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box">
+      <h2>Takeaways</h2>
+      <ul>
+        <li>Scrivi condizioni <strong>chiare</strong> con parentesi e nomi parlanti; verifica i <em>casi di frontiera</em>.</li>
+        <li>Preferisci la <strong>ladder</strong> per casi esclusivi e ordinati; usa <strong>annidamento</strong> quando il secondo test dipende dal primo.</li>
+        <li>Le <strong>De Morgan</strong> riducono i rami invertendo i test in modo meccanico.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

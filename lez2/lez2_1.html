@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lezione 2 · Codificare gli algoritmi con i Flowchart</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "../programma.html"; }
+    function nextSlide(){ window.location.href = "lez2_2.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const open = box.style.display === 'block';
+      box.style.display = open ? 'none' : 'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* Stili locali per i mini-flowchart della mappa concettuale */
+    .fc-wrap {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); margin-top:8px}
+    .fc-card {background:var(--panel, #fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .fc-title{font-weight:600; margin:4px 0 8px}
+    .fc-svg{width:100%; height:auto}
+    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
+    .fc-text{font: 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill:#111}
+    .fc-small{font-size:11px; fill:#333}
+    .fc-yes{font-weight:600; fill:#0b6}
+    .fc-no{font-weight:600; fill:#c33}
+    .fc-marker path{fill:#222}
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez2.html">Lezione 2: Flowchart (diagrammi di flusso)</a></li>
+    <li><a href="lez2_2.html">L2.2: Variabili, tipi, assegnamento</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 2 — Codificare gli algoritmi con i <em>Flowchart</em></h1>
+  <p><strong>Obiettivo:</strong> rappresentare algoritmi in modo grafico, chiaro e non ambiguo usando i simboli standard dei diagrammi di flusso.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+    <!-- Cos'è un flowchart -->
+    <div class="inner-box">
+      <h2>Che cos’è un Flowchart e a cosa serve</h2>
+      <ul>
+        <li>È una <strong>rappresentazione grafica</strong> di un algoritmo: blocchi (azioni/decisioni) + <strong>frecce</strong> (flusso di controllo).</li>
+        <li>Favorisce comprensione, revisione tra pari e traduzione in <em>pseudocodice</em>/<em>codice</em>.</li>
+        <li>Utile prima della programmazione, per progettare e comunicare la <em>logica</em>.</li>
+      </ul>
+      <p class="note"><strong>Standard e convenzioni.</strong> I simboli dei flowchart provengono da standard storici (ad es. <em>ISO 5807</em>, oggi ritirata, e <em>DIN 66001</em>) e da convenzioni ANSI/ISO diffuse. Nella pratica basta adottare <strong>un set di simboli uniforme e coerente</strong> per tutto il corso/documento.</p>
+    </div>
+
+    <!-- Simboli -->
+    <div class="inner-box">
+      <h2>Simboli fondamentali</h2>
+      <ul>
+        <li><strong>Terminator</strong> (ovale): <em>Start</em> / <em>End</em>.</li>
+        <li><strong>Process</strong> (rettangolo): istruzione/azione (<code>x ← x+1</code>).</li>
+        <li><strong>Input/Output</strong> (parallelogramma): leggi/scrivi (<code>leggi n</code>, <code>stampa s</code>).</li>
+        <li><strong>Decision</strong> (rombo): condizione con rami <em>Sì/No</em>.</li>
+        <li><strong>Predefinito / Sottoprocesso</strong> (rett. con barre laterali): “chiama procedura”.</li>
+        <li><strong>Connettori</strong>: cerchio (on-page) / “bandiera” (off-page) per evitare linee incrociate.</li>
+        <li><strong>Frecce</strong>: direzione del flusso; preferire top-down, sinistra→destra.</li>
+      </ul>
+    </div>
+
+<div class="inner-box">
+  <h2>Mappa concettuale: costrutti ↔ simboli</h2>
+  <ul>
+    <li><strong>Sequenza</strong> → Process in catena.</li>
+    <li><strong>Se/Altrimenti</strong> → Decision con due uscite <em>Sì/No</em> che si ricongiungono.</li>
+    <li><strong>While</strong> → test in alto che, se <em>Sì</em>, entra nel corpo e poi torna al test.</li>
+    <li><strong>Repeat…Until</strong> → corpo prima, test in basso; <em>No</em> ripete, <em>Sì</em> esce.</li>
+    <li><strong>For</strong> → init → test → corpo → incremento → ritorno al test.</li>
+  </ul>
+
+  <div class="fc-wrap">
+
+    <!-- IF / ELSE (spaziatura verticale aumentata) -->
+    <div class="fc-card">
+      <div class="fc-title">IF / ELSE</div>
+      <svg class="fc-svg" viewBox="0 0 560 280" role="img" aria-label="Diagramma IF/ELSE">
+        <defs>
+          <marker id="fc-arrow" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          </marker>
+        </defs>
+
+        <!-- Start -->
+        <ellipse class="fc-shape" cx="280" cy="25" rx="60" ry="16"></ellipse>
+        <text class="fc-text" x="280" y="29" text-anchor="middle">Start</text>
+
+        <!-- Decision -->
+        <polygon class="fc-shape" points="280,70 340,110 280,150 220,110"></polygon>
+        <text class="fc-text" x="280" y="113" text-anchor="middle">condizione?</text>
+        <text class="fc-text fc-yes" x="340" y="106">Sì</text>
+        <text class="fc-text fc-no"  x="220" y="106" text-anchor="end">No</text>
+
+        <!-- Process sì -->
+        <rect class="fc-shape" x="380" y="170" width="120" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="440" y="193" text-anchor="middle">P1</text>
+
+        <!-- Process no -->
+        <rect class="fc-shape" x="60" y="170" width="120" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="120" y="193" text-anchor="middle">P2</text>
+
+        <!-- Join -->
+        <rect class="fc-shape" x="225" y="220" width="110" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="280" y="243" text-anchor="middle">flusso comune</text>
+
+        <!-- Arrows -->
+        <line x1="280" y1="41" x2="280" y2="70" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow)"/>
+        <path d="M340 110 L 380 110 L 380 170" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow)"/>
+        <path d="M220 110 L 180 110 L 180 170" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow)"/>
+        <path d="M440 208 L 440 239 L 335 239" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow)"/>
+        <path d="M120 208 L 120 239 L 225 239" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow)"/>
+      </svg>
+    </div>
+
+<!-- WHILE (pre-condizione) — back-edge a segmenti verso sinistra -->
+<div class="fc-card">
+  <div class="fc-title">WHILE (pre-condizione)</div>
+  <svg class="fc-svg" viewBox="0 0 520 320" role="img" aria-label="Diagramma WHILE">
+    <defs>
+      <marker id="fc-arrow-b" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z"></path>
+      </marker>
+    </defs>
+
+    <!-- Start -->
+    <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+    <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+    <!-- Decision -->
+    <polygon class="fc-shape" points="260,80 300,120 260,160 220,120"></polygon>
+    <text class="fc-text" x="260" y="124" text-anchor="middle">condizione?</text>
+    <text class="fc-text fc-yes" x="300" y="116">Sì</text>
+    <text class="fc-text fc-no"  x="220" y="116" text-anchor="end">No</text>
+
+    <!-- Corpo -->
+    <rect class="fc-shape" x="340" y="190" width="130" height="36" rx="6" ry="6"></rect>
+    <text class="fc-text" x="405" y="212" text-anchor="middle">corpo</text>
+
+    <!-- End -->
+    <ellipse class="fc-shape" cx="100" cy="280" rx="60" ry="16"></ellipse>
+    <text class="fc-text" x="100" y="284" text-anchor="middle">End</text>
+
+    <!-- Frecce -->
+    <line x1="260" y1="46"  y2="80"  x2="260" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow-b)"/>
+    <!-- sì → corpo -->
+    <polyline points="300,120 340,120 340,190" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow-b)"/>
+    <!-- back-edge a segmenti verso sinistra: corpo → test (senza intersezioni) -->
+    <polyline points="405,226 260,226 260,170 260,160"
+              fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow-b)"/>
+    <!-- no → end (rimane a sinistra, non incrocia la back-edge) -->
+    <polyline points="220,120 130,120 130,264" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow-b)"/>
+  </svg>
+  <p class="fc-small">Il ritorno al test è ora una spezzata che va a sinistra, sale, rientra sul test dall’alto: nessuna intersezione.</p>
+</div>
+
+
+    <!-- REPEAT … UNTIL (post-condizione) -->
+    <div class="fc-card">
+      <div class="fc-title">REPEAT … UNTIL (post-condizione)</div>
+      <svg class="fc-svg" viewBox="0 0 560 300" role="img" aria-label="Diagramma REPEAT UNTIL">
+        <defs>
+          <marker id="fc-arrow3" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          </marker>
+        </defs>
+
+        <!-- Start -->
+        <ellipse class="fc-shape" cx="120" cy="25" rx="60" ry="16"></ellipse>
+        <text class="fc-text" x="120" y="29" text-anchor="middle">Start</text>
+
+        <!-- Body -->
+        <rect class="fc-shape" x="60" y="90" width="120" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="120" y="113" text-anchor="middle">corpo</text>
+
+        <!-- Decision bottom -->
+        <polygon class="fc-shape" points="120,180 170,220 120,260 70,220"></polygon>
+        <text class="fc-text" x="120" y="223" text-anchor="middle">condizione?</text>
+        <text class="fc-text fc-yes" x="190" y="220">Sì</text>
+        <text class="fc-text fc-no"  x="55"  y="220" text-anchor="end">No</text>
+
+        <!-- End -->
+        <ellipse class="fc-shape" cx="340" cy="220" rx="60" ry="16"></ellipse>
+        <text class="fc-text" x="340" y="224" text-anchor="middle">End</text>
+
+        <!-- Arrows -->
+        <line x1="120" y1="41" x2="120" y2="90" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow3)"/>
+        <line x1="120" y1="128" x2="120" y2="180" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow3)"/>
+        <!-- loop (No) -->
+        <path d="M70 220 C 15 220, 15 40, 120 40" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow3)"/>
+        <!-- exit (Sì) -->
+        <path d="M170 220 L 280 220" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow3)"/>
+      </svg>
+      <p class="fc-small">Corpo ben distanziato dal test: <span class="fc-no">No</span> ripete, <span class="fc-yes">Sì</span> termina.</p>
+    </div>
+
+    <!-- FOR -->
+    <div class="fc-card">
+      <div class="fc-title">FOR (init → test → corpo → incremento)</div>
+      <svg class="fc-svg" viewBox="0 0 560 320" role="img" aria-label="Diagramma FOR">
+        <defs>
+          <marker id="fc-arrow4" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          </marker>
+        </defs>
+
+        <!-- Start -->
+        <ellipse class="fc-shape" cx="90" cy="25" rx="60" ry="16"></ellipse>
+        <text class="fc-text" x="90" y="29" text-anchor="middle">Start</text>
+
+        <!-- Init -->
+        <rect class="fc-shape" x="40" y="80" width="120" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="100" y="103" text-anchor="middle">init (i ← a)</text>
+
+        <!-- Decision -->
+        <polygon class="fc-shape" points="280,110 340,150 280,190 220,150"></polygon>
+        <text class="fc-text" x="280" y="153" text-anchor="middle">test (i ≤ b)?</text>
+        <text class="fc-text fc-yes" x="340" y="146">Sì</text>
+        <text class="fc-text fc-no"  x="220" y="146" text-anchor="end">No</text>
+
+        <!-- Body -->
+        <rect class="fc-shape" x="360" y="210" width="140" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="430" y="233" text-anchor="middle">corpo</text>
+
+        <!-- Increment -->
+        <rect class="fc-shape" x="360" y="270" width="140" height="38" rx="6" ry="6"></rect>
+        <text class="fc-text" x="430" y="293" text-anchor="middle">i ← i + step</text>
+
+        <!-- End -->
+        <ellipse class="fc-shape" cx="170" cy="300" rx="60" ry="16"></ellipse>
+        <text class="fc-text" x="170" y="304" text-anchor="middle">End</text>
+
+        <!-- Arrows -->
+        <line x1="90" y1="41" x2="100" y2="80" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow4)"/>
+        <line x1="160" y1="99" x2="220" y2="150" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow4)"/>
+        <path d="M340 150 L 360 150 L 360 210" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow4)"/>
+        <line x1="430" y1="248" x2="430" y2="270" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow4)"/>
+        <!-- back-edge incremento→test -->
+        <path d="M360 270 L 340 270 L 280 190" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow4)"/>
+        <!-- exit (No) -->
+        <path d="M220 150 C 170 150, 150 250, 170 284" fill="none" stroke="#222" stroke-width="2" marker-end="url(#fc-arrow4)"/>
+      </svg>
+    </div>
+
+  </div>
+</div>
+
+
+    <!-- Regole di stile -->
+    <div class="inner-box">
+      <h2>Regole di stile (leggibilità & correttezza)</h2>
+      <ul>
+        <li><strong>Un solo Start</strong> e uno o pochi End; evita rientri multipli “misteriosi”.</li>
+        <li><strong>Frecce chiare</strong>, niente incroci; usa connettori se il diagramma cresce.</li>
+        <li><strong>Decisioni binarie</strong> con etichette <em>Sì/No</em>; testi brevi e precisi nei blocchi.</li>
+        <li><strong>Granularità</strong>: ogni Process fa una cosa chiara; sposta dettagli in <em>sottoprocessi</em> se necessario.</li>
+        <li><strong>Coerenza</strong> tra flowchart, pseudocodice e specifica I/O.</li>
+      </ul>
+    </div>
+
+    <!-- Esempio 1: massimo di due -->
+    <div class="inner-box">
+      <h2>Esempio 1 — Massimo tra due numeri</h2>
+      <p><em>Specifica:</em> input <code>a,b</code> interi; output <code>max</code>.</p>
+      <ol>
+        <li>Start → I/O: <code>leggi a,b</code></li>
+        <li>Decision: <code>a ≥ b ?</code></li>
+        <li>Se <em>Sì</em>: Process <code>max ← a</code> → vai a <em>End</em></li>
+        <li>Se <em>No</em>: Process <code>max ← b</code> → vai a <em>End</em></li>
+        <li>Output: <code>stampa max</code> → End</li>
+      </ol>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-es1" onclick="toggleBox('btn-es1','box-es1')">Mostra pseudocodice ▼</button>
+      </div>
+      <div id="box-es1" style="display:none; margin-top:8px">
+<pre><code class="language-text">leggi a, b
+se (a &gt;= b) allora
+    max ← a
+altrimenti
+    max ← b
+stampa max
+</code></pre>
+      </div>
+    </div>
+
+    <!-- Esempio 2: somma N numeri con sentinella -->
+    <div class="inner-box">
+      <h2>Esempio 2 — Somma di una sequenza con sentinella</h2>
+      <p><em>Specifica:</em> leggere interi finché non arriva <code>-1</code>; stampare la somma.</p>
+      <ol>
+        <li>Start → Process: <code>somma ← 0</code></li>
+        <li>Input: <code>leggi x</code></li>
+        <li>Decision: <code>x = -1 ?</code></li>
+        <li><em>Sì</em> → Output <code>stampa somma</code> → End</li>
+        <li><em>No</em> → Process <code>somma ← somma + x</code> → ritorna a “leggi x”</li>
+      </ol>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-es2" onclick="toggleBox('btn-es2','box-es2')">Mostra pseudocodice ▼</button>
+      </div>
+      <div id="box-es2" style="display:none; margin-top:8px">
+<pre><code class="language-text">somma ← 0
+ripeti
+    leggi x
+    se (x ≠ -1) allora somma ← somma + x
+finché (x = -1)
+stampa somma
+</code></pre>
+      </div>
+    </div>
+
+    <!-- Esempio 3: ricerca del massimo tra N -->
+    <div class="inner-box">
+      <h2>Esempio 3 — Massimo di N valori (contatore)</h2>
+      <p><em>Specifica:</em> dati <code>N</code> e poi <code>N</code> numeri, stampare il massimo.</p>
+      <ol>
+        <li>Start → <code>leggi N</code> → <code>i ← 0</code></li>
+        <li>Decision: <code>i = 0 ?</code> (primo giro) → se <em>Sì</em> leggi x e <code>max ← x</code>, <code>i ← 1</code></li>
+        <li>Loop: finché <code>i &lt; N</code>: leggi x → se <code>x &gt; max</code> allora <code>max ← x</code> → <code>i ← i+1</code></li>
+        <li>Output <code>stampa max</code> → End</li>
+      </ol>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-es3" onclick="toggleBox('btn-es3','box-es3')">Mostra pseudocodice ▼</button>
+      </div>
+      <div id="box-es3" style="display:none; margin-top:8px">
+<pre><code class="language-text">leggi N
+per i da 1 a N:
+    leggi x
+    se (i = 1) allora max ← x
+    altrimenti se (x &gt; max) allora max ← x
+stampa max
+</code></pre>
+      </div>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box">
+      <h2>Esercizi (show/hide soluzione)</h2>
+      <ol>
+        <li><strong>Pari/Dispari</strong>: leggi un intero e stampa “PARI” se <code>n mod 2 = 0</code>, altrimenti “DISPARI”.</li>
+        <li><strong>Conteggio positivi</strong>: leggi <code>N</code> e poi <code>N</code> numeri; conta quanti sono &gt; 0.</li>
+        <li><strong>Fattoriale</strong>: dato <code>n ≥ 0</code>, calcola <code>n!</code> con un ciclo.</li>
+      </ol>
+      <div class="nav-buttons" style="justify-content:left; gap:8px; flex-wrap:wrap">
+        <button id="btn-q1" onclick="toggleBox('btn-q1','box-q1')">Soluzione 1 ▼</button>
+        <button id="btn-q2" onclick="toggleBox('btn-q2','box-q2')">Soluzione 2 ▼</button>
+        <button id="btn-q3" onclick="toggleBox('btn-q3','box-q3')">Soluzione 3 ▼</button>
+      </div>
+      <div id="box-q1" style="display:none; margin-top:8px">
+<pre><code class="language-text">Start → leggi n → Decision: (n mod 2 = 0?) 
+  sì → stampa "PARI" → End
+  no → stampa "DISPARI" → End
+</code></pre>
+      </div>
+      <div id="box-q2" style="display:none; margin-top:8px">
+<pre><code class="language-text">leggi N; c ← 0; i ← 0
+mentre (i &lt; N):
+    leggi x
+    se (x &gt; 0) allora c ← c+1
+    i ← i+1
+stampa c
+</code></pre>
+      </div>
+      <div id="box-q3" style="display:none; margin-top:8px">
+<pre><code class="language-text">leggi n; f ← 1; i ← 2
+mentre (i ≤ n):
+    f ← f * i
+    i ← i+1
+stampa f
+</code></pre>
+      </div>
+    </div>
+
+    <!-- Errori tipici -->
+    <div class="inner-box">
+      <h2>Errori tipici da evitare</h2>
+      <ul>
+        <li>Decisioni con &gt;2 uscite senza etichette chiare (rami non deterministici).</li>
+        <li>Linee che si incrociano inutilmente (usa connettori).</li>
+        <li>Blocchi “onnicomprensivi” (mancanza di granularità) → difficile tradurre in codice.</li>
+        <li>Output prima di aver gestito tutti i casi (rami “orfani”).</li>
+      </ul>
+    </div>
+
+    <!-- Fonti / riferimenti -->
+    <div class="inner-box">
+      <h2>Riferimenti essenziali</h2>
+      <ul>
+        <li>Simboli de-facto ANSI/ISO per diagrammi di flusso (es. ISO 5807 — ritirata; DIN 66001).</li>
+        <li>Qualsiasi manuale introduttivo di algoritmica/FP che adotti la notazione standard dei flowchart.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

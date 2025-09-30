@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lezione 1 – Verifica competenze</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_4.html"; }
+    function nextSlide(){ window.location.href = "../lez2/lez2_1.html"; } // placeholder
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const open = box.style.display === 'block';
+      box.style.display = open ? 'none' : 'block';
+      btn.textContent = open ? 'Mostra la soluzione ▼' : 'Nascondi la soluzione ▲';
+    }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez1.html">Lezione 1: Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">Lezione 1c: Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">Lezione 1d: Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">Lezione 1e: Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">Lezione 1f: Verifica... le competenze</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Verifica… le competenze</h1>
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+    <div class="inner-box" style="text-align:center">
+      <img src="img/eser_lez1_1.png" alt="Pagina di esercizi - verifica competenze L1"
+           style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+    </div>
+
+    <!-- ESERCIZIO 1 -->
+    <div class="inner-box">
+      <h2>1) I secchi d’acqua (4 L e 3 L) → ottenere 2 L</h2>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn1" onclick="toggleBox('btn1','sol1')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="sol1" style="display:none;margin-top:10px">
+        <ol>
+          <li>Riempi il <strong>3 L</strong> e travasa nel <strong>4 L</strong>.</li>
+          <li>Riempi di nuovo il <strong>3 L</strong> e travasa nel <strong>4 L</strong> finché è pieno: nel 3 L restano <strong>2 L</strong>.</li>
+          <li>Usa quei <strong>2 L</strong> come misura (o versali nel contenitore richiesto).</li>
+        </ol>
+        <p><em>Idea:</em> sfrutto il “colmare” del 4 L per lasciare esattamente 2 L nel 3 L.</p>
+      </div>
+    </div>
+
+    <!-- ESERCIZIO 2 -->
+    <div class="inner-box">
+      <h2>2) Leopardo, capra, topo e mais (barca un posto)</h2>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn2" onclick="toggleBox('btn2','sol2')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="sol2" style="display:none;margin-top:10px">
+        <p><strong>Con barca da 1 posto:</strong> il problema è <strong>impossibile</strong>. Qualunque primo viaggio
+           lascia sulla riva di partenza <strong>tre</strong> elementi, e ogni terna contiene almeno una coppia vietata
+           (L–G, L–T, G–M, T–M), quindi si viola il vincolo in assenza del pastore.</p>
+        <p><strong>Variante risolvibile (barca da 2 posti):</strong></p>
+        <ol>
+          <li>G + T →</li>
+          <li>T ←</li>
+          <li>L + M →</li>
+          <li>G ←</li>
+          <li>G + T →</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ESERCIZIO 3 -->
+    <div class="inner-box">
+      <h2>3) I tre mariti gelosi (barca 2 posti)</h2>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn3" onclick="toggleBox('btn3','sol3')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="sol3" style="display:none;margin-top:10px">
+        <p><strong>Modellazione:</strong> stati leciti = distribuzioni delle sei persone sulle rive con il vincolo:
+           nessuna moglie può restare con altri uomini senza il marito.</p>
+        <p><strong>Risultato:</strong> una <code>BFS</code> sul grafo degli stati leciti trova una soluzione <strong>minima</strong> di
+           <strong>11 traversate</strong>.</p>
+        </div>
+    </div>
+
+    <!-- ESERCIZIO 4 -->
+    <div class="inner-box">
+      <h2>4) Fuga da Alcatraz (Δpeso ≤ 15 kg)</h2>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn4" onclick="toggleBox('btn4','sol4')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="sol4" style="display:none;margin-top:10px">
+        <p><strong>Assunzione standard del rompicapo:</strong> è lecito usare nello stesso cestello un
+           <strong>uomo + blocco</strong> come contrappeso; il vincolo è solo sulla differenza di peso tra i due lati
+           (|Δ| ≤ 15 kg). Senza questa possibilità la fuga non è realizzabile rispettando il vincolo.</p>
+        <p><strong>Sequenza corretta (|Δ| ≤ 15 kg):</strong></p>
+        <ol>
+          <li><strong>195↓</strong> bilanciato con <strong>105 + 75↑</strong>  → differenza 15</li>
+          <li><strong>105↓</strong> bilanciato con <strong>90↑</strong>       → differenza 15</li>
+          <li><strong>90↓</strong>  bilanciato con <strong>75↑</strong>       → differenza 15</li>
+        </ol>
+        <p>Alla fine i tre detenuti (90, 105, 195) sono a terra; il blocco da 75 kg resta in alto.</p>
+      </div>
+    </div>
+
+    <!-- ESERCIZIO 5 -->
+    <div class="inner-box">
+      <h2>5) Due aerei uno contro l’altro</h2>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn5" onclick="toggleBox('btn5','sol5')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="sol5" style="display:none;margin-top:10px">
+        <p>Velocità di avvicinamento: <strong>700 + 800 = 1500 km/h</strong>.<br>
+           <strong>Un’ora prima</strong> dell’incrocio la distanza è <strong>1500 km</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ESERCIZIO 6 -->
+    <div class="inner-box">
+      <h2>6) L’innaffiatoio (ottenere esattamente 20 L)</h2>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn6" onclick="toggleBox('btn6','sol6')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="sol6" style="display:none;margin-top:10px">
+        <p>L’annaffiatoio contiene <strong>16 L</strong>. Con i contenitori da <strong>5 L</strong> e <strong>3 L</strong> misura
+           <strong>4 L</strong> e aggiungili per arrivare a <strong>20 L</strong> (si assume disponibilità d’acqua).</p>
+        <ol>
+          <li>Riempi <strong>5 L</strong> e travasa nel <strong>3 L</strong> → nel 5 L restano <strong>2 L</strong>. Svuota il 3 L.</li>
+          <li>Travaso i <strong>2 L</strong> dal 5 L nel 3 L.</li>
+          <li>Riempi di nuovo il <strong>5 L</strong> e travasa nel <strong>3 L</strong> (che contiene 2 L): ne entrano <strong>1 L</strong>,
+              nel 5 L rimangono <strong>4 L</strong>.</li>
+          <li>Versa questi <strong>4 L</strong> nell’annaffiatoio: 16 + 4 = <strong>20 L</strong>.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

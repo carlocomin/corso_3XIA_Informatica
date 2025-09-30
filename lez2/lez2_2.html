@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – L2.2 · Variabili, tipi di dato, assegnamento (con Flowchart)</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez2.html"; }
+    function nextSlide(){ window.location.href = "lez2_3.html"; } // placeholder
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const open = box.style.display === 'block';
+      box.style.display = open ? 'none' : 'block';
+      btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* Stili locali per i mini-flowchart */
+    .fc-wrap {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); margin-top:8px}
+    .fc-card {background:var(--panel, #fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .fc-title{font-weight:600; margin:4px 0 8px}
+    .fc-svg{width:100%; height:auto}
+    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
+    .fc-text{font: 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill:#111}
+    .fc-small{font-size:11px; fill:#333}
+    .fc-yes{font-weight:600; fill:#0b6}
+    .fc-no{font-weight:600; fill:#c33}
+    .fc-marker path{fill:#222}
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez2.html">Lezione 2: Flowchart (diagrammi di flusso)</a></li>
+    <li><a href="lez2_2.html">L2.2: Variabili, tipi, assegnamento</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>L2.2 — Variabili, tipi di dato e assegnamento <small>(con Flowchart)</small></h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Concetti chiave -->
+    <div class="inner-box">
+      <h2>Concetti chiave (rigorosi ma pratici)</h2>
+      <ul>
+        <li><strong>Variabile</strong>: “scatola” in memoria con <em>nome</em> (identificatore), <em>tipo</em> e <em>valore</em> corrente.
+            Il tipo ne definisce il <em>dominio</em> (quali valori leciti) e le <em>operazioni</em> ammesse.</li>
+        <li><strong>Stato del programma</strong>: insieme dei valori di tutte le variabili in un dato istante.</li>
+        <li><strong>Assegnamento</strong> <code>x ← espr</code>: valuta l’espressione a destra, poi <em>scrive</em> il risultato nella variabile a sinistra.
+            Non è una uguaglianza matematica, ma un’operazione che <em>aggiorna lo stato</em>.</li>
+        <li><strong>Nome</strong>: lettere, cifre, <code>_</code>; non inizia con cifra; niente spazi; evita parole riservate.</li>
+      </ul>
+    </div>
+
+    <!-- Tipi di dato -->
+    <div class="inner-box">
+      <h2>Tipi di dato (astrazione + esempi)</h2>
+      <ul>
+        <li><strong>interi</strong> (es. …, −2, −1, 0, 1, 2, …) — operazioni: + − × ÷ mod.</li>
+        <li><strong>reali</strong> (virgola mobile: 3.14, −0.5, 2.0e3) — attenzione a <em>approssimazioni</em>.</li>
+        <li><strong>booleani</strong> (<code>vero/falso</code>) — per condizioni/decisioni.</li>
+        <li><strong>caratteri</strong> (es. 'A', '0', '?') e <strong>stringhe</strong> (“ciao”) — sequenze di char.</li>
+      </ul>
+<pre><code class="language-text">Esempi di letterali:  42  ·  -7  ·  3.5  ·  true  ·  'Z'  ·  "ok"
+Promozioni tipiche:   intero → reale (es. 2 + 3.5 = 5.5)
+Cast esplicito:       (int)3.7 = 3  (troncamento)</code></pre>
+      <p class="note">Il tipo influenza <em>input/output</em>, <em>confronti</em> e il risultato delle <em>operazioni</em> (es. divisione intera vs reale).</p>
+    </div>
+
+    <!-- Flowchart: assegnamento, input tipato, cast/validazione -->
+    <div class="inner-box">
+      <h2>Flowchart: come si rappresentano variabili e assegnamenti</h2>
+      <div class="fc-wrap">
+
+        <!-- FC: Assegnamento semplice (spazio verticale aumentato) -->
+        <div class="fc-card">
+          <div class="fc-title">Assegnamento semplice</div>
+          <svg class="fc-svg" viewBox="0 0 520 240" role="img" aria-label="Assegnamento semplice">
+            <defs>
+              <marker id="arr1" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z"></path>
+              </marker>
+            </defs>
+            <!-- Start -->
+            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+            <!-- Process -->
+            <rect class="fc-shape" x="160" y="100" width="200" height="36" rx="6" ry="6"></rect>
+            <text class="fc-text" x="260" y="122" text-anchor="middle">s ← a + b</text>
+
+            <!-- End -->
+            <ellipse class="fc-shape" cx="260" cy="200" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="204" text-anchor="middle">End</text>
+
+            <!-- Arrows -->
+            <line x1="260" y1="46"  x2="260" y2="100" stroke="#222" stroke-width="2" marker-end="url(#arr1)"/>
+            <line x1="260" y1="136" x2="260" y2="184" stroke="#222" stroke-width="2" marker-end="url(#arr1)"/>
+          </svg>
+          <p class="fc-small">Il rettangolo “Process” contiene l’assegnamento <code>variabile ← espressione</code>.</p>
+        </div>
+
+        <!-- FC: Input tipato + validazione (spazio verticale aumentato, senza incroci) -->
+        <div class="fc-card">
+          <div class="fc-title">Input tipato + validazione</div>
+          <svg class="fc-svg" viewBox="0 0 520 300" role="img" aria-label="Input tipato e validazione">
+            <defs>
+              <marker id="arr2" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z"></path>
+              </marker>
+            </defs>
+
+            <!-- Start -->
+            <ellipse class="fc-shape" cx="100" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="100" y="34" text-anchor="middle">Start</text>
+
+            <!-- I/O parallelogramma (più largo, più basso) -->
+            <g transform="translate(30,80)">
+              <polygon class="fc-shape" points="0,0 200,0 180,40 -20,40"></polygon>
+              <text class="fc-text" x="90" y="24" text-anchor="middle">leggi n : int</text>
+            </g>
+
+            <!-- Decision (molto separata) -->
+            <polygon class="fc-shape" points="260,200 310,240 260,280 210,240"></polygon>
+            <text class="fc-text" x="260" y="244" text-anchor="middle">n ≥ 0 ?</text>
+            <text class="fc-text fc-yes" x="312" y="236">Sì</text>
+            <text class="fc-text fc-no"  x="208" y="236" text-anchor="end">No</text>
+
+            <!-- Process errore (a sinistra) -->
+            <rect class="fc-shape" x="40" y="230" width="140" height="36" rx="6" ry="6"></rect>
+            <text class="fc-text" x="110" y="252" text-anchor="middle">errore</text>
+
+            <!-- End (a destra) -->
+            <ellipse class="fc-shape" cx="420" cy="240" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="420" y="244" text-anchor="middle">End</text>
+
+            <!-- Arrows (segmenti, niente incroci) -->
+            <line x1="100" y1="46" x2="100" y2="80" stroke="#222" stroke-width="2" marker-end="url(#arr2)"/>
+            <polyline points="120,120 210,170 210,240" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arr2)"/>
+            <line x1="310" y1="240" x2="360" y2="240" stroke="#222" stroke-width="2" marker-end="url(#arr2)"/>
+            <line x1="210" y1="240" x2="180" y2="240" stroke="#222" stroke-width="2" marker-end="url(#arr2)"/>
+          </svg>
+          <p class="fc-small">Il tipo guida la <em>validazione</em>: si decide se accettare o segnalare errore.</p>
+        </div>
+
+        <!-- FC: Swap con variabile temporanea (spazio verticale aumentato) -->
+        <div class="fc-card">
+          <div class="fc-title">Scambio (swap) con temporanea</div>
+          <svg class="fc-svg" viewBox="0 0 520 320" role="img" aria-label="Swap con variabile temporanea">
+            <defs>
+              <marker id="arr3" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z"></path>
+              </marker>
+            </defs>
+
+            <!-- Start -->
+            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+
+            <!-- Step 1 -->
+            <rect class="fc-shape" x="160" y="100" width="200" height="36" rx="6" ry="6"></rect>
+            <text class="fc-text" x="260" y="122" text-anchor="middle">t ← a</text>
+
+            <!-- Step 2 -->
+            <rect class="fc-shape" x="160" y="160" width="200" height="36" rx="6" ry="6"></rect>
+            <text class="fc-text" x="260" y="182" text-anchor="middle">a ← b</text>
+
+            <!-- Step 3 -->
+            <rect class="fc-shape" x="160" y="220" width="200" height="36" rx="6" ry="6"></rect>
+            <text class="fc-text" x="260" y="242" text-anchor="middle">b ← t</text>
+
+            <!-- End -->
+            <ellipse class="fc-shape" cx="260" cy="290" rx="60" ry="16"></ellipse>
+            <text class="fc-text" x="260" y="294" text-anchor="middle">End</text>
+
+            <!-- Arrows -->
+            <line x1="260" y1="46"  x2="260" y2="100" stroke="#222" stroke-width="2" marker-end="url(#arr3)"/>
+            <line x1="260" y1="136" x2="260" y2="160" stroke="#222" stroke-width="2" marker-end="url(#arr3)"/>
+            <line x1="260" y1="196" x2="260" y2="220" stroke="#222" stroke-width="2" marker-end="url(#arr3)"/>
+            <line x1="260" y1="256" x2="260" y2="274" stroke="#222" stroke-width="2" marker-end="url(#arr3)"/>
+          </svg>
+          <p class="fc-small">Tre assegnamenti atomici ben distanziati; il valore originale è preservato in <code>t</code>.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Semantica dell'assegnamento -->
+    <div class="inner-box">
+      <h2>Semantica dell’assegnamento (senza ambiguità)</h2>
+      <ol>
+        <li><strong>Valuta</strong> l’espressione a destra (usando i valori correnti delle variabili coinvolte).</li>
+        <li><strong>Converte</strong> se necessario al tipo della variabile a sinistra (attenzione a troncamenti/overflow).</li>
+        <li><strong>Scrive</strong> il risultato nella variabile a sinistra, aggiornando lo stato.</li>
+      </ol>
+      <ul>
+        <li><code>x ← x + 1</code> è un pattern di <em>incremento</em> (dipendenza dal vecchio valore di <code>x</code>).</li>
+        <li><code>x ← y</code> copia per valore (per i tipi base).</li>
+        <li><strong>Non confondere</strong> assegnamento con confronto: <code>=</code> (assegna) vs <code>==</code> (confronta).</li>
+      </ul>
+    </div>
+
+    <!-- Mini task -->
+    <div class="inner-box">
+      <h2>Mini-task (show/hide)</h2>
+      <ol>
+        <li><strong>Traccia stato</strong>. Stato iniziale: <code>a=2, b=5, s=0</code>. Esegui: <code>s ← a+b</code>; <code>a ← s−1</code>; <code>b ← a</code>.
+            <div class="nav-buttons" style="justify-content:left">
+              <button id="btn-t1" onclick="toggleBox('btn-t1','box-t1')">Mostra soluzione ▼</button>
+            </div>
+            <div id="box-t1" style="display:none;margin-top:8px">
+<pre><code class="language-text">Dopo s ← a+b  ⇒ s=7, a=2, b=5
+Dopo a ← s−1   ⇒ a=6, s=7, b=5
+Dopo b ← a     ⇒ b=6, a=6, s=7</code></pre>
+            </div>
+        </li>
+
+        <li><strong>Divisione intera o reale?</strong> Con <code>n=7</code>, che valore assegna <code>x ← n/2</code> se <code>x</code> è intero? E se <code>x</code> è reale?
+            <div class="nav-buttons" style="justify-content:left">
+              <button id="btn-t2" onclick="toggleBox('btn-t2','box-t2')">Mostra soluzione ▼</button>
+            </div>
+            <div id="box-t2" style="display:none;margin-top:8px">
+<pre><code class="language-text">x intero  ⇒ x = 3   (divisione intera, troncamento)
+x reale   ⇒ x = 3.5 (promozione a reale)</code></pre>
+            </div>
+        </li>
+
+        <li><strong>Swap mentale</strong>. Stato iniziale <code>a=1</code>, <code>b=9</code>. Esegui il flowchart “Swap con temporanea”.
+            <div class="nav-buttons" style="justify-content:left">
+              <button id="btn-t3" onclick="toggleBox('btn-t3','box-t3')">Mostra soluzione ▼</button>
+            </div>
+            <div id="box-t3" style="display:none;margin-top:8px">
+<pre><code class="language-text">t ← a ⇒ t=1; a ← b ⇒ a=9; b ← t ⇒ b=1  → risultato: a=9, b=1</code></pre>
+            </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Errori tipici -->
+    <div class="inner-box">
+      <h2>Errori tipici da evitare</h2>
+      <ul>
+        <li><strong>Confondere</strong> <code>=</code> con <code>==</code> (specie nei rombi “Decision”).</li>
+        <li><strong>Dimenticare il tipo</strong> in input: numeri reali in variabile intera ⇒ troncamenti inattesi.</li>
+        <li><strong>Riutilizzare</strong> una variabile prima di averne salvato il valore (swap senza temporanea).</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
