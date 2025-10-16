@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez5_2 · Array in Flowgorithm: scansioni, somma, media, min/max</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez5_1.html"; }
+    function nextSlide(){ window.location.href = "lez5_3.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li, .inner-box pre, .inner-box code { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space: pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    .box { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px }
+    .tip  { font-style: italic; opacity:.95 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+    table { width:100%; border-collapse:collapse }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
+    th { background:#f8fafc }
+  </style>
+</head>
+<body>
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 5 — Array (Flowgorithm)</h2>
+  <ul>
+    <li><a href="lez5_1.html">Lez5_1: Concetti, input e stampa</a></li>
+    <li><a href="lez5_2.html" class="active">Lez5_2: Scansioni, somma, media, min/max</a></li>
+    <li><a href="lez5_3.html">Lez5_3: Ricerca lineare e frequenze</a></li>
+    <li><a href="lez5_4.html">Lez5_4: Ordinamenti base (Selection/Bubble)</a></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Lez5_2 — Scansioni sull’array: somma, media, min/max (con indice)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box">
+      <h2>Obiettivi didattici</h2>
+      <ul>
+        <li>Usare i <strong>pattern di attraversamento</strong> con cicli (<em>For</em>/<em>While</em>).</li>
+        <li>Calcolare <strong>somma</strong> e <strong>media</strong> evitando la divisione intera.</li>
+        <li>Trovare <strong>minimo/massimo</strong> e il relativo <strong>indice</strong> in una singola scansione.</li>
+        <li>Formalizzare <strong>invarianti</strong> semplici per motivare la correttezza.</li>
+      </ul>
+      <p class="note">Indici <b>0-based</b>. Nei <b>For</b> di Flowgorithm il limite <b>To</b> è <em>inclusivo</em> ⇒ per n elementi: <span class="kbd">For i ← 0 To n-1 Step 1</span>.</p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Assunzioni &amp; precondizioni</h2>
+      <ul>
+        <li><b>Array dichiarato</b>: esiste <span class="kbd">A[0..n-1]</span> con <span class="kbd">n</span> valido (0 ≤ n ≤ MAX).</li>
+        <li><b>Min/Max</b>: richiedono <span class="kbd">n ≥ 1</span> (se n=0 non esistono estremi).</li>
+        <li><b>Tipi</b>: esempi mostrati con <em>Real</em> per somma/media (evita divisione intera); se A è di interi, il cast/promozione è implicito in Flowgorithm.</li>
+      </ul>
+    </div>
+
+    <!-- SOMMA + MEDIA -->
+    <div class="inner-box box">
+      <h2>Somma e Media (pattern con accumulatore)</h2>
+      <p><b>Idea</b>: inizializza <span class="kbd">sum</span> a 0 e aggiungi ogni elemento; per la media usa un tipo <b>Real</b> o converti alla fine.</p>
+      <p class="ok">Invariante: dopo l’iterazione i, <span class="kbd">sum</span> = somma di <span class="kbd">A[0..i]</span>.</p>
+
+      <h3>Pseudocodice — Somma</h3>
+<pre><code class="language-none">Declare Integer i
+Declare Real sum
+sum ← 0
+For i ← 0 To n-1 Step 1
+    sum ← sum + A[i]
+End For
+Output "Somma = ", sum</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> L’accumulatore <code>sum</code> parte da 0 e cresce aggiungendo ogni elemento, una sola volta. L’invariante garantisce che, passo dopo passo, la somma parziale sia corretta; alla fine, è la somma totale. Complessità O(n), memoria O(1).</p>
+
+      <h3>Pseudocodice — Media (evita la divisione intera)</h3>
+<pre><code class="language-none">Declare Real sum, media
+sum ← 0
+For i ← 0 To n-1 Step 1
+    sum ← sum + A[i]
+End For
+media ← sum / n        // sum e media sono Real → divisione reale
+Output "Media = ", media</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> La media è <code>sum/n</code>. Con variabili <em>Real</em> evitiamo la divisione intera (tronca i decimali). <b>Nota didattica:</b> usare <em>Real</em> evita overflow degli interi ma può introdurre piccoli errori di arrotondamento; se servisse esattezza su interi molto grandi, in linguaggi tipizzati si userebbero interi più capienti o tecniche di somma stabile.</p>
+
+      <div class="nav-buttons" style="justify-content:left"><button id="btn-while1" onclick="toggleBox('btn-while1','box-while1')">Mostra variante While ▼</button></div>
+      <div id="box-while1" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i
+Declare Real sum
+sum ← 0
+i ← 0
+While i &lt; n
+    sum ← sum + A[i]
+    i ← i + 1
+End While</code></pre>
+        <p><strong>Spiegazione in prosa.</strong> La variante <em>While</em> è equivalente al <em>For</em> ma rende esplicito l’aggiornamento di <code>i</code>. Dimenticare <code>i ← i+1</code> causerebbe un ciclo infinito.</p>
+      </div>
+    </div>
+
+    <!-- MIN / MAX + INDEX -->
+    <div class="inner-box box">
+      <h2>Minimo/Massimo con indice (una sola scansione)</h2>
+      <p><b>Idea</b>: inizializza con il primo elemento, poi da i=1 aggiorna valore e posizione quando trovi un candidato migliore.</p>
+      <p class="ok">Precondizione: <span class="kbd">n ≥ 1</span>. Se <span class="kbd">n = 0</span>, l’array è vuoto ⇒ nessun estremo definito.</p>
+
+      <h3>Pseudocodice — Minimo e suo indice</h3>
+<pre><code class="language-none">Declare Integer i, idxMin
+Declare Real minVal
+idxMin ← 0
+minVal ← A[0]
+
+For i ← 1 To n-1 Step 1
+    If A[i] &lt; minVal Then
+        minVal ← A[i]
+        idxMin ← i
+    End If
+End For
+
+Output "Min = ", minVal, " in posizione ", idxMin</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> Il primo elemento è il miglior candidato iniziale; ogni volta che troviamo un valore più piccolo, aggiorniamo sia il valore minimo sia la posizione. Evitiamo sentinelle arbitrarie (es. 0) che potrebbero falsare il risultato se l’array è tutto positivo/negativo.</p>
+
+      <h3>Pseudocodice — Massimo e suo indice</h3>
+<pre><code class="language-none">Declare Integer i, idxMax
+Declare Real maxVal
+idxMax ← 0
+maxVal ← A[0]
+
+For i ← 1 To n-1 Step 1
+    If A[i] &gt; maxVal Then
+        maxVal ← A[i]
+        idxMax ← i
+    End If
+End For
+
+Output "Max = ", maxVal, " in posizione ", idxMax</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> Stesso ragionamento, ma con il massimo. Avere anche l’indice è utile per successive elaborazioni (swap, rimozioni, segmentazioni).</p>
+
+      <div class="nav-buttons" style="justify-content:left"><button id="btn-both" onclick="toggleBox('btn-both','box-both')">Mostra “tutto in una passata” ▼</button></div>
+      <div id="box-both" style="display:none;margin-top:8px">
+<pre><code class="language-none">// Calcola insieme: somma, minimo con indice, massimo con indice
+Declare Integer i, idxMin, idxMax
+Declare Real sum, minVal, maxVal
+
+sum ← 0
+idxMin ← 0; minVal ← A[0]
+idxMax ← 0; maxVal ← A[0]
+
+For i ← 0 To n-1 Step 1
+    sum ← sum + A[i]
+    If A[i] &lt; minVal Then
+        minVal ← A[i]; idxMin ← i
+    End If
+    If A[i] &gt; maxVal Then
+        maxVal ← A[i]; idxMax ← i
+    End If
+End For
+
+Output "Somma=", sum, "  Min=", minVal, " (pos ", idxMin, ")  Max=", maxVal, " (pos ", idxMax, ")"</code></pre>
+        <p><strong>Spiegazione in prosa.</strong> Manteniamo tre grandezze in stato (somma, minimo con indice, massimo con indice) e le aggiorniamo coerentemente in un unico passaggio. È più efficiente di tre passate separate e resta facile da verificare con un invariante per ciascuna grandezza.</p>
+      </div>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Tabelle di traccia (esempi)</h2>
+      <p>Array: <span class="kbd">A = [7, -2, 5, 5, 0]</span>, <span class="kbd">n = 5</span>.</p>
+
+      <h3>Somma</h3>
+      <table>
+        <tr><th>i</th><th>A[i]</th><th>sum prima</th><th>sum dopo</th></tr>
+        <tr><td>0</td><td>7</td><td>0</td><td>7</td></tr>
+        <tr><td>1</td><td>-2</td><td>7</td><td>5</td></tr>
+        <tr><td>2</td><td>5</td><td>5</td><td>10</td></tr>
+        <tr><td>3</td><td>5</td><td>10</td><td>15</td></tr>
+        <tr><td>4</td><td>0</td><td>15</td><td>15</td></tr>
+      </table>
+
+      <h3>Minimo con indice</h3>
+      <table>
+        <tr><th>i</th><th>A[i]</th><th>(minVal, idxMin) prima</th><th>Confronto</th><th>(minVal, idxMin) dopo</th></tr>
+        <tr><td>—</td><td>—</td><td>(7, 0)</td><td>init</td><td>(7, 0)</td></tr>
+        <tr><td>1</td><td>-2</td><td>(7, 0)</td><td>-2 &lt; 7 ⇒ sì</td><td>(-2, 1)</td></tr>
+        <tr><td>2</td><td>5</td><td>(-2, 1)</td><td>5 &lt; -2 ⇒ no</td><td>(-2, 1)</td></tr>
+        <tr><td>3</td><td>5</td><td>(-2, 1)</td><td>5 &lt; -2 ⇒ no</td><td>(-2, 1)</td></tr>
+        <tr><td>4</td><td>0</td><td>(-2, 1)</td><td>0 &lt; -2 ⇒ no</td><td>(-2, 1)</td></tr>
+      </table>
+    </div>
+
+    <div class="inner-box">
+      <h2>Pitfall comuni (e rimedi)</h2>
+      <ul>
+        <li><b>Divisione intera</b> nella media. <br/><br/><span class="ok">Usa variabili <b>Real</b> (o converti a Real) prima della divisione.</span></li>
+        <li><b>Inizializzare min/max a 0</b> anziché a <span class="kbd">A[0]</span>. <br/><br/><span class="ok">Parti da <span class="kbd">A[0]</span> e scansiona da i=1: è corretto per qualunque distribuzione.</span></li>
+        <li><b>Out-of-bounds</b> (off-by-one). <br/><br/><span class="ok">Ciclo: <span class="kbd">For i ← 0 To n-1</span> (To inclusivo).</span></li>
+        <li><b>Somma fuori range</b> con interi grandi. <br/><br/><span class="ok">In didattica usa <b>Real</b> per evitare overflow e divisione intera; ricorda però che introduce arrotondamenti.</span></li>
+      </ul>
+    </div>
+
+    <div class="inner-box">
+      <h2>Esercizi (con soluzioni e spiegazioni a comparsa)</h2>
+      <ol>
+        <li><b>E1 — Somma dei positivi &amp; media dei positivi</b> (se non ci sono positivi, media = “n.d.”).<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i, cntPos
+Declare Real sumPos, mediaPos
+sumPos ← 0; cntPos ← 0
+For i ← 0 To n-1 Step 1
+    If A[i] &gt; 0 Then
+        sumPos ← sumPos + A[i]
+        cntPos ← cntPos + 1
+    End If
+End For
+If cntPos &gt; 0 Then
+    mediaPos ← sumPos / cntPos
+    Output "Media dei positivi = ", mediaPos
+Else
+    Output "Nessun positivo"
+End If</code></pre>
+            <p><strong>Spiegazione in prosa.</strong> Filtriamo i soli positivi, sommando e contando. Se il conteggio è zero evitiamo la divisione e segnaliamo il caso. O(n) tempo, O(1) spazio.</p>
+          </div>
+        </li>
+
+        <li><b>E2 — Secondo massimo (distinto dal massimo)</b> (se non esiste, segnala).<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i, idxMax1, idxMax2
+Declare Real max1, max2
+// Precondizione: n ≥ 1
+idxMax1 ← 0; max1 ← A[0]
+idxMax2 ← -1;           // -1 = "non definito"
+
+For i ← 1 To n-1 Step 1
+    If A[i] &gt; max1 Then
+        max2 ← max1; idxMax2 ← idxMax1
+        max1 ← A[i]; idxMax1 ← i
+    Else If A[i] &lt; max1 Then     // NOTA: uguali al massimo NON aggiornano max2 ⇒ "distinto"
+        If idxMax2 = -1 OR A[i] &gt; max2 Then
+            max2 ← A[i]; idxMax2 ← i
+        End If
+    End If
+End For
+
+If idxMax2 = -1 Then
+    Output "Secondo massimo non esiste (n=1 o tutti uguali)"
+Else
+    Output "Secondo max = ", max2, " in pos ", idxMax2
+End If</code></pre>
+            <p><strong>Spiegazione in prosa.</strong> Manteniamo due candidati: massimo assoluto e secondo massimo <em>strettamente</em> minore. Uguali al massimo non aggiornano <code>max2</code>: in questo modo la soluzione è “distinta”. Se <code>n=1</code> o tutti i valori coincidono, il secondo massimo non esiste.</p>
+          </div>
+        </li>
+
+        <li><b>E3 — Conta pari/dispari</b> (A contiene interi).<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i, pari, dispari
+pari ← 0; dispari ← 0
+For i ← 0 To n-1 Step 1
+    If (A[i] mod 2) = 0 Then
+        pari ← pari + 1
+    Else
+        dispari ← dispari + 1
+    End If
+End For
+Output "Pari = ", pari, "  Dispari = ", dispari</code></pre>
+            <p><strong>Spiegazione in prosa.</strong> Il resto modulo 2 distingue pari e dispari. Il controllo finale <code>pari+dispari = n</code> è una semplice verifica di coerenza.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Takeaways</h2>
+      <ul>
+        <li>Le <b>scansioni</b> si fondano su accumulatore(i) e su confronti locali.</li>
+        <li>Per la <b>media</b> usa <b>Real</b> (niente divisione intera); ricorda l’arrotondamento.</li>
+        <li><b>Min/Max</b>: inizializza con <span class="kbd">A[0]</span> e parti da <span class="kbd">i=1</span>; conserva anche l’<b>indice</b>.</li>
+        <li>Molti indicatori si calcolano in <b>una sola passata</b> mantenendo uno stato ben definito.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

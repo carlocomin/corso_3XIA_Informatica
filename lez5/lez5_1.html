@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez5_1 · Array in Flowgorithm: concetti, caricamento e stampa</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "../programma.html"; }
+    function nextSlide(){ window.location.href = "lez5_2.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* Allineamento a sinistra e box evidenziate */
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li, .inner-box pre, .inner-box code { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space: pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    .box { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px }
+    .tip  { font-style: italic; opacity:.95 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    /* Tabella di traccia */
+    table { width:100%; border-collapse:collapse }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
+    th { background:#f8fafc }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 5 — Array (Flowgorithm)</h2>
+  <ul>
+    <li><a href="lez5_1.html" class="active">Lez5_1: Concetti, input e stampa</a></li>
+    <li><a href="lez5_2.html">Lez5_2: Scansioni, somma, media, min/max</a></li>
+    <li><a href="lez5_3.html">Lez5_3: Ricerca lineare e frequenze</a></li>
+    <li><a href="lez5_4.html">Lez5_4: Ordinamenti base (Selection/Bubble)</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lez5_1 — Array in Flowgorithm: concetti, caricamento e stampa</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box">
+      <h2>Obiettivi didattici</h2>
+      <ul>
+        <li>Capire cos’è un <strong>array</strong> (collezione di celle omogenee, indicizzate).</li>
+        <li>Usare <strong>indici 0..n-1</strong>, con una capacità massima <span class="kbd">MAX</span> e la dimensione logica <span class="kbd">n</span>.</li>
+        <li>Caricare e <strong>stampare</strong> un array con cicli standard.</li>
+        <li>Leggere e scrivere <strong>pseudocodice</strong> chiaro e coerente con Flowgorithm.</li>
+      </ul>
+      <p class="note">Indici <strong>0-based</strong>: primo elemento <span class="kbd">A[0]</span>, ultimo <span class="kbd">A[n-1]</span>. <em>Mai</em> accedere a <span class="kbd">A[n]</span>.</p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Concetto di array (modello mentale)</h2>
+      <ul>
+        <li>Immagina una fila di cassette numerate 0..n-1, tutte dello stesso tipo (Integer/Real/String/Boolean).</li>
+        <li>Dichiariamo una <strong>capacità</strong> <span class="kbd">MAX</span> (es. 100) e gestiamo la parte usata con <span class="kbd">n</span> (≤ MAX).</li>
+        <li class="tip">Questo pattern semplifica validazioni, cicli e previene errori <em>out-of-bounds</em>.</li>
+      </ul>
+      <p class="ok">Regola d’oro: ogni volta che usi <span class="kbd">A[i]</span> deve valere <span class="kbd">0 ≤ i &lt; n</span>.</p>
+    </div>
+
+    <div class="inner-box">
+      <h2>Pseudocodice — Dichiarazione e caricamento</h2>
+      <p><strong>Idea</strong>: chiediamo <span class="kbd">n</span> (1..MAX), poi leggiamo <span class="kbd">n</span> valori riempiendo <span class="kbd">A[0..n-1]</span>.</p>
+<pre><code class="language-none">Const MAX ← 100
+Declare Integer A[MAX]     // array di interi con capacità MAX
+Declare Integer n, i, x
+
+// Richiedi e valida n
+repeat
+    Output "Inserisci n (1..", MAX, "): "
+    Input n
+until n ≥ 1 AND n ≤ MAX
+
+// Caricamento dell'array
+For i ← 0 To n-1 Step 1
+    Output "A[", i, "] = ? "
+    Input x
+    A[i] ← x
+End For
+
+// Invariante (informale):
+// Alla fine dell'iterazione con indice i sono corretti gli elementi A[0..i].
+</code></pre>
+      <p class="warn">Attenzione: se <span class="kbd">n=0</span> l’array è vuoto → nessun accesso. In questa lezione imponiamo <span class="kbd">1 ≤ n ≤ MAX</span>.</p>
+    </div>
+
+    <div class="inner-box">
+      <h2>Pseudocodice — Stampa sequenziale</h2>
+      <p><strong>Idea</strong>: percorriamo l’array in ordine e stampiamo ciascun elemento.</p>
+<pre><code class="language-none">For i ← 0 To n-1 Step 1
+    Output "A[", i, "] = ", A[i]
+End For
+
+// Complessità: O(n). Memoria extra: O(1).
+</code></pre>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Tabella di traccia (esempio di caricamento)</h2>
+      <p>Dati: <span class="kbd">n = 5</span>, sequenza inserita: <span class="kbd">[4, 7, 2, 9, 5]</span>.</p>
+      <table>
+        <tr><th>i</th><th>Operazione</th><th>Stato di A</th></tr>
+        <tr><td>0</td><td>Input x=4; A[0]←4</td><td>A = [4, _, _, _, _]</td></tr>
+        <tr><td>1</td><td>Input x=7; A[1]←7</td><td>A = [4, 7, _, _, _]</td></tr>
+        <tr><td>2</td><td>Input x=2; A[2]←2</td><td>A = [4, 7, 2, _, _]</td></tr>
+        <tr><td>3</td><td>Input x=9; A[3]←9</td><td>A = [4, 7, 2, 9, _]</td></tr>
+        <tr><td>4</td><td>Input x=5; A[4]←5</td><td>A = [4, 7, 2, 9, 5]</td></tr>
+      </table>
+    </div>
+
+    <div class="inner-box">
+      <h2>Pitfall comuni (e rimedi)</h2>
+      <ul>
+        <li><strong>Indice fuori range</strong> (A[n], A[-1]). <br/><br/><span class="ok">Usa sempre il limite <span class="kbd">To n-1</span> e valida <span class="kbd">n</span>.</span></li>
+        <li><strong>Dimenticare la dimensione logica</strong>. <br/><br/><span class="ok">Stampa/usa <em>solo</em> A[0..n-1], non A[0..MAX-1].</span></li>
+        <li><strong>n non valido</strong>. <br/><br/><span class="ok">Ripeti richiesta finché <span class="kbd">1 ≤ n ≤ MAX</span>.</span></li>
+      </ul>
+    </div>
+
+    <div class="inner-box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+        <li><strong>Inverti stampa</strong> — Leggi <span class="kbd">n</span> e <span class="kbd">A</span>, poi stampa in ordine inverso.<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-none">For i ← n-1 DownTo 0 Step 1
+    Output A[i]
+End For</code></pre>
+          </div>
+        </li>
+        <li><strong>Conta positivi</strong> — Quanti elementi di <span class="kbd">A</span> sono &gt; 0?<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-none">count ← 0
+For i ← 0 To n-1 Step 1
+    If A[i] &gt; 0 Then
+        count ← count + 1
+    End If
+End For
+Output "Positivi = ", count</code></pre>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Takeaways</h2>
+      <ul>
+        <li>Array = collezione omogenea indicizzata 0..n-1.</li>
+        <li>Capacità <span class="kbd">MAX</span> e dimensione logica <span class="kbd">n</span>: accedi sempre entro i limiti.</li>
+        <li>Pattern fondamentali: caricamento e stampa con cicli.</li>
+        <li>Invariante: dopo l’iterazione i sono corretti A[0..i].</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>

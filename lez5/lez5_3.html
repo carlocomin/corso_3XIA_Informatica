@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez5_3 · Ricerca lineare e frequenze (Flowgorithm)</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez5_2.html"; }
+    function nextSlide(){ window.location.href = "lez5_4.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* Allineamento a sinistra e box evidenziate */
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li, .inner-box pre, .inner-box code { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space: pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px }
+    .tip  { font-style: italic; opacity:.95 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    /* Tabelle */
+    table { width:100%; border-collapse:collapse }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
+    th { background:#f8fafc }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 5 — Array (Flowgorithm)</h2>
+  <ul>
+    <li><a href="lez5_1.html">Lez5_1: Concetti, input e stampa</a></li>
+    <li><a href="lez5_2.html">Lez5_2: Scansioni, somma, media, min/max</a></li>
+    <li><a href="lez5_3.html" class="active">Lez5_3: Ricerca lineare e frequenze</a></li>
+    <li><a href="lez5_4.html">Lez5_4: Ordinamenti base (Selection/Bubble)</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lez5_3 — Ricerca lineare, conteggi e array di frequenze</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box">
+      <h2>Obiettivi didattici</h2>
+      <ul>
+        <li>Implementare la <b>ricerca lineare</b> (boolean &amp; indice della prima/ultima occorrenza).</li>
+        <li>Contare quante volte un valore compare (<b>conteggi</b> &amp; predicati).</li>
+        <li>Costruire un <b>istogramma</b> (array di frequenze) su dominio finito (es. 0..10).</li>
+        <li>Ragionare con <b>invarianti</b>, precondizioni e casi limite (“non trovato”).</li>
+      </ul>
+      <p class="note">Indici 0-based; nei <b>For</b> di Flowgorithm il limite <b>To</b> è <em>inclusivo</em> ⇒ per n elementi usa <span class="kbd">0..n-1</span>.</p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Assunzioni &amp; precondizioni</h2>
+      <ul>
+        <li>L’array <span class="kbd">A[0..n-1]</span> è definito; <span class="kbd">0 ≤ n ≤ MAX</span>.</li>
+        <li>Per “prima/ultima occorrenza” consideriamo l’ordine naturale 0→n-1.</li>
+        <li>Per l’istogramma, il dominio è <span class="kbd">D = {0,1,...,M}</span> (es. M=10). I valori fuori dominio vanno gestiti.</li>
+      </ul>
+    </div>
+
+    <!-- RICERCA LINEARE: BOOLEAN -->
+    <div class="inner-box box">
+      <h2>Ricerca lineare (versione booleana: “esiste?”)</h2>
+      <p><b>Idea</b>: scansiona da sinistra; appena trovi <span class="kbd">x</span>, imposta <span class="kbd">trovato ← vero</span> ed <em>esci</em>.</p>
+
+      <h3>Pseudocodice — Variante con While (early exit)</h3>
+<pre><code class="language-none">Declare Integer i
+Declare Boolean trovato
+trovato ← falso
+i ← 0
+While (i &lt; n) AND (trovato = falso)
+    If A[i] = x Then
+        trovato ← vero
+    Else
+        i ← i + 1
+    End If
+End While
+Output "Trovato? ", trovato</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> Manteniamo un indice <code>i</code> e un flag <code>trovato</code>. La condizione del <em>While</em> garantisce che il ciclo prosegua finché non siamo alla fine e non abbiamo ancora trovato <code>x</code>. Appena la condizione <code>A[i]=x</code> è vera, poniamo <code>trovato=vero</code> e il ciclo si interrompe da solo (perché la guardia diventa falsa). Complessità O(k) dove k è la posizione della prima occorrenza, nel peggiore O(n).</p>
+
+      <div class="warn">Attenzione: senza “early exit” (cioè con un <em>For</em> che visita sempre tutti gli elementi) la complessità resta O(n) anche se <code>x</code> è in <code>A[0]</code>.</div>
+    </div>
+
+    <!-- RICERCA LINEARE: PRIMA OCCORRENZA -->
+    <div class="inner-box box">
+      <h2>Ricerca lineare (indice della <em>prima</em> occorrenza)</h2>
+      <p><b>Idea</b>: come prima, ma restituiamo la posizione; se non esiste, convenzione <span class="kbd">-1</span>.</p>
+
+      <h3>Pseudocodice — Prima occorrenza (indice o -1)</h3>
+<pre><code class="language-none">Declare Integer i, pos
+pos ← -1
+i ← 0
+While (i &lt; n) AND (pos = -1)
+    If A[i] = x Then
+        pos ← i            // salva e termina
+    Else
+        i ← i + 1
+    End If
+End While
+
+If pos ≠ -1 Then
+    Output "x trovato in posizione ", pos
+Else
+    Output "x non presente"
+End If</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> Inizializziamo <code>pos=-1</code> (“non trovato”) e scansioniamo finché mantenuta l’incertezza. Alla prima occorrenza assegnamo l’indice e interrompiamo la scansione. Il valore <code>-1</code> distingue chiaramente il caso “assente”.</p>
+    </div>
+
+    <!-- RICERCA LINEARE: ULTIMA OCCORRENZA -->
+    <div class="inner-box box">
+      <h2>Ricerca lineare (indice dell’<em>ultima</em> occorrenza)</h2>
+      <p><b>Idea</b>: scansiona tutto l’array e aggiorna sempre <span class="kbd">pos</span> quando incontri <span class="kbd">x</span>. Alla fine resta l’ultima posizione vista.</p>
+
+      <h3>Pseudocodice — Ultima occorrenza (indice o -1)</h3>
+<pre><code class="language-none">Declare Integer i, pos
+pos ← -1
+For i ← 0 To n-1 Step 1
+    If A[i] = x Then
+        pos ← i
+    End If
+End For
+
+If pos ≠ -1 Then
+    Output "Ultima occorrenza in pos ", pos
+Else
+    Output "x non presente"
+End If</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> Qui non possiamo “uscire prima”, perché l’ultima occorrenza potrebbe trovarsi in fondo. Aggiorniamo <code>pos</code> a ogni match, così il valore finale è l’ultima posizione. Complessità O(n).</p>
+    </div>
+
+    <!-- CONTEGGI -->
+    <div class="inner-box box">
+      <h2>Conteggi: quante volte compare x? (o quante soddisfano un predicato)</h2>
+      <p><b>Idea</b>: usa un contatore che incrementi quando trovi un match.</p>
+
+      <h3>Pseudocodice — Numero di occorrenze di x</h3>
+<pre><code class="language-none">Declare Integer i, cnt
+cnt ← 0
+For i ← 0 To n-1 Step 1
+    If A[i] = x Then
+        cnt ← cnt + 1
+    End If
+End For
+Output "Occorrenze di x = ", cnt</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> La logica è identica al conteggio dei positivi/pari: a ogni riscontro di condizione vera incrementiamo <code>cnt</code>. Il risultato è il numero totale di occorrenze.</p>
+
+      <div class="nav-buttons" style="justify-content:left"><button id="btn-pred" onclick="toggleBox('btn-pred','box-pred')">Mostra: conteggio con predicato ▼</button></div>
+      <div id="box-pred" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i, cnt
+cnt ← 0
+For i ← 0 To n-1 Step 1
+    If A[i] ≥ 10 AND A[i] ≤ 20 Then
+        cnt ← cnt + 1
+    End If
+End For
+Output "Valori nell'intervallo [10,20] = ", cnt</code></pre>
+        <p><strong>Spiegazione in prosa.</strong> Basta sostituire l’uguaglianza con qualunque condizione (predicato). Il pattern resta identico.</p>
+      </div>
+    </div>
+
+    <!-- FREQUENZE / ISTOGRAMMA -->
+    <div class="inner-box box">
+      <h2>Array di frequenze (istogramma) su dominio finito</h2>
+      <p><b>Scenario</b>: voti interi in <span class="kbd">0..10</span>. Vogliamo quante volte compare ciascun voto e (opzionale) il <em>moda</em> (valore più frequente).</p>
+      <p class="ok">Struttura: <span class="kbd">freq[0..M]</span>, inizializzato a 0. Per ogni <span class="kbd">A[i]</span> nel dominio: <span class="kbd">freq[A[i]]++</span>. Gestire valori fuori dominio (errori).</p>
+
+      <h3>Pseudocodice — Costruzione dell’istogramma</h3>
+<pre><code class="language-none">Const M ← 10                 // dominio: 0..M
+Declare Integer freq[M+1]    // freq[0], ..., freq[M]
+Declare Integer i, err
+// Inizializza le frequenze a 0
+For i ← 0 To M Step 1
+    freq[i] ← 0
+End For
+err ← 0
+
+// Popola l'istogramma
+For i ← 0 To n-1 Step 1
+    If (A[i] ≥ 0) AND (A[i] ≤ M) Then
+        freq[A[i]] ← freq[A[i]] + 1
+    Else
+        err ← err + 1        // valore fuori dominio
+    End If
+End For
+
+Output "Frequenze costruite. Fuori dominio = ", err</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> L’array <code>freq</code> ha una cella per ogni valore possibile del dominio. Dopo l’azzeramento, ogni elemento dell’array dei dati incrementa la cella corrispondente. Se qualche dato è fuori dominio, lo contiamo in <code>err</code> (utile come verifica di pulizia dei dati).</p>
+
+      <h3>Pseudocodice — Stampa e calcolo del <em>moda</em></h3>
+<pre><code class="language-none">Declare Integer v, moda, fmax
+// Stampa frequenze
+For v ← 0 To M Step 1
+    Output "Valore ", v, " : ", freq[v]
+End For
+
+// Trova il valore più frequente (moda)
+// In caso di parità mantiene il più piccolo (prima occorrenza)
+moda ← 0
+fmax ← freq[0]
+For v ← 1 To M Step 1
+    If freq[v] &gt; fmax Then
+        fmax ← freq[v]
+        moda ← v
+    End If
+End For
+Output "Moda = ", moda, "  (frequenza ", fmax, ")"</code></pre>
+      <p><strong>Spiegazione in prosa.</strong> La stampa attraversa <code>freq</code> in ordine naturale. La moda si ottiene cercando l’indice con frequenza massima: inizializziamo con <code>v=0</code> e aggiorniamo quando troviamo una frequenza maggiore. In caso di pari frequenza, questa versione mantiene la prima (più piccola) per semplicità.</p>
+    </div>
+
+    <!-- TABELLE DI TRACCIA -->
+    <div class="inner-box box">
+      <h2>Tabelle di traccia (esempi)</h2>
+
+      <h3>Ricerca booleana (x=5) su A=[3,5,7,5], n=4</h3>
+      <table>
+        <tr><th>i</th><th>A[i]</th><th>trovato prima</th><th>Confronto</th><th>trovato dopo</th></tr>
+        <tr><td>0</td><td>3</td><td>falso</td><td>3=5? no</td><td>falso</td></tr>
+        <tr><td>1</td><td>5</td><td>falso</td><td>5=5? sì</td><td>vero → ciclo termina</td></tr>
+      </table>
+
+      <h3>Istogramma (M=10) su A=[7,7,2,10,12,0], n=6</h3>
+      <table>
+        <tr><th>Passo</th><th>Valore</th><th>Azione</th><th>Frequenze (solo celle toccate)</th><th>err</th></tr>
+        <tr><td>init</td><td>—</td><td>azzeramento</td><td>freq[*]=0</td><td>0</td></tr>
+        <tr><td>i=0</td><td>7</td><td>freq[7]++</td><td>freq[7]=1</td><td>0</td></tr>
+        <tr><td>i=1</td><td>7</td><td>freq[7]++</td><td>freq[7]=2</td><td>0</td></tr>
+        <tr><td>i=2</td><td>2</td><td>freq[2]++</td><td>freq[2]=1</td><td>0</td></tr>
+        <tr><td>i=3</td><td>10</td><td>freq[10]++</td><td>freq[10]=1</td><td>0</td></tr>
+        <tr><td>i=4</td><td>12</td><td>fuori dominio</td><td>—</td><td>1</td></tr>
+        <tr><td>i=5</td><td>0</td><td>freq[0]++</td><td>freq[0]=1</td><td>1</td></tr>
+      </table>
+      <p class="tip">Moda finale: 7 con frequenza 2.</p>
+    </div>
+
+    <!-- PITFALL -->
+    <div class="inner-box">
+      <h2>Pitfall comuni (e rimedi)</h2>
+      <ul>
+        <li><b>Dimenticare l’early exit</b> nella ricerca booleana. <br/><br/><span class="ok">Usa la guardia combinata (<span class="kbd">i&lt;n AND non trovato</span>) o una variabile <span class="kbd">pos</span> con <span class="kbd">-1</span>.</span></li>
+        <li><b>Confondere prima vs ultima occorrenza</b>. <br/><br/><span class="ok">Prima: termina appena trovi. Ultima: visita tutto e aggiorna sempre <span class="kbd">pos</span>.</span></li>
+        <li><b>Istogramma senza azzeramento</b>. <br/><br/><span class="ok">Inizializza <span class="kbd">freq[v]=0</span> per <span class="kbd">v=0..M</span> prima di contare.</span></li>
+        <li><b>Valori fuori dominio</b> ignorati. <br/><br/><span class="ok">Tieni un contatore di errori <span class="kbd">err</span> o pulisci i dati prima.</span></li>
+      </ul>
+    </div>
+
+    <!-- ESERCIZI -->
+    <div class="inner-box">
+      <h2>Esercizi (con soluzioni a comparsa)</h2>
+      <ol>
+        <li><b>E1 — Prima e ultima occorrenza</b> di un valore <span class="kbd">x</span> nello stesso programma (stampa entrambe).<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i, first, last
+first ← -1; last ← -1
+For i ← 0 To n-1 Step 1
+    If A[i] = x Then
+        If first = -1 Then
+            first ← i
+        End If
+        last ← i
+    End If
+End For
+If first = -1 Then
+    Output "x non presente"
+Else
+    Output "Prima = ", first, "  Ultima = ", last
+End If</code></pre>
+            <p><strong>Spiegazione.</strong> In una sola passata, <code>first</code> viene impostato solo alla prima volta; <code>last</code> aggiornato ogni volta. Gestiamo “non trovato” con <code>-1</code>.</p>
+          </div>
+        </li>
+
+        <li><b>E2 — Conta valori in ciascun intervallo</b> [0,4], [5,9], [10,14], [15,∞).<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-none">Declare Integer i, c0_4, c5_9, c10_14, c15p
+c0_4 ← 0; c5_9 ← 0; c10_14 ← 0; c15p ← 0
+For i ← 0 To n-1 Step 1
+    If A[i] &lt; 5 Then
+        c0_4 ← c0_4 + 1
+    Else If A[i] &lt; 10 Then
+        c5_9 ← c5_9 + 1
+    Else If A[i] &lt; 15 Then
+        c10_14 ← c10_14 + 1
+    Else
+        c15p ← c15p + 1
+    End If
+End For
+Output "[0,4]=",c0_4,"  [5,9]=",c5_9,"  [10,14]=",c10_14,"  [15,∞)=",c15p</code></pre>
+            <p><strong>Spiegazione.</strong> Partizioniamo l’insieme dei valori in intervalli disgiunti e contiamo con una catena di <em>if-else</em>, O(n) tempo.</p>
+          </div>
+        </li>
+
+        <li><b>E3 — Moda con gestione esplicita delle parità</b>: se più valori hanno stessa frequenza massima, stampa <em>tutti</em> in ordine crescente.<br/>
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-none">Const M ← 10
+Declare Integer freq[M+1], v, fmax
+// ... (calcola freq come visto sopra) ...
+// Trova frequenza massima
+fmax ← freq[0]
+For v ← 1 To M Step 1
+    If freq[v] &gt; fmax Then
+        fmax ← freq[v]
+    End If
+End For
+// Stampa tutti i valori con freq = fmax
+Output "Modi (frequenza ", fmax, "): "
+For v ← 0 To M Step 1
+    If freq[v] = fmax Then
+        Output v
+    End If
+End For</code></pre>
+            <p><strong>Spiegazione.</strong> In due passaggi: prima determiniamo la frequenza massima, poi elenchiamo tutti i valori che la raggiungono (multi-moda), in ordine crescente naturale.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Takeaways</h2>
+      <ul>
+        <li><b>Ricerca booleana</b>: con <em>early exit</em> è più veloce in media; <b>prima</b> vs <b>ultima</b> occorrenza richiedono strategie diverse.</li>
+        <li><b>Conteggi</b>: stesso pattern con un contatore e un predicato.</li>
+        <li><b>Frequenze</b>: su domini piccoli l’array <span class="kbd">freq</span> è semplice ed efficiente (tempo O(n), spazio O(M)).</li>
+        <li><b>Robustezza dati</b>: valori fuori dominio vanno gestiti (contati, scartati o segnalati).</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
