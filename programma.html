@@ -1,62 +1,82 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programma del Corso</title>
-    <link rel="stylesheet" href="style.css">
-    <script>
-        function prevSlide() {
-            window.location.href = "index.html";
-        }
-        function nextSlide() {
-            window.location.href = "lez1/lez1_1.html";
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programma del Corso</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="default.css">
+  <script>
+    function prevSlide(){ window.location.href = "index.html"; }
+    function nextSlide(){ window.location.href = "lez1/lez1.html"; } // prima pagina della Lezione 1
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+  </script>
+  <style>
+    /* allineamento a sinistra per gli elenchi dentro le inner-box */
+    .inner-box, .inner-box ul, .inner-box li { text-align: left !important; }
+    .inner-box ul { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position: outside; }
+    .inner-box li { margin:.25rem 0; }
+  </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class='menu-toggle' onclick='toggleMenu()'>&#9776; Menu</button>
-<div class='sidebar' id='menu'>
-    <h2>Menu Lezioni</h2>
-    <ul>
-        <li><a href='lez1/lez1_1.html'>Lezione 1: Algoritmi e Linguaggi</a></li>
-        </ul>
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez1/lez1.html">Lezione 1</a></li>
+    <li><a href="lez2/lez2_1.html">Lezione 2</a></li>
+    <li><a href="lez3/lez3_1.html">Lezione 3</a></li>
+    <li><a href="lez4/lez4_1.html">Lezione 4</a></li>
+    <li><a href="lez5/lez5_1.html">Lezione 5</a></li>
+  </ul>
 </div>
 <!-- END MENU -->
 
+<div class="slide">
+  <h1>Programma del Corso</h1>
 
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
 
+<div class="inner-box">
+  <!-- LEZIONE 1 -->
+    <ul>
+      <li><a href="lez1/lez1_1.html">Lezione 1 — Problemi, Algoritmi e Programmi</a></li>
+    </ul>
+  
+  <!-- LEZIONE 2 -->
+    <ul>
+      <li><a href="lez2/lez2_1.html">Lezione 2 — Flowchart &amp; Pseudocodice</a></li>
+    </ul>
+  
+  <!-- LEZIONE 3 -->
+    <ul>
+      <li><a href="lez3/lez3_1.html">Lezione 3 — Istruzione di Selezione (if / else)</a></li>
+    </ul>
+  
+  <!-- LEZIONE 4 -->
+    <ul>
+      <li><a href="lez4/lez4_1.html">Lezione 4 — Istruzioni di Iterazione (cicli)</a></li>
+    </ul>
+  
+  <!-- LEZIONE 5 -->
+  
+    <ul>
+      <li><a href="lez5/lez5_1.html">Lezione 5 — Array (pseudocodice, senza codice C/C++)</a></li>
+    </ul>
+  </div>
+  
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
 
-    <div class="slide">
-        <h1>Programma del Corso</h1>
-        
-		<div class="nav-buttons">
-		<button onclick="prevSlide()">&#8592; Indietro</button>
-		<button onclick="nextSlide()">Avanti &#8594;</button>
-		</div>
-		
-        <h2>Unità 1: Problemi, Algoritmi e Programmi</h2>
-        <p><strong>📌 Obiettivo:</strong>Saper distinguere i concetti fondamentali di Problema, Algoritmo, Programma. 
-		Codificare semplici algoritmi in Flowgorithm.</p>
-        <ul class="inner-box">
-            <li>Lezione 1: Conoscere gli algoritmi e i Linguaggi</li>
-			<li>Lezione 2: Codificare gli algoritmi con i FlowChart</li>
-			<li>Lezione 3: Istruzione di Selezione e le Condizioni Logiche</li>
-			<li>Lezione 4: Istruzione di Iterazione o Ciclo</li>
-			</li>
-        </ul>
-        
-             <div class="nav-buttons">
-            <button onclick="prevSlide()">&#8592; Indietro</button>
-            <button onclick="nextSlide()">Avanti &#8594;</button>
-        </div>
-    </div>
 <script>
-function toggleMenu() {
-    const menu = document.getElementById('menu');
-    menu.classList.toggle('open');
-}
+  function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
 </script>
 </body>
 </html>
