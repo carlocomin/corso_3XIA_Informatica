@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_1 · Linguaggi interpretati vs compilati</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "../programma.html"; }
+    function nextSlide(){ window.location.href = "lez6_2.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* Allineamento forte a sinistra e stile coerente */
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li, .inner-box pre, .inner-box code { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space: pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .tip  { font-style: italic; opacity:.95 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    /* Tabelle */
+    table { width:100%; border-collapse:collapse }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
+    th { background:#f8fafc }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a class="active" href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Linguaggi <em>interpretati</em> vs <em>compilati</em></h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box box">
+      <h2>Obiettivo didattico</h2>
+      <ul>
+        <li>Chiarire <strong>che cosa fa</strong> un interprete e che cosa fa un compilatore.</li>
+        <li>Capire <strong>AST</strong> e <strong>bytecode</strong> e come si usano.</li>
+        <li>Approfondire <strong>REPL</strong> e <strong>JIT</strong> (cosa sono, perché sono utili).</li>
+        <li>Vedere una <strong>panoramica</strong> dei compilatori C/C++ e dei flag essenziali.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> interpretare = eseguire subito; compilare = tradurre prima, eseguire poi (spesso più velocemente).</p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Che cos’è un <em>interprete</em></h2>
+      <ul>
+        <li>Legge il sorgente, lo analizza e <strong>esegue direttamente</strong> (camminando un AST o eseguendo un <em>bytecode</em> su una VM).</li>
+        <li><span class="kbd">REPL</span> (<em>Read–Eval–Print Loop</em>): digiti → valuta subito → stampa il risultato.</li>
+        <li><b>JIT</b> (<em>Just-In-Time</em>): compila “al volo” le parti più usate per aumentare le prestazioni.</li>
+      </ul>
+<pre><code class="language-text">Sorgente  --lexer/parser-->  AST/bytecode  --interprete/JIT-->  Esecuzione</code></pre>
+      <p class="note">Esempi: Python (AST→bytecode→interprete), JavaScript (bytecode + più livelli di JIT), Java (bytecode + JIT su JVM).</p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Che cos’è un <em>compilatore</em></h2>
+      <ul>
+        <li><b>Front-end</b>: tokenizza (lexer), costruisce l’<b>AST</b> (parser), controlla i tipi (analisi semantica).</li>
+        <li><b>IR</b> (Intermediate Representation): formato intermedio per le <strong>ottimizzazioni</strong>.</li>
+        <li><b>Back-end</b>: genera codice macchina per la CPU di destinazione.</li>
+        <li><b>Linker</b>: unisce oggetti e librerie → <strong>eseguibile</strong> o libreria.</li>
+      </ul>
+<pre><code class="language-text">Sorgente --front-end--> AST/IR --ottimizzazioni--> oggetto --linker--> eseguibile</code></pre>
+    </div>
+
+    <!-- AST & BYTECODE -->
+    <div class="inner-box box">
+      <h2>AST &amp; Bytecode — cosa sono, perché servono</h2>
+      <h3>AST (Abstract Syntax Tree)</h3>
+      <ul>
+        <li>È un <b>albero</b> che rappresenta la struttura logico-sintattica del programma (operatori come nodi, operandi come figli).</li>
+        <li>“Astratto” = ignora dettagli superflui (parentesi ridondanti, spazi, ecc.).</li>
+        <li>Usato per: <b>controllo dei tipi</b>, <b>ottimizzazioni</b> di alto livello, generazione di IR/bytecode.</li>
+      </ul>
+<pre><code class="language-text">Esempio: 3 + 4 * 2
+       (+)
+      /   \
+    (3)   (*)
+          /  \
+        (4)  (2)</code></pre>
+
+      <h3>Bytecode</h3>
+      <ul>
+        <li>È un <b>codice intermedio</b> più compatto dell’AST, formato da <em>istruzioni</em> semplici per una <b>macchina virtuale</b> (stack-based o register-based).</li>
+        <li>Pro: <b>portabile</b>, <b>veloce da interpretare</b> rispetto all’AST, <b>base per il JIT</b>.</li>
+      </ul>
+
+      <div class="note">
+        <b>In sintesi:</b> AST → struttura ad albero per ragionare; Bytecode → “lista di opcodes” per esecuzione/ottimizzazione.
+      </div>
+    </div>
+
+    <!-- REPL -->
+    <div class="inner-box box">
+      <h2>REPL — Read · Eval · Print · Loop</h2>
+      <p><strong>Spiegazione.</strong> Un REPL (<em>Read–Eval–Print Loop</em>) è un ciclo interattivo che, a ogni iterazione, esegue quattro fasi distinte: <em>Read</em> acquisisce una frase/istruzione dal terminale; <em>Parse</em> la sottopone ad analisi lessicale e sintattica producendo una rappresentazione interna (tipicamente un AST; in alcuni sistemi si genera o aggiorna anche del bytecode per una VM); <em>Eval</em> valuta tale rappresentazione nell’<em>ambiente</em> di esecuzione corrente (cioè con lo stato e le definizioni accumulate nelle iterazioni precedenti); <em>Print</em> restituisce all’utente una rappresentazione testuale del risultato. Il tutto avviene in un <em>Loop</em> che si ripete finché non si richiede l’uscita.</p>
+
+<p>Questo modello riduce drasticamente la latenza tra input e risultato: consente sperimentazione, verifica di ipotesi e debug incrementale senza passare ogni volta attraverso le fasi di progetto–compilazione–link tipiche dei linguaggi compilati.</p>
+<pre><code class="language-text">while (true) {
+  input = read_line();
+  if (input == "exit") break;
+  ast   = parse(input);       // costruisci AST
+  val   = evaluate(ast);      // esegui subito
+  print(val);
+}</code></pre>
+      <ul>
+        <li><b>Pro</b>: feedback immediato, apprendimento rapido, test di piccole idee.</li>
+        <li><b>Contro</b>: meno adatto a programmi grandi/complessi; performance inferiori a un binario compilato.</li>
+      </ul>
+    </div>
+
+    <!-- JIT -->
+    <div class="inner-box box">
+      <h2>JIT — Compilazione “al volo” (come accelera davvero)</h2>
+      <p><b>Spiegazione.</b> Il JIT osserva il programma mentre gira: individua le parti eseguite più spesso (hot spots) e le <em>compila</em> in codice macchina nativo, così da eseguirle molto più velocemente. Spesso usa una strategia a livelli (tiered): prima una compilazione rapida per avere subito un guadagno, poi — se quella zona resta “calda” — una compilazione più aggressiva con ottimizzazioni pesanti. Le assunzioni fatte dal JIT (es. “questa funzione riceve sempre interi”) sono protette da <em>guardie</em>; se in futuro non valgono più, il JIT fa <em>de-optimization</em> e torna a una versione più generale. Risultato: dopo un breve “riscaldamento”, il codice interpretato può avvicinarsi molto alla velocità del compilato.</p>
+      <ul>
+        <li><b>Profiling</b>: l’interprete misura quali funzioni/cicli sono “caldi”.</li>
+        <li><b>Tiered JIT</b>: prima una compilazione veloce, poi (se conviene) una più aggressiva.</li>
+        <li><b>Speculazioni</b>: assume pattern frequenti; se falliscono → <b>de-opt</b> (torna a interpretare o ricompila).</li>
+        <li><b>Code cache</b>: il codice nativo generato viene riusato finché resta valido.</li>
+      </ul>
+<pre><code class="language-text">bytecode --interprete--> profila hot spots --JIT tier1--> nativo
+                                       \--(ancora caldo?)-- JIT tier2--> nativo ottimizzato</code></pre>
+
+      <div class="nav-buttons" style="justify-content:left;margin-top:.25rem">
+        <button id="btn-jit" onclick="toggleBox('btn-jit','box-jit')">Mostra ▼</button>
+      </div>
+      <div id="box-jit" style="display:none;margin-top:8px">
+        <div class="note">
+          <b>Esempi reali (a grandi linee)</b><br/>
+          JS engine (V8): parser → bytecode → interpreter → baseline JIT → optimizing JIT (con de-opt).<br/>
+          JVM: bytecode → interpreter → C1 (client JIT) → C2 (server JIT) con profiling, inlining, escape analysis.
+        </div>
+        <div class="warn"><b>Limite didattico:</b> i dettagli sono complessi; qui serve solo l’intuizione di come si ottiene velocità senza rinunciare all’agilità.</div>
+      </div>
+    </div>
+
+    <!-- Pro & Contro: TABELLA -->
+    <div class="inner-box box">
+      <h2>Pro e contro (in pratica)</h2>
+      <table>
+        <thead>
+          <tr><th>Categoria</th><th>Pro</th><th>Contro</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Interpretati</b></td>
+            <td>
+              • Avvio rapido / REPL<br/>
+              • Portabilità alta (stessa VM/interprete)<br/>
+              • Iterazione veloce in didattica e prototipi
+            </td>
+            <td>
+              • Performance inferiori “a freddo”<br/>
+              • Dipendenza dall’interprete a runtime<br/>
+              • Meno adatti a eseguibili standalone
+            </td>
+          </tr>
+          <tr>
+            <td><b>Compilati</b></td>
+            <td>
+              • Performance elevate (ottimizzazioni)<br/>
+              • Eseguibile autonomo (meno dipendenze)<br/>
+              • Toolchain matura per grandi progetti
+            </td>
+            <td>
+              • Tempi di build/link<br/>
+              • Portabilità mediata da compiler/linker<br/>
+              • Iterazione meno immediata rispetto al REPL
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Panoramica compilatori C/C++ &amp; flag essenziali</h2>
+      <ul>
+        <li><b>Compilatori</b>: GCC (<span class="kbd">g++/gcc</span>), Clang/LLVM (<span class="kbd">clang++/clang</span>),
+            MSVC (<span class="kbd">cl</span>, Windows), MinGW-w64 (g++ su Windows), Intel oneAPI (icx/icpx).</li>
+        <li><b>Standard</b>: <span class="kbd">-std=c++17</span>, <span class="kbd">-std=c11</span> (o superiori, coerenti con la lezione).</li>
+        <li><b>Ottimizzazioni</b>: <span class="kbd">-O0</span>.. <span class="kbd">-O3</span>; debug con <span class="kbd">-g</span>.</li>
+        <li><b>Avvisi</b>: <span class="kbd">-Wall -Wextra</span> (GCC/Clang); MSVC: <span class="kbd">/W4</span>.</li>
+        <li><b>Sanitizers</b> (GCC/Clang): <span class="kbd">-fsanitize=address,undefined</span> per scovare bug in laboratorio.</li>
+      </ul>
+      <p class="note">Build system: <b>make</b> e <b>CMake</b> (concetto di “generatori” per IDE/ambienti diversi).</p>
+    </div>
+
+    <div class="inner-box">
+      <h2>Toolchain in pratica: C++ prima, poi C</h2>
+      <h3>C++ (g++, Clang++)</h3>
+<pre><code class="language-bash"># compila (eseguibile main / main.exe su Windows)
+g++ -std=c++17 -Wall -Wextra -O0 -g main.cpp -o main
+./main</code></pre>
+      <h3>C (gcc, Clang)</h3>
+<pre><code class="language-bash">gcc -std=c11 -Wall -Wextra -O0 -g main.c -o main
+./main</code></pre>
+      <p class="warn"><b>Windows:</b> ricordati dell’apertura in <span class="kbd">modalità binaria</span> per i file binari; la traduzione <span class="kbd">\n ↔ \r\n</span> riguarda solo la modalità testo.</p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Pitfall comuni (e rimedi pratici)</h2>
+      <ul>
+        <li><strong>Confondere interprete e compilatore</strong>. <br/><br/><span class="ok">C/C++ sono linguaggi <b>compilati</b>: serve creare un eseguibile.</span></li>
+        <li><strong>Dimenticare lo standard</strong> (errori inspiegabili). <br/><br/><span class="ok">Usa sempre <span class="kbd">-std=...</span> coerente con la lezione.</span></li>
+        <li><strong>Compilare .c come C++</strong> o viceversa. <br/><br/><span class="ok">Estensioni coerenti: <span class="kbd">.c</span> per C, <span class="kbd">.cpp</span> per C++.</span></li>
+        <li><strong>Ignorare gli avvisi</strong>. <br/><br/><span class="ok">Attiva <span class="kbd">-Wall -Wextra</span> e leggi gli warning: sono “segnali precoci”.</span></li>
+      </ul>
+    </div>
+
+    <div class="inner-box">
+      <h2>Esercizi lampo (con soluzione a comparsa)</h2>
+      <ol>
+        <li><b>E1 — Classifica i linguaggi</b>: Python, JavaScript, Java, C, C++.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+            <p class="note"><b>Soluzione:</b> Python: interpretato; JavaScript: interpretato/JIT; Java: ibrido (bytecode+JIT); C e C++: compilati (nativo).</p>
+          </div>
+        </li>
+        <li><b>E2 — Ordina le fasi</b>: Linker, Front-end, IR, Back-end, Ottimizzazioni.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+            <p class="ok">Front-end → IR → Ottimizzazioni → Back-end → Linker.</p>
+          </div>
+        </li>
+        <li><b>E3 — AST o Bytecode?</b> Per ciascuno, indica a cosa si riferisce: “albero di operatori/operandi”, “lista di opcodes per VM”.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+            <p class="note"><b>Soluzione:</b> Albero → <b>AST</b>; Lista di opcodes → <b>bytecode</b>.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
