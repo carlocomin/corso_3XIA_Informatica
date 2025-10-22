@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_4 · Variabili, inizializzazione, assegnamento (C++ e C)</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_3.html"; }
+    function nextSlide(){ window.location.href = "lez6_5.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    /* allineamento forte a sinistra e stile coerente */
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li, .inner-box pre, .inner-box code { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .tip  { font-style:italic; opacity:.95 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    table { width:100%; border-collapse:collapse }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
+    th { background:#f8fafc }
+    td code { white-space:pre-wrap }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a class="active" href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Variabili, inizializzazione, assegnamento — C++ prima, poi C</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box box">
+      <h2>Obiettivi</h2>
+      <ul>
+        <li>Comprendere <strong>che cos’è una variabile</strong>: nome, tipo, indirizzo, valore.</li>
+        <li>Distinguere <strong>dichiarazione</strong> vs <strong>definizione</strong>, <strong>scope</strong> e <strong>lifetime</strong>.</li>
+        <li>Conoscere le <strong>forme di inizializzazione</strong> e l’<strong>assegnamento</strong> (semplice/composto, <span class="kbd">++</span>/<span class="kbd">--</span>).</li>
+        <li>Evitare gli <strong>errori comuni</strong> (indeterminatezza, narrowing, shadowing, mix signed/unsigned).</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> una variabile è uno <em>spazio di memoria tipizzato</em> con un nome e un valore corrente. Senza inizializzazione, il valore locale è <em>indeterminato</em>.</p>
+    </div>
+
+    <!-- C++ -->
+    <div class="inner-box box">
+      <h2>Sezione C++ — variabili &amp; inizializzazione</h2>
+      <h3>Concetti base</h3>
+      <ul>
+        <li><b>Dichiarazione</b>: informa il compilatore dell’esistenza di un nome e del suo tipo (<code>extern int g;</code>).</li>
+        <li><b>Definizione</b>: riserva memoria (crea l’oggetto). Esempio: <code>int x;</code> (locale), <code>int g;</code> (globale).</li>
+        <li><b>Scope</b>: porzione di codice in cui il nome è visibile (blocco <code>{...}</code>, file, namespace).</li>
+        <li><b>Lifetime</b>: periodo di esistenza in memoria (automatico per locali, statico per globali e <code>static</code>).</li>
+      </ul>
+
+      <h3>Forme di inizializzazione (C++)</h3>
+<pre><code class="language-cpp">int a = 5;        // copy initialization
+int b(5);         // direct initialization
+int c{5};         // list/brace-init (impedisce narrowing)
+int d;            // non inizializzata (indeterminata!) se locale
+static int e;     // zero-initializzata (lifetime statico)
+const int k = 10; // deve essere inizializzata</code></pre>
+      <ul>
+        <li><b>Brace-init</b> (<code>{}</code>) blocca conversioni che perdono informazione (narrowing): <code>int z{3.14};</code> → errore.</li>
+        <li><b>Locali non inizializzate</b>: contengono spazzatura → usarle è <em>comportamento indefinito</em>.</li>
+        <li><b>Static/globali</b>: inizializzate a zero per default (zero-initialization).</li>
+      </ul>
+
+      <h3>Assegnamento e operatori composti</h3>
+<pre><code class="language-cpp">int x{0};
+x = 7;      // assegnamento
+x += 3;     // x = x + 3
+x -= 2; x *= 4; x /= 2; x %= 5;
+++x;        // pre-incremento: incrementa e restituisce x
+x++;        // post-incremento: restituisce il vecchio valore, poi incrementa</code></pre>
+      <table>
+        <thead><tr><th>Espressione</th><th>Effetto</th><th>Valore dell’espressione</th></tr></thead>
+        <tbody>
+          <tr><td><code>++x</code></td><td>Incrementa subito</td><td>Nuovo valore di <code>x</code></td></tr>
+          <tr><td><code>x++</code></td><td>Incrementa dopo</td><td>Vecchio valore di <code>x</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Scope, shadowing, lifetime</h3>
+<pre><code class="language-cpp">int v = 1;            // globale (static storage)
+int main(){
+  int v = 2;          // locale "oscura" (shadow) il globale
+  {
+    int v = 3;        // nuovo scope, nuovo v
+  }                   // v=3 distrutto
+  static int s = 0;   // locale statico: persiste tra chiamate
+}</code></pre>
+      <p class="warn"><b>Shadowing:</b> riusare lo stesso nome in scope annidati può confondere. Preferisci nomi chiari (<code>counter</code>, <code>sum</code>...).</p>
+    </div>
+
+    <!-- C -->
+    <div class="inner-box box">
+      <h2>Sezione C — variabili &amp; inizializzazione</h2>
+      <ul>
+        <li><b>Inizializzazione</b>: in C99+ puoi inizializzare nella dichiarazione (<code>int a = 5;</code>). Nelle versioni antiche (C90) le dichiarazioni andavano all’inizio del blocco.</li>
+        <li><b><code>const</code></b>: oggetto di sola lettura (non è sempre “costante di compilazione”); utile per valori che non devono cambiare.</li>
+        <li><b>Storage class</b>: <code>static</code> (durata statica), <code>extern</code> (dichiarazione senza definizione), <code>register</code> (storico), <code>volatile</code> (hardware/memoria condivisa; accenno).</li>
+        <li><b>Zero-inizializzazione</b>: globali e <code>static</code> partono da 0; locali no.</li>
+      </ul>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int g;              // globale: zero-inizializzata
+extern int ext;     // dichiarazione, definita altrove
+
+int main(void){
+  int a = 5;        // locale inizializzata
+  int b;            // indeterminata!
+  static int s;     // zero-inizializzata
+  const int k = 10; // sola lettura
+  b = a + k;
+  printf("%d %d %d\n", a, b, s);
+  return 0;
+}</code></pre>
+      <p class="warn"><b>Indeterminatezza:</b> leggere una locale non inizializzata è errore logico grave (comportamento indefinito).</p>
+    </div>
+
+    <!-- Confronto rapido -->
+    <div class="inner-box box">
+      <h2>Confronto rapido C++ vs C (pratiche consigliate)</h2>
+      <table>
+        <thead><tr><th>Tema</th><th>C++</th><th>C</th><th>Consiglio</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Inizializzazione</td>
+            <td><code>{}</code> per bloccare narrowing; <code>=</code>/<code>()</code> ok</td>
+            <td><code>=</code> nella dichiarazione (C99+)</td>
+            <td>Inizializza sempre le locali</td>
+          </tr>
+          <tr>
+            <td>Costanti</td>
+            <td><code>const</code> (accenno a <code>constexpr</code>)</td>
+            <td><code>const</code>, oppure <code>#define</code></td>
+            <td>Preferisci <code>const</code> con <code>tipo</code></td>
+          </tr>
+          <tr>
+            <td>Scope &amp; lifetime</td>
+            <td>Automatico vs statico; shadowing possibile</td>
+            <td>Come in C++</td>
+            <td>Evita shadowing; usa nomi espliciti</td>
+          </tr>
+          <tr>
+            <td>Incrementi</td>
+            <td><code>++x</code>/<code>x++</code> con semantica distinta</td>
+            <td>Idem</td>
+            <td>Evita usarli dentro espressioni complicate</td>
+          </tr>
+          <tr>
+            <td>Assegnamento</td>
+            <td><code>=</code>, composti <code>+=</code> ecc.</td>
+            <td>Idem</td>
+            <td>Usa composti per chiarezza/efficienza</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tracce di calcolo / esempi -->
+    <div class="inner-box box">
+      <h2>Esempi guidati (traccia passo-passo)</h2>
+
+      <h3>Pre/post incremento (C++)</h3>
+<pre><code class="language-cpp">int i{5};
+int a = ++i;   // i=6, a=6
+int b = i++;   // i=7, b=6
+int c = 2 * i++; // usa i=7 nella moltiplicazione, poi i diventa 8 → c=14</code></pre>
+      <table>
+        <thead><tr><th>Passo</th><th>i</th><th>a</th><th>b</th><th>c</th></tr></thead>
+        <tbody>
+          <tr><td>inizio</td><td>5</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td><code>a=++i</code></td><td>6</td><td>6</td><td>—</td><td>—</td></tr>
+          <tr><td><code>b=i++</code></td><td>7</td><td>6</td><td>6</td><td>—</td></tr>
+          <tr><td><code>c=2*i++</code></td><td>8</td><td>6</td><td>6</td><td>14</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Assegnamenti concatenati (C/C++)</h3>
+<pre><code class="language-cpp">int x, y, z;
+x = y = z = 0; // associatività da destra: (x = (y = (z = 0)))</code></pre>
+      <p class="warn"><b>Attenzione:</b> non confondere <code>=</code> (assegna) con <code>==</code> (confronta).</p>
+    </div>
+
+    <!-- Pitfall -->
+    <div class="inner-box box">
+      <h2>Pitfall comuni (e rimedi pratici)</h2>
+      <ul>
+        <li><strong>Variabili locali non inizializzate</strong> usate in espressioni. <br/><br/><span class="ok">Inizializza sempre: <code>int sum{0};</code> (C++) / <code>int sum = 0;</code> (C).</span></li>
+        <li><strong>Narrowing in C++</strong> (perdita di informazione). <br/><br/><span class="ok">Usa <code>{}</code> e scegli il tipo giusto (es. <code>double</code> → <code>int</code> può perdere la parte decimale).</span></li>
+        <li><strong>Shadowing</strong> di nomi in blocchi annidati. <br/><br/><span class="ok">Evita nomi identici in scope interni; preferisci nomi descrittivi.</span></li>
+        <li><strong>Side-effect nascosti</strong> con <code>i++</code> in espressioni complesse. <br/><br/><span class="ok">Dividi in più righe per leggibilità.</span></li>
+        <li><strong>Confusione <code>=</code> vs <code>==</code></strong>. <br/><br/><span class="ok">Ricontrolla sempre gli <em>if</em>: <code>if (x == 0)</code>.</span></li>
+      </ul>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box box">
+      <h2>Esercizi lampo (con soluzione a comparsa)</h2>
+      <ol>
+        <li><b>E1 — Inizializzazione sicura (C++)</b><br/>
+          <em>Testo:</em> Dichiara tre variabili: <code>int counter</code>, <code>double total</code>, <code>bool ready</code>. Inizializzale in modo sicuro con brace-init.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">int counter{0};
+double total{0.0};
+bool ready{false};</code></pre>
+          </div>
+        </li>
+
+        <li><b>E2 — Pre vs post (C++)</b><br/>
+          <em>Testo:</em> Con <code>int i{4};</code> calcola <code>a=++i;</code>, poi <code>b=i++;</code>, poi <code>c=i*2;</code>. Mostra i valori finali di <code>i,a,b,c</code>.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+            <p class="note"><b>Soluzione:</b> dopo <code>a=++i</code> → <code>i=5,a=5</code>; dopo <code>b=i++</code> → <code>i=6,b=5</code>; <code>c=i*2</code> → <code>c=12</code>.</p>
+          </div>
+        </li>
+
+        <li><b>E3 — Assegnamenti composti (C)</b><br/>
+          <em>Testo:</em> Dato <code>int x=10;</code> applica in sequenza: <code>x+=5;</code>, <code>x/=3;</code>, <code>x*=4;</code>, <code>x-=2;</code>. Qual è il valore finale?
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+            <p class="ok"><b>Soluzione:</b> 10→15→5→20→18.</p>
+          </div>
+        </li>
+
+        <li><b>E4 — Evita il narrowing (C++)</b><br/>
+          <em>Testo:</em> Perché <code>int k{3.7};</code> dà errore mentre <code>int k = 3.7;</code> compila? Qual è il valore di <code>k</code> nella seconda forma?
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button></div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+            <p class="warn"><b>Spiegazione:</b> la brace-init impedisce conversioni che perdono informazione. Con <code>=</code> la conversione è permessa e <code>k</code> vale <code>3</code> (parte decimale persa).</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>Anticipo:</b> nella prossima slide le <strong>espressioni</strong>, la loro <strong>precedenza</strong> e le <strong>conversioni</strong> implicite: fondamentali per prevedere i risultati dei calcoli.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
