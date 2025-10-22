@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_2 · Hello, World (C++ e C)</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+  <script>
+    function prevSlide(){ window.location.href = "lez6_1.html"; }
+    function nextSlide(){ window.location.href = "lez6_3.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+  <style>
+    /* allineamento forte a sinistra e stile coerente */
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li, .inner-box pre, .inner-box code { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .tip  { font-style:italic; opacity:.95 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+    table { width:100%; border-collapse:collapse }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
+    th { background:#f8fafc }
+  </style>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a class="active" href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Hello, World — struttura minima di un programma</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box box">
+      <h2>Obiettivo</h2>
+      <ul>
+        <li>Comprendere la <strong>struttura minima</strong> di un programma in C++ e in C.</li>
+        <li>Compilare ed eseguire da riga di comando (GCC/Clang).</li>
+        <li>Capire <strong>main</strong>, <strong>include</strong>, <strong>stdout</strong>, newline <span class="kbd">\n</span> / <span class="kbd">std::endl</span>.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> ogni eseguibile inizia da <code>main</code>, scrive su <code>stdout</code> e termina restituendo un <code>int</code> al sistema.</p>
+    </div>
+
+    <!-- C++ -->
+    <div class="inner-box box">
+      <h2>Sezione C++ — il primo programma</h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;   // dichiara std::cout, std::endl
+
+int main() {
+    std::cout &lt;&lt; "Hello, World!" &lt;&lt; '\n';
+    return 0;            // 0 = successo
+}</code></pre>
+      <ul>
+        <li><code>#include &lt;iostream&gt;</code>: rende disponibili gli stream standard (<code>std::cout</code>).</li>
+        <li><code>int main()</code>: punto d’ingresso del programma; il <code>return</code> è il codice di uscita.</li>
+        <li><code>std::cout</code>: <em>standard output</em>. <code>'\n'</code> manda a capo; <code>std::endl</code> manda a capo <em>e</em> forza il flush (più lento, da usare quando serve).</li>
+      </ul>
+      <h3>Compilazione ed esecuzione</h3>
+<pre><code class="language-bash">g++ -std=c++17 -Wall -Wextra -O0 -g hello.cpp -o hello
+./hello    # (Windows: .\hello.exe)</code></pre>
+      <p class="note"><b>Consiglio:</b> evitando <code>using namespace std;</code> si mantiene il codice più chiaro e sicuro nei nomi (usiamo il prefisso <code>std::</code>).</p>
+    </div>
+
+    <!-- C -->
+    <div class="inner-box box">
+      <h2>Sezione C — il primo programma</h2>
+<pre><code class="language-c">#include &lt;stdio.h&gt;    // dichiara printf
+
+int main(void) {
+    printf("Hello, World!\n");
+    return 0;          // 0 = successo
+}</code></pre>
+      <ul>
+        <li><code>#include &lt;stdio.h&gt;</code>: funzioni di I/O in stile C (printf/scanf).</li>
+        <li><code>int main(void)</code>: indica che <code>main</code> non riceve argomenti. Anche <code>int main()</code> è accettato.</li>
+        <li><code>printf</code>: stampa formattata; qui una stringa con newline <span class="kbd">\n</span>.</li>
+      </ul>
+      <h3>Compilazione ed esecuzione</h3>
+<pre><code class="language-bash">gcc -std=c11 -Wall -Wextra -O0 -g hello.c -o hello
+./hello</code></pre>
+      <p class="note"><b>Stringhe in C:</b> sono array di <code>char</code> terminati da <code>'\0'</code>; <code>printf</code> le interpreta fino a quel terminatore.</p>
+    </div>
+
+    <!-- Struttura comune -->
+    <div class="inner-box box">
+      <h2>Struttura comune (C++ e C)</h2>
+      <table>
+        <thead><tr><th>Elemento</th><th>Significato</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>#include &lt;...&gt;</code></td>
+            <td>Include dichiarazioni/funzioni di libreria</td>
+            <td>Angolari = libreria standard; virgolette = file locale</td>
+          </tr>
+          <tr>
+            <td><code>int main(...)</code></td>
+            <td>Punto d’ingresso del programma</td>
+            <td>Restituisce un codice di uscita al SO (0 = ok)</td>
+          </tr>
+          <tr>
+            <td>Output</td>
+            <td>Scrive su <code>stdout</code></td>
+            <td>C++: <code>std::cout</code>; C: <code>printf</code></td>
+          </tr>
+          <tr>
+            <td>Newline</td>
+            <td>Va a capo</td>
+            <td><code>'\n'</code> in entrambi; <code>std::endl</code> anche flush (C++)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pitfall comuni -->
+    <div class="inner-box box">
+      <h2>Pitfall comuni (e rimedi pratici)</h2>
+      <ul>
+        <li><strong>Dimenticare <code>#include</code></strong> → identificatori non trovati. <br/><br/><span class="ok">Includi <code>&lt;iostream&gt;</code> (C++) o <code>&lt;stdio.h&gt;</code> (C).</span></li>
+        <li><strong>Output “attaccati”</strong> (niente a capo). <br/><br/><span class="ok">Termina con <code>'\n'</code> (o <code>std::endl</code> se ti serve anche il flush).</span></li>
+        <li><strong>Usare sempre <code>std::endl</code></strong> (rallenta). <br/><br/><span class="ok">Preferisci <code>'\n'</code>, usa <code>std::endl</code> solo quando ti serve il flush.</span></li>
+        <li><strong>Encoding/Newline su Windows</strong>. <br/><br/><span class="ok">Sorgenti in UTF-8; per file binari apri in modalità binaria (niente traduzione <code>\n↔\r\n</code>).</span></li>
+      </ul>
+    </div>
+
+    <!-- Esercizi con soluzione a comparsa -->
+    <div class="inner-box box">
+      <h2>Esercizi lampo (con soluzione a comparsa)</h2>
+      <ol>
+        <li><b>E1 — Personalizza il saluto</b><br/>
+          <em>Testo:</em> Stampa “Ciao, 3BIA!” in C++ e in C, ciascuno su una riga separata.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main(){
+    std::cout &lt;&lt; "Ciao, 3BIA!" &lt;&lt; '\n';
+    return 0;
+}</code></pre>
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void){
+    printf("Ciao, 3BIA!\n");
+    return 0;
+}</code></pre>
+          </div>
+        </li>
+
+        <li><b>E2 — Due righe, due istruzioni</b><br/>
+          <em>Testo:</em> In C++ e in C stampa su due righe: “Hello” e poi “World”.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main(){
+    std::cout &lt;&lt; "Hello" &lt;&lt; '\n';
+    std::cout &lt;&lt; "World" &lt;&lt; '\n';
+    return 0;
+}</code></pre>
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void){
+    printf("Hello\n");
+    printf("World\n");
+    return 0;
+}</code></pre>
+          </div>
+        </li>
+
+        <li><b>E3 — Codice di uscita</b><br/>
+          <em>Testo:</em> Fai terminare il programma restituendo il valore 7. Come verifichi da shell che il codice di uscita è 7?
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++ (uguale in C, cambia solo include e stampa)
+#include &lt;iostream&gt;
+int main(){ return 7; }</code></pre>
+<pre><code class="language-bash"># Linux/macOS:
+./hello ; echo $?
+# Windows PowerShell:
+.\hello.exe ; echo $LASTEXITCODE</code></pre>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>Per saperne di più (accenni):</b> esistono varianti di <code>main</code> con argomenti (<code>int main(int argc, char* argv[])</code>) per leggere parametri da riga di comando. Le useremo più avanti.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
