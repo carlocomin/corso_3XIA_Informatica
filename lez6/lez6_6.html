@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_6 · I/O di base (input/output) in C++ e C</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_5.html"; }
+    function nextSlide(){ window.location.href = "lez6_7.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a class="active" href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>I/O di base (input da tastiera, output a schermo)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Obiettivo -->
+    <div class="inner-box box">
+      <h2>Obiettivi della lezione</h2>
+      <ul>
+        <li>Imparare a stampare a schermo in C++ (<code>std::cout</code>) e in C (<code>printf</code>).</li>
+        <li>Imparare a leggere dalla tastiera in C++ (<code>std::cin</code>) e in C (<code>scanf</code>).</li>
+        <li>Capire cosa sono <strong>stdin</strong> e <strong>stdout</strong> (flussi standard di input/output).</li>
+        <li>Capire perché leggere stringhe con spazi non è la stessa cosa che leggere numeri singoli.</li>
+        <li>Capire i problemi comuni: caratteri rimasti nel buffer, tipi sbagliati, ecc.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> il nostro programma è una scatola che dialoga con l’utente. L’uscita (output) è “mostro informazioni”. L’ingresso (input) è “dimmi un dato”.</p>
+    </div>
+
+    <!-- Sezione C++ STAMPA -->
+    <div class="inner-box box">
+      <h2>Output (stampare a schermo) in C++ — <code>std::cout</code></h2>
+
+      <p>
+        In C++ usiamo <code>std::cout</code> (definito in <code>&lt;iostream&gt;</code>) per scrivere sullo schermo.
+        L’operatore <code>&lt;&lt;</code> “invia” qualcosa allo stream di output (lo schermo).
+      </p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+int main() {
+    std::cout &lt;&lt; "Ciao utente!\n";
+    std::cout &lt;&lt; "Il risultato è: " &lt;&lt; 42 &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+      <ul>
+        <li><code>"testo"</code> è una stringa letterale.</li>
+        <li><code>\n</code> è il carattere “a capo” (newline).</li>
+        <li>Possiamo concatenare più cose con più <code>&lt;&lt;</code> nella stessa riga di output (numeri, stringhe, variabili...).</li>
+      </ul>
+
+      <p class="note">
+        <b>stdout in C++:</b> <code>std::cout</code> scrive sullo “standard output” del programma.  
+        Standard output (stdout) è, di default, il terminale/console.
+      </p>
+    </div>
+
+    <!-- Sezione C STAMPA -->
+    <div class="inner-box box">
+      <h2>Output (stampare a schermo) in C — <code>printf</code></h2>
+
+      <p>
+        In C usiamo <code>printf</code> (definita in <code>&lt;stdio.h&gt;</code>).  
+        <code>printf</code> usa una <strong>stringa di formato</strong> per dire come visualizzare i valori.
+      </p>
+
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf("Ciao utente!\n");
+    printf("Il risultato è: %d\n", 42);
+    return 0;
+}</code></pre>
+
+      <ul>
+        <li><code>%d</code> è un “segnaposto” per stampare un <code>int</code>.</li>
+        <li>Altri segnaposto comuni:
+          <ul>
+            <li><code>%d</code> / <code>%i</code> → intero (int)</li>
+            <li><code>%f</code> → numero floating-point (double)</li>
+            <li><code>%c</code> → singolo carattere (char)</li>
+            <li><code>%s</code> → stringa C terminata da <code>'\0'</code></li>
+          </ul>
+        </li>
+        <li>Dopo la stringa di formato, <code>printf</code> si aspetta i valori da “inserire dentro” i segnaposto, in ordine.</li>
+      </ul>
+
+      <p class="warn"><b>Attenzione:</b> se usi il segnaposto sbagliato (es. %d ma gli passi un double) ottieni risultati sbagliati o comportamento non definito. Devi allineare <code>%qualcosa</code> con il tipo giusto.</p>
+
+      <p class="note">
+        Anche in C, <code>printf</code> scrive su <strong>stdout</strong> (standard output).
+      </p>
+    </div>
+
+    <!-- Sezione C++ INPUT -->
+    <div class="inner-box box">
+      <h2>Input (leggere da tastiera) in C++ — <code>std::cin</code></h2>
+
+      <p>
+        In C++ usiamo <code>std::cin</code> per leggere dallo “standard input” (stdin).  
+        L’operatore <code>&gt;&gt;</code> legge e converte direttamente nel tipo della variabile.
+      </p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main() {
+    int eta;
+    std::string nome;
+
+    std::cout &lt;&lt; "Inserisci la tua eta': ";
+    std::cin &gt;&gt; eta;
+
+    std::cout &lt;&lt; "Inserisci il tuo nome (una parola): ";
+    std::cin &gt;&gt; nome;
+
+    std::cout &lt;&lt; "Ciao " &lt;&lt; nome
+              &lt;&lt; ", hai " &lt;&lt; eta &lt;&lt; " anni.\n";
+
+    return 0;
+}</code></pre>
+
+      <ul>
+        <li><b>stdin</b> è lo standard input, di solito la tastiera.</li>
+        <li><code>std::cin &gt;&gt; eta;</code> legge caratteri dalla tastiera, li interpreta come un intero e li mette in <code>eta</code>.</li>
+        <li><code>std::cin &gt;&gt; nome;</code> legge una sola “parola” fino al primo spazio. Quindi se scrivi “Mario Rossi” leggerà solo “Mario”.</li>
+      </ul>
+
+      <p class="warn">
+        Se in C++ vuoi leggere una <b>riga completa con gli spazi</b> (es. nome e cognome insieme), NON usare <code>&gt;&gt;</code>, ma usa <code>std::getline</code>:
+      </p>
+
+<pre><code class="language-cpp">std::string linea;
+std::cout &lt;&lt; "Inserisci una riga di testo: ";
+std::getline(std::cin, linea);
+std::cout &lt;&lt; "Hai scritto: " &lt;&lt; linea &lt;&lt; "\n";
+</code></pre>
+
+      <p class="note">
+        <b>Problema comune:</b> Se prima hai usato <code>std::cin &gt;&gt; numero;</code> poi subito <code>std::getline</code>, può rimanere un “\n” (invio) nel buffer.  
+        Soluzione pratica tipica: consumare l’ultimo newline con una <code>std::getline</code> “vuota” o usare <code>std::cin.ignore()</code> prima di leggere la riga vera.
+      </p>
+    </div>
+
+    <!-- Sezione C INPUT -->
+    <div class="inner-box box">
+      <h2>Input (leggere da tastiera) in C — <code>scanf</code></h2>
+
+      <p>
+        In C si usa <code>scanf</code> (anch’essa in <code>&lt;stdio.h&gt;</code>).  
+        Funziona “al contrario” rispetto a <code>printf</code>: nella stringa di formato metti i tipi che vuoi leggere e poi fornisci gli <strong>indirizzi</strong> delle variabili in cui salvare i valori.
+      </p>
+
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int eta;
+    char nome[100]; // array di char per contenere il nome
+
+    printf("Inserisci la tua eta': ");
+    scanf("%d", &eta); // &eta = indirizzo di eta
+
+    printf("Inserisci il tuo nome (una parola): ");
+    scanf("%99s", nome); // legge una parola senza spazi, max 99 char + '\0'
+
+    printf("Ciao %s, hai %d anni.\n", nome, eta);
+
+    return 0;
+}</code></pre>
+
+      <ul>
+        <li><code>scanf("%d", &eta);</code> → <code>%d</code> dice “leggi un int da tastiera” e <code>&eta</code> è l’indirizzo dove metterlo.</li>
+        <li><code>scanf("%99s", nome);</code> → legge una parola senza spazi e la scrive dentro <code>nome</code> (che è un array di char).  
+          <b>%99s</b> limita il numero di caratteri letti per evitare di sforare l’array.
+        </li>
+      </ul>
+
+      <p class="warn">
+        Se l’utente digita spazi, <code>scanf("%s", ...)</code> si ferma al primo spazio.  
+        Per leggere frasi con spazi in C in modo sicuro è più complicato; spesso si usa <code>fgets()</code> anziché <code>scanf</code> per leggere un’intera riga.
+      </p>
+
+      <p class="note">
+        Ricorda: in C, <code>scanf</code> vuole <b>l’indirizzo</b> delle variabili (con <code>&amp;</code> per gli scalari, e per gli array di char il nome dell’array è già un puntatore al suo primo elemento).
+      </p>
+    </div>
+
+    <!-- Confronto riassuntivo -->
+    <div class="inner-box box">
+      <h2>Confronto rapido C++ vs C per I/O</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Operazione</th>
+            <th>C++</th>
+            <th>C</th>
+            <th>Note pratiche</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Stampare un numero</td>
+            <td><code>std::cout &lt;&lt; x;</code></td>
+            <td><code>printf("%d", x);</code></td>
+            <td>In C++ il tipo è “capito” da <code>&lt;&lt;</code>. In C devi usare il formato giusto (<code>%d</code>, <code>%f</code>, ...).</td>
+          </tr>
+          <tr>
+            <td>Leggere un intero</td>
+            <td><code>std::cin &gt;&gt; x;</code></td>
+            <td><code>scanf("%d", &amp;x);</code></td>
+            <td>In C devi passare l’indirizzo <code>&amp;x</code>. In C++ basta il nome della variabile.</td>
+          </tr>
+          <tr>
+            <td>Leggere una parola</td>
+            <td><code>std::cin &gt;&gt; nome;</code> (C++)</td>
+            <td><code>scanf("%99s", nome);</code> (C)</td>
+            <td>Si fermano entrambi allo spazio successivo.</td>
+          </tr>
+          <tr>
+            <td>Leggere una linea intera con spazi</td>
+            <td><code>std::getline(std::cin, linea);</code></td>
+            <td><code>fgets(buf, size, stdin);</code></td>
+            <td>Serve per leggere frasi intere, tipo “Mario Rossi 4BIA”.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="ok">
+        Sintesi mentale:  
+        • C++ è più “a oggetti”: <code>std::cin</code> e <code>std::cout</code> sono stream con operatori <code>&gt;&gt;</code> / <code>&lt;&lt;</code>.  
+        • C è più “a formati”: <code>printf</code>/<code>scanf</code> usano stringhe di formato e indirizzi delle variabili.
+      </p>
+    </div>
+
+    <!-- Problemi comuni e soluzioni -->
+    <div class="inner-box box">
+      <h2>Problemi comuni (e come evitarli)</h2>
+
+      <ul>
+        <li><b>Leggere numeri e poi leggere stringhe (C++)</b><br/>
+          Dopo <code>std::cin &gt;&gt; numero;</code> rimane nel buffer l’ultimo carattere “invio” (<code>\n</code>).  
+          Se fai subito <code>std::getline</code>, potresti leggere solo quella newline.  
+          <span class="ok">Soluzione tipica: usa <code>std::cin.ignore()</code> o una <code>std::getline</code> “vuota” prima di leggere la riga vera.</span>
+        </li>
+
+        <li><b>Buffer overflow in C con <code>scanf("%s", ...)</code></b><br/>
+          Se l’utente scrive una parola troppo lunga, può superare la dimensione dell’array e distruggere memoria.  
+          <span class="ok">Usa sempre un limite tipo <code>"%99s"</code> se l’array è <code>char nome[100];</code></span>
+        </li>
+
+        <li><b>Tipo sbagliato con <code>printf</code>/<code>scanf</code></b><br/>
+          Se usi <code>%d</code> ma in realtà la variabile è <code>double</code>, ottieni risultati senza senso.  
+          <span class="ok">Allinea sempre il segnaposto al tipo della variabile.</span>
+        </li>
+
+        <li><b>istruzioni troppo “attaccate”</b><br/>
+          Spesso gli studenti scrivono tutto su una riga e poi non capiscono cosa sta succedendo.  
+          <span class="ok">Meglio scrivere l’I/O a passi chiari: prima chiedi il dato (“Inserisci...”), poi leggi, poi confermi.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+        <li>
+          <b>E1 — C++: leggi nome e età e ristampa</b><br/>
+          <em>Testo:</em> Scrivi un programma in C++ che:
+          <ul>
+            <li>chiede nome (una sola parola, senza spazi);</li>
+            <li>chiede età (numero intero);</li>
+            <li>stampa “Ciao NOME, hai ETA anni!”.</li>
+          </ul>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+int main() {
+    std::string nome;
+    int eta;
+    std::cout &lt;&lt; "Nome? ";
+    std::cin &gt;&gt; nome;
+    std::cout &lt;&lt; "Eta'? ";
+    std::cin &gt;&gt; eta;
+    std::cout &lt;&lt; "Ciao " &lt;&lt; nome
+              &lt;&lt; ", hai " &lt;&lt; eta
+              &lt;&lt; " anni!\n";
+    return 0;
+}</code></pre>
+            <p class="ok">Questo è il flusso base input → variabili → output.</p>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — C: leggi nome e età e ristampa</b><br/>
+          <em>Testo:</em> Scrivi un programma equivalente in C usando <code>scanf</code> e <code>printf</code>.  
+          Limita la lunghezza del nome a 99 caratteri.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    char nome[100];
+    int eta;
+    printf("Nome? ");
+    scanf("%99s", nome);
+    printf("Eta'? ");
+    scanf("%d", &eta);
+    printf("Ciao %s, hai %d anni!\n", nome, eta);
+    return 0;
+}</code></pre>
+            <p class="note">
+              Qui usiamo <code>%99s</code> per non scrivere più di 99 caratteri dentro <code>nome</code>.
+              <code>%d</code> legge un int e lo mette in <code>&eta</code> (indirizzo di eta).
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Input con spazi (C++)</b><br/>
+          <em>Testo:</em> Scrivi un programma C++ che legga una riga di testo completa (può contenere spazi) e la ristampi.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main() {
+    std::string linea;
+    std::cout &lt;&lt; "Scrivi una frase: ";
+    std::getline(std::cin, linea);
+    std::cout &lt;&lt; "Hai scritto: " &lt;&lt; linea &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+            <p class="warn">
+              Se prima di <code>getline</code> avevi usato <code>std::cin &gt;&gt; numero;</code>,
+              potresti dover fare prima <code>std::cin.ignore();</code> per buttare via il newline rimasto nel buffer.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E4 — Perché <code>printf</code> e <code>scanf</code> vogliono formati?</b><br/>
+          <em>Testo:</em> Spiega perché in C <code>printf</code> e <code>scanf</code> usano stringhe di formato (es. <code>"%d"</code>, <code>"%f"</code>) invece di capire da sole i tipi come fa C++.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+          </div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+            <p class="note">
+              In C non esistono gli stream a oggetti come in C++. Le funzioni C sono più “vicine all’hardware” e meno “intelligenti”.
+              <code>printf</code>/<code>scanf</code> non sanno da sole che tipo di variabile stai passando:
+              glielo devi dire tu col formato, e devi anche rispettarlo.
+              Questo è potente ma anche pericoloso: se sbagli formato, hai bug.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>Prossimo passo</b><br/>
+      Ora che sappiamo comunicare con l’utente (chiedere dati e rispondere), siamo pronti per usare quei dati per prendere decisioni.  
+      Nella prossima lezione (Lez6_7) costruiamo i primi <strong>blocchi condizionali</strong>: <code>if</code> / <code>else</code>.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
