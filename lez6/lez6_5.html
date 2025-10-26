@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_5 · Espressioni &amp; Precedenza degli operatori</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_4.html"; }
+    function nextSlide(){ window.location.href = "lez6_6.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a class="active" href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Espressioni, precedenza, associatività, short-circuit</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Obiettivi -->
+    <div class="inner-box box">
+      <h2>Obiettivi della lezione</h2>
+      <ul>
+        <li>Capire cos’è un’<strong>espressione</strong> in C/C++ e cosa significa “valutarla”.</li>
+        <li>Capire la <strong>precedenza</strong> (chi “ha la priorità” tra operatori diversi) e l’<strong>associatività</strong> (da destra o da sinistra).</li>
+        <li>Capire perché “precedenza” ≠ “ordine di valutazione”.</li>
+        <li>Capire lo <strong>short-circuit</strong> degli operatori logici <code>&amp;&amp;</code> e <code>||</code>.</li>
+        <li>Imparare a usare le <strong>parentesi</strong> per evitare ambiguità.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> Se la tua espressione è difficile da leggere a voce, allora è difficile anche per il compilatore? No. Il compilatore capisce sempre. Ma è difficile per gli umani. Allora metti le parentesi.</p>
+    </div>
+
+    <!-- Cos'è un'espressione -->
+    <div class="inner-box box">
+      <h2>Che cos’è un’espressione?</h2>
+      <p>
+        Un’espressione è qualcosa che produce un valore. Per esempio:
+      </p>
+      <ul>
+        <li><code>7</code> → è un valore intero.</li>
+        <li><code>x + 1</code> → somma il valore attuale di <code>x</code> con 1.</li>
+        <li><code>(a &gt; b)</code> → confronta due numeri, risulta vero/falso (<code>true/false</code> in C++, <code>1/0</code> in C tradizionale).</li>
+        <li><code>i++</code> → restituisce il valore vecchio di <code>i</code> e poi incrementa <code>i</code>. Questa è un’espressione che ha anche un <b>effetto collaterale</b>.</li>
+      </ul>
+
+      <p class="note">
+        In C e C++ un’espressione può <b>modificare</b> lo stato del programma mentre viene valutata.  
+        Esempio: <code>x = x + 1</code> è un’espressione il cui valore è il nuovo valore di <code>x</code>, e allo stesso tempo cambia <code>x</code>.
+      </p>
+    </div>
+
+    <!-- Precedenza e associatività -->
+    <div class="inner-box box">
+      <h2>Precedenza e associatività (chi si calcola prima?)</h2>
+
+      <p>
+        Se scrivo <code>a + b * c</code>, chi viene prima?  
+        Regola: <code>*</code> ha precedenza più alta di <code>+</code>. Quindi si calcola prima <code>b * c</code>, poi si somma <code>a</code>.
+      </p>
+
+      <p>
+        Se scrivo <code>a - b - c</code>, l’operatore <code>-</code> ha la stessa precedenza su entrambi i lati.  
+        Allora guardiamo l’<b>associatività</b>: per gli operatori aritmetici binari comuni (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>), l’associatività è <b>da sinistra a destra</b>.  
+        Quindi <code>a - b - c</code> diventa <code>(a - b) - c</code>.
+      </p>
+
+      <p>
+        L’assegnamento <code>=</code> invece è associativo <b>da destra verso sinistra</b>:  
+        <code>a = b = c</code> è interpretato come <code>a = (b = c)</code>.
+      </p>
+
+      <p class="warn">
+        <b>Attenzione:</b> precedenza e associatività dicono come si mettono le parentesi “invisibili”.
+        NON descrivono necessariamente in quale ordine i sottorisultati vengono calcolati a runtime.  
+        Questo è l’<b>ordine di valutazione</b>, ed è un concetto diverso.
+      </p>
+
+      <p class="ok">
+        Regola pratica scolastica / professionale: se una formula è anche un po’ ambigua, <b>metti le parentesi</b>.
+      </p>
+    </div>
+
+    <!-- Tabelle riassuntive precedenze -->
+    <div class="inner-box box">
+      <h2>Riepilogo: precedenza degli operatori principali</h2>
+
+      <h3>Operatori aritmetici e affini</h3>
+      <table>
+        <thead>
+          <tr><th>Rango (alto→basso)</th><th>Operatori</th><th>Significato</th><th>Associatività</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 (più alto qui)</td>
+            <td><code>++x</code>, <code>--x</code>, <code>+x</code>, <code>-x</code></td>
+            <td>pre-incremento, pre-decremento, segno unario +/−</td>
+            <td>da destra a sinistra</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>*</code>, <code>/</code>, <code>%</code></td>
+            <td>moltiplica, dividi, resto</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>+</code>, <code>-</code></td>
+            <td>addizione, sottrazione</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>&lt;&lt;</code>, <code>&gt;&gt;</code></td>
+            <td>shift a sinistra / a destra (bitwise)</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code></td>
+            <td>confronti di ordine</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>==</code>, <code>!=</code></td>
+            <td>uguaglianza / disuguaglianza</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>7 (più basso in questa tabella)</td>
+            <td><code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, ...</td>
+            <td>assegnamento semplice e composto</td>
+            <td>da destra a sinistra</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="note">
+        Qui abbiamo mescolato aritmetici veri e confronti perché in pratica li usi insieme nelle stesse espressioni.
+        Più in alto nella tabella = “si applica prima”.
+      </p>
+
+      <h3>Operatori logici</h3>
+      <table>
+        <thead>
+          <tr><th>Rango (alto→basso)</th><th>Operatori</th><th>Significato</th><th>Associatività</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 (alto)</td>
+            <td><code>!</code></td>
+            <td>NOT logico (nega vero/falso)</td>
+            <td>da destra a sinistra (unario)</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>&amp;&amp;</code></td>
+            <td>AND logico (tutte vere)</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>3 (basso)</td>
+            <td><code>||</code></td>
+            <td>OR logico (almeno una vera)</td>
+            <td>da sinistra a destra</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="ok">
+        Ricorda: <code>&amp;&amp;</code> e <code>||</code> fanno <b>short-circuit</b>.  
+        Se in <code>A &amp;&amp; B</code> <code>A</code> è già falso, <code>B</code> non viene nemmeno valutato.
+        Se in <code>A || B</code> <code>A</code> è già vero, <code>B</code> non viene valutato.
+      </p>
+
+      <h3>Operatori bitwise</h3>
+      <table>
+        <thead>
+          <tr><th>Rango (alto→basso)</th><th>Operatori</th><th>Significato</th><th>Associatività</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 (alto)</td>
+            <td><code>~</code></td>
+            <td>NOT bitwise (inverte i bit)</td>
+            <td>da destra a sinistra (unario)</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>&amp;</code></td>
+            <td>AND bitwise</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>^</code></td>
+            <td>XOR bitwise (1 se i bit sono diversi)</td>
+            <td>da sinistra a destra</td>
+          </tr>
+          <tr>
+            <td>4 (basso)</td>
+            <td><code>|</code></td>
+            <td>OR bitwise</td>
+            <td>da sinistra a destra</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="warn">
+        Attenzione a non confondere:
+        <ul>
+          <li><code>&amp;&amp;</code> (AND logico, booleano, con short-circuit)</li>
+          <li><code>&amp;</code> (AND bitwise, lavora sui singoli bit, niente short-circuit)</li>
+        </ul>
+        Sono simili visivamente ma concettualmente molto diversi.
+      </p>
+    </div>
+
+    <!-- Ordine di valutazione vs precedenza -->
+    <div class="inner-box box">
+      <h2>Attenzione: precedenza ≠ ordine di valutazione</h2>
+
+      <p>
+        La precedenza dice come aggiungere parentesi invisibili.  
+        L’ordine di valutazione dice l’ordine pratico in cui le sotto-espressioni vengono calcolate a runtime.
+      </p>
+
+      <p>
+        Esempio pericoloso:
+      </p>
+<pre><code class="language-cpp">int i = 0;
+int v = i++ + i++;</code></pre>
+
+      <p>
+        Stai usando <code>i</code> con post-incremento due volte nella stessa espressione.
+        Storicamente (C, C++ “vecchio stile”) questo porta a comportamento non definito, cioè il risultato può cambiare a seconda del compilatore.
+      </p>
+
+      <p class="ok">
+        Stile sicuro:
+      </p>
+<pre><code class="language-cpp">int i = 0;
+int a = i++;
+int b = i++;
+int v = a + b;
+</code></pre>
+
+      <p class="note">
+        Messaggio didattico: se un’espressione legge e modifica la stessa variabile più volte in modi complicati, riscrivila.
+      </p>
+    </div>
+
+    <!-- Operatori logici e short-circuit -->
+    <div class="inner-box box">
+      <h2>Operatori logici (<code>&amp;&amp;</code>, <code>||</code>) e short-circuit</h2>
+
+      <p>
+        <code>&amp;&amp;</code> (AND logico) e <code>||</code> (OR logico) lavorano su condizioni booleane.
+        Hanno una proprietà fondamentale: <b>short-circuit</b>.
+      </p>
+
+      <ul>
+        <li><code>A &amp;&amp; B</code> → se <code>A</code> è falso, <code>B</code> non viene proprio calcolato.</li>
+        <li><code>A || B</code> → se <code>A</code> è vero, <code>B</code> non viene calcolato.</li>
+      </ul>
+
+<pre><code class="language-cpp">bool safe_divide(int a, int b){
+    return (b != 0) &amp;&amp; ((a / b) &gt; 2);
+    // Se b == 0, la seconda parte non viene nemmeno provata:
+    // niente divisione per zero.
+}</code></pre>
+
+      <p class="ok">
+        Questo è utilissimo per scrivere controlli di sicurezza: prima verifichi che l’operazione sia lecita,
+        poi la esegui solo se è sicura.
+      </p>
+
+      <p class="warn">
+        Non confondere con <code>&amp;</code> e <code>|</code> singoli: quelli lavorano bit per bit e NON fanno short-circuit.
+      </p>
+    </div>
+
+    <!-- Assegnamento e catene -->
+    <div class="inner-box box">
+      <h2>Assegnamento e catene di assegnamenti</h2>
+
+      <p>
+        <code>=</code> è un operatore che <b>ritorna un valore</b>.  
+        Se scrivi <code>x = 5</code>, questa espressione “vale” 5 (oltre a mettere 5 in <code>x</code>).
+      </p>
+
+<pre><code class="language-cpp">int a, b, c;
+a = b = c = 0; // equivalente a: a = (b = (c = 0));</code></pre>
+
+      <p>
+        L’uso a catena è comodo per inizializzare più variabili con lo stesso valore.
+        Ma dentro un <code>if</code> può creare bug:
+      </p>
+
+<pre><code class="language-cpp">int x = 0;
+if (x = 5) {
+    // ATTENZIONE: qui stai assegnando 5 a x,
+    // poi controlli "if(5)" che è considerato vero.
+}
+</code></pre>
+
+      <p class="warn">
+        Classico errore: usare <code>=</code> (assegna) invece di <code>==</code> (confronta).  
+        Allenati a riconoscere subito questa differenza.
+      </p>
+    </div>
+
+    <!-- Parentesi -->
+    <div class="inner-box box">
+      <h2>Parentesi = leggibilità e sicurezza</h2>
+
+      <p>
+        Anche se sai che <code>*</code> ha precedenza su <code>+</code>, è spesso meglio scrivere comunque le parentesi:
+        <code>a + (b * c)</code>.
+      </p>
+
+      <ul>
+        <li>Leggibilità per chi legge dopo.</li>
+        <li>Meno errori quando aggiungi pezzi nuovi all’espressione in futuro.</li>
+        <li>Debug più semplice: puoi valutare mentalmente i blocchi tra parentesi.</li>
+      </ul>
+
+      <p class="ok">
+        Se per spiegare a parole un’espressione devi dire “prima fai questo pezzo, poi questo…”, allora metti le parentesi
+        esattamente così nel codice.
+      </p>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+
+        <li>
+          <b>E1 — Precedenza di <code>*</code> e <code>+</code></b><br/>
+          <em>Testo:</em> Supponi <code>int a=2, b=3, c=4;</code>. Quanto vale <code>a + b * c</code>? Spiega il perché usando la tabella di precedenza.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+            <p class="note"><b>Soluzione:</b><br/>
+              <code>*</code> ha precedenza più alta di <code>+</code>.  
+              <code>b * c = 3 * 4 = 12</code>.  
+              Poi <code>a + 12 = 2 + 12 = 14</code>.  
+              Risultato: 14.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — Associatività dell’assegnamento</b><br/>
+          <em>Testo:</em> Cosa fanno queste righe?
+<pre><code class="language-cpp">int x, y;
+x = y = 10;
+</code></pre>
+          Perché è da destra verso sinistra?
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+            <p class="ok"><b>Soluzione:</b><br/>
+              Prima si fa <code>y = 10</code> (che “vale” 10).  
+              Poi si fa <code>x = (quel 10)</code>, quindi x diventa 10.  
+              Quindi sia <code>x</code> sia <code>y</code> valgono 10.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Short-circuit AND</b><br/>
+          <em>Testo:</em> Perché questo codice è “sicuro” rispetto alla divisione per zero?
+<pre><code class="language-cpp">bool safe_divide(int a, int b){
+    return (b != 0) &amp;&amp; ((a / b) &gt; 2);
+}
+</code></pre>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+            <p class="note"><b>Soluzione:</b><br/>
+              In <code>A &amp;&amp; B</code>, se <code>A</code> è falso, <code>B</code> non viene calcolato.  
+              Qui <code>A</code> è <code>(b != 0)</code>.  
+              Se <code>b == 0</code>, <code>A</code> è falso e <code>(a/b)</code> non viene mai eseguito, quindi niente crash.</p>
+          </div>
+        </li>
+
+        <li>
+          <b>E4 — Uso pericoloso di <code>i++</code></b><br/>
+          <em>Testo:</em> Perché <code>int v = i++ + i++;</code> è sconsigliato?
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+          </div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+            <p class="warn"><b>Discussione:</b><br/>
+              Stai modificando e leggendo la stessa variabile più volte nella stessa espressione, e l’ordine interno non è chiarissimo/definito allo stesso modo da tutti i compilatori.  
+              Risultato: comportamento non affidabile. Meglio spezzare in più righe chiare.</p>
+          </div>
+        </li>
+
+        <li>
+          <b>E5 — Parentesi per chiarezza</b><br/>
+          <em>Testo:</em> Aggiungi parentesi a <code>a + b * c - d / e</code> per renderla leggibile anche a un compagno che non ricorda tutte le precedenze.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e5" onclick="toggleBox('btn-e5','box-e5')">Mostra ▼</button>
+          </div>
+          <div id="box-e5" style="display:none;margin-top:8px">
+            <p class="ok"><b>Possibile risposta:</b><br/>
+              <code>(a + (b * c)) - (d / e)</code><br/>
+              Ora è chiarissimo: prima calcoli <code>b*c</code> e <code>d/e</code>, poi fai la somma e la sottrai.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>In sintesi operativa</b><br/>
+      <ul>
+        <li>La precedenza dice come si raggruppa, non per forza l’ordine pratico di calcolo.</li>
+        <li><code>&amp;&amp;</code> e <code>||</code> fanno short-circuit (fondamentale per controlli di sicurezza).</li>
+        <li>Gli operatori bitwise (<code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>) lavorano sui bit, non su “vero/falso”.</li>
+        <li>Evita espressioni con effetti collaterali multipli sulla stessa variabile.</li>
+        <li>Le parentesi sono tue amiche: rendono ovvio cosa volevi calcolare.</li>
+      </ul>
+      Prossima lezione (Lez6_6): <b>I/O di base</b> in C e C++ (lettura da tastiera, stampa a schermo).
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
