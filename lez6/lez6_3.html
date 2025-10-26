@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3BIA – Lez6_3 · Tipi di dato & letterali (C++ e C)</title>
+  <title>3BIA – Lez6_3 · Tipi di dato &amp; letterali (C++ e C)</title>
 
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../default.css">
@@ -78,226 +78,454 @@
       <ul>
         <li>Conoscere i <strong>tipi primitivi</strong> (interi, reali, char, booleani) in C++ e in C.</li>
         <li>Capire <strong>letterali</strong> (come si scrivono numeri/char/float nel codice) e i <strong>suffissi</strong>.</li>
-        <li>Comprendere in modo operativo: <strong>dimensioni</strong> (sizeof), <strong>intervalli</strong>, <strong>overflow</strong>, <strong>promozioni</strong>.</li>
-        <li>Sapere quando usare i <strong>tipi a larghezza fissa</strong> (<code>&lt;cstdint&gt;</code>/<code>stdint.h</code>).</li>
+        <li>Comprendere in modo operativo: <strong>dimensioni</strong> (<code>sizeof</code>), <strong>intervalli</strong>, <strong>overflow</strong>, <strong>promozioni</strong>.</li>
+        <li>Capire cosa fa il tipo dedotto <strong><code>auto</code></strong> in C++ (e perché NON è “dinamico”).</li>
+        <li>Sapere quando usare i <strong>tipi a larghezza fissa</strong> (<code>&lt;cstdint&gt;</code>/<code>stdint.h</code>) per portabilità reale.</li>
       </ul>
-      <p class="ok"><b>Idea chiave:</b> le dimensioni sono in parte <em>implementation-defined</em>; per portabilità: misura con <code>sizeof</code> e preferisci i tipi “a bit fissi” quando serve.</p>
+      <p class="ok"><b>Idea chiave:</b> in C e C++ il tipo non è un optional: ogni variabile occupa una certa quantità di byte e interpreta quei byte in un certo modo. Capire il tipo = capire come i bit diventano un numero, un carattere, un booleano, ecc.</p>
     </div>
 
-    <!-- C++ -->
+    <!-- C++ tipi primitivi -->
     <div class="inner-box box">
       <h2>Sezione C++ — panoramica dei tipi primitivi</h2>
       <ul>
         <li><b>Interi con segno</b>: <code>short</code>, <code>int</code>, <code>long</code>, <code>long long</code></li>
         <li><b>Interi senza segno</b>: <code>unsigned short</code>, <code>unsigned int</code>, <code>unsigned long</code>, <code>unsigned long long</code></li>
-        <li><b>Reali</b>: <code>float</code> (≈ 7 cifre), <code>double</code> (≈ 15), <code>long double</code> (implementazione-dip.)</li>
-        <li><b>Caratteri</b>: <code>char</code> (signed/unsigned è implementazione-dip.), <code>wchar_t</code>, <code>char16_t</code>, <code>char32_t</code> (Unicode)</li>
+        <li><b>Reali (virgola mobile)</b>: <code>float</code> (≈ 7 cifre decimali di precisione), <code>double</code> (≈ 15), <code>long double</code> (spesso uguale a <code>double</code> ma può essere più preciso, dipende dalla piattaforma)</li>
+        <li><b>Caratteri</b>: <code>char</code> (1 byte), più varianti “larghe” per Unicode: <code>wchar_t</code>, <code>char16_t</code>, <code>char32_t</code></li>
         <li><b>Booleano</b>: <code>bool</code> con costanti <code>true</code>/<code>false</code></li>
       </ul>
-      <p class="note">Dimensioni tipiche (non garantite): su molte piattaforme 64-bit (LP64) <code>int</code>=32 bit, <code>long</code>=64 bit, <code>long long</code>=64 bit.</p>
+
+      <p class="note">
+        Le dimensioni <em>non sono fissate nello standard</em> (lo standard ISO C++ lascia libertà ai compilatori), ma su molte macchine moderne a 64 bit:<br/>
+        <code>int</code> è 32 bit,<br/>
+        <code>long</code> è 32 o 64 bit a seconda del sistema,<br/>
+        <code>long long</code> è 64 bit.<br/>
+        È fondamentale non dare per scontato “un int è sempre 32 bit”: su sistemi embedded non è detto.
+      </p>
+
 <pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;limits&gt;
+
 int main(){
     std::cout &lt;&lt; "sizeof(int) = " &lt;&lt; sizeof(int) &lt;&lt; " byte\n";
-    std::cout &lt;&lt; "int min..max = " 
+    std::cout &lt;&lt; "int min..max = "
               &lt;&lt; std::numeric_limits&lt;int&gt;::min() &lt;&lt; ".."
               &lt;&lt; std::numeric_limits&lt;int&gt;::max() &lt;&lt; "\n";
 }</code></pre>
-      <p class="tip">Usa <code>std::numeric_limits&lt;T&gt;</code> per conoscere intervalli e proprietà del tipo <code>T</code>.</p>
+
+      <p class="tip">
+        <code>sizeof(T)</code> dice quanti byte occupa il tipo <code>T</code> sulla piattaforma attuale.<br/>
+        <code>std::numeric_limits&lt;T&gt;</code> ti dice l’intervallo di valori ammesso e altre proprietà (overflow, infinities per i float, ecc.).
+      </p>
     </div>
 
-    <!-- C -->
+    <!-- auto in C++ -->
+    <div class="inner-box box">
+      <h2>Il tipo <code>auto</code> in C++ (deduzione del tipo)</h2>
+
+      <p>
+        In C++ possiamo scrivere <code>auto</code> al posto del tipo esplicito. Questo NON significa “tipo variabile che cambia”.
+        Significa: <strong>lascia che il compilatore indovini il tipo esatto a partire dal valore con cui inizializzo la variabile</strong>.
+      </p>
+
+<pre><code class="language-cpp">auto a = 5;        // a diventa int
+auto b = 3.14;     // b diventa double
+auto c = 1u;       // c diventa unsigned int
+auto d = true;     // d diventa bool
+
+// devo inizializzare: "auto x;" da solo NON va bene
+// perché il compilatore non ha nulla da cui dedurre il tipo.
+</code></pre>
+
+      <p>
+        Dopo che il compilatore ha dedotto il tipo, quel tipo è <strong>fisso</strong>. Esempio: se <code>a</code> è dedotto come
+        <code>int</code>, non puoi poi assegnargli una stringa; <code>a</code> resta un <code>int</code> per sempre.
+        Quindi <code>auto</code> in C++ non è “dinamico a runtime” (come succede in linguaggi come Python o JavaScript),
+        è solo una scorciatoia di scrittura <em>a compile-time</em>.
+      </p>
+
+      <p class="note">
+        Perché esiste <code>auto</code>?<br/>
+        - Per evitare di scrivere tipi lunghissimi (iteratori STL, tipi template complicati).<br/>
+        - Per ridurre gli errori di copia/incolla dei tipi.<br/>
+        - Per legare in modo chiaro una variabile al <em>tipo reale</em> dell’espressione che restituisce una funzione.
+      </p>
+
+<pre><code class="language-cpp">std::vector&lt;long long&gt; v = {10,20,30};
+
+// senza auto:
+std::vector&lt;long long&gt;::iterator it = v.begin();
+
+// con auto:
+auto it2 = v.begin();  // it2 ha esattamente il tipo corretto di v.begin()
+</code></pre>
+
+      <p class="warn">
+        Attenzione: <code>auto</code> rende il codice più conciso, ma può anche nascondere i tipi se abusato.
+        Nelle prime esercitazioni è utile scrivere il tipo esplicito (<code>int</code>, <code>double</code>, …) per allenare la mente
+        a riconoscere i tipi, e usare <code>auto</code> quando altrimenti dovresti scrivere cose lunghissime.
+      </p>
+
+      <p class="note">
+        In linguaggio C “classico”, <code>auto</code> esiste come <em>storage class</em> storica, ma significa “variabile automatica locale”
+        (lo standard C usa <code>auto</code> con quel senso). Nella pratica moderna in C non lo usiamo quasi mai e non fa deduzione del tipo.
+        La “deduzione del tipo” come vista sopra è una caratteristica moderna del C++, non del C tradizionale.
+      </p>
+    </div>
+
+    <!-- Sezione C -->
     <div class="inner-box box">
       <h2>Sezione C — panoramica dei tipi primitivi</h2>
       <ul>
         <li><b>Interi con segno</b>: <code>short</code>, <code>int</code>, <code>long</code>, <code>long long</code></li>
         <li><b>Interi senza segno</b>: <code>unsigned short</code>, <code>unsigned int</code>, <code>unsigned long</code>, <code>unsigned long long</code></li>
         <li><b>Reali</b>: <code>float</code>, <code>double</code>, <code>long double</code></li>
-        <li><b>Caratteri</b>: <code>char</code> (signed/unsigned implementazione-dip.)</li>
-        <li><b>Booleano</b>: <code>_Bool</code> (da C99) oppure <code>#include &lt;stdbool.h&gt;</code> per <code>bool</code>/<code>true</code>/<code>false</code></li>
+        <li><b>Caratteri</b>: <code>char</code> (1 byte)</li>
+        <li><b>Booleano</b>: a partire da C99 esiste <code>_Bool</code>; includendo <code>&lt;stdbool.h&gt;</code> hai <code>bool</code>, <code>true</code>, <code>false</code></li>
       </ul>
+
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;limits.h&gt;
+
 int main(void){
     printf("sizeof(int) = %zu byte\n", sizeof(int));
     printf("int min..max = %d..%d\n", INT_MIN, INT_MAX);
+    return 0;
 }</code></pre>
-      <p class="note">Costanti min/max in C: <code>limits.h</code> per interi; <code>float.h</code> per floating-point.</p>
+
+      <p class="note">
+        <b>Importante:</b> in C non esiste (in modo standard “vecchio stile”) la deduzione del tipo come in C++ con <code>auto</code>.
+        Devi dichiarare il tipo esplicitamente. Questo aiuta a vedere chiaramente “quanti byte sto usando?”.
+      </p>
+
+      <p class="warn">
+        Variabili locali in C non inizializzate contengono spazzatura di memoria. Usarle prima di assegnare un valore definito
+        porta a comportamenti imprevedibili. Inizializza sempre.
+      </p>
     </div>
 
     <!-- Tipi a larghezza fissa -->
     <div class="inner-box box">
-      <h2>Tipi a larghezza fissa (portabilità)</h2>
+      <h2>Tipi a larghezza fissa (portabilità vera)</h2>
       <ul>
         <li><b>C++</b>: <code>#include &lt;cstdint&gt;</code> → <code>std::int8_t</code>, <code>std::uint32_t</code>, <code>std::int64_t</code>, …</li>
         <li><b>C</b>: <code>#include &lt;stdint.h&gt;</code> → <code>int8_t</code>, <code>uint32_t</code>, <code>int64_t</code>, …</li>
-        <li><b>Quando usarli</b>: formati di file binari, protocolli, interfacce che richiedono dimensioni precise.</li>
-        <li><b>Altri tipi utili</b>: <code>size_t</code> (dimensioni/indici), <code>ptrdiff_t</code> (differenza tra puntatori), <code>uint_fastXX_t</code>/<code>uint_leastXX_t</code>.</li>
+        <li><b>Perché sono utili?</b> Perché garantiscono il numero di bit (8,16,32,64). Questo è fondamentale se salvi su file binari o mandi dati sulla rete e vuoi che il formato resti lo stesso su tutte le macchine.</li>
+        <li><b>Altri tipi standardizzati</b>: <code>size_t</code> (“taglia”, usato per lunghezze e indici di array/vettori), <code>ptrdiff_t</code> (differenza tra due puntatori).</li>
       </ul>
-      <p class="ok"><b>Regola pratica:</b> per contatori generici usa <code>int</code>; per formati stabili su disco/rete usa <code>uint32_t</code>, <code>uint64_t</code>, ecc.</p>
+
+      <p class="ok">
+        Regola pratica:<br/>
+        - Per contatori normali nel codice quotidiano: <code>int</code> va benissimo.<br/>
+        - Per file binari, protocolli, salvataggi seri: preferisci <code>uint32_t</code>, <code>uint64_t</code>, ecc., così sei esplicito.
+      </p>
+
+      <p class="warn">
+        Se fai finta che “<code>long</code> è sempre 32 bit”, prima o poi soffri. Ad esempio, su Linux 64-bit <code>long</code> è spesso 64 bit,
+        su Windows 64-bit <code>long</code> può essere 32 bit. Il codice che salva <code>long</code> direttamente su file binario può diventare incompatibile tra i due mondi.
+      </p>
     </div>
 
-    <!-- Letterali numerici -->
+    <!-- Letterali interi -->
     <div class="inner-box box">
       <h2>Letterali interi (basi &amp; suffissi)</h2>
+
+      <p>
+        Un <b>letterale</b> è un valore scritto “in chiaro” nel codice sorgente. Es: <code>42</code> è un letterale intero,
+        <code>3.14</code> è un letterale floating-point, <code>'A'</code> è un letterale char.
+      </p>
+
       <ul>
-        <li><b>Basi</b>: decimale (es. <code>42</code>), esadecimale (<code>0x2A</code>), ottale (<code>052</code>), <b>binario</b> (<code>0b101010</code> in C++14+; in C standard solo da C23, prima è estensione del compilatore).</li>
-        <li><b>Separatore cifre (C++14+)</b>: apice singolo <code>'</code> → es. <code>1'000'000</code> (migliora la leggibilità).</li>
-        <li><b>Suffissi</b>: <code>u/U</code> (unsigned), <code>l/L</code> (long), <code>ll/LL</code> (long long). Possono combinarsi: <code>42u</code>, <code>0xFFu</code>, <code>10LL</code>, <code>7uLL</code>.</li>
+        <li><b>Basi</b>:<br/>
+          decimale → <code>42</code><br/>
+          esadecimale → <code>0x2A</code><br/>
+          ottale → <code>052</code><br/>
+          binario → <code>0b101010</code> (C++14+; in C è standardizzato in C23, prima era estensione)
+        </li>
+        <li><b>Separatore cifre (C++14+)</b>: puoi scrivere <code>1'000'000</code> invece di <code>1000000</code> per leggibilità.</li>
+        <li><b>Suffissi</b> per dire al compilatore “attenzione, questo è unsigned / long / long long”:<br/>
+          <code>u/U</code> → unsigned<br/>
+          <code>l/L</code> → long<br/>
+          <code>ll/LL</code> → long long<br/>
+          Puoi combinarli: <code>42u</code>, <code>42UL</code>, <code>7uLL</code>…
+        </li>
       </ul>
+
       <table>
         <thead><tr><th>Esempio</th><th>Significato</th><th>Tipo risultante (tipico)</th></tr></thead>
         <tbody>
-          <tr><td><code>42</code></td><td>decimale</td><td><code>int</code> (se ci sta)</td></tr>
-          <tr><td><code>0x2A</code></td><td>esadecimale</td><td><code>int</code> o <code>unsigned int</code> (dipende dall’ampiezza)</td></tr>
-          <tr><td><code>0b101010</code></td><td>binario</td><td><code>int</code> (C++14+; in C solo C23)</td></tr>
-          <tr><td><code>42u</code></td><td>unsigned</td><td><code>unsigned int</code></td></tr>
-          <tr><td><code>42L</code></td><td>long</td><td><code>long</code></td></tr>
-          <tr><td><code>42LL</code></td><td>long long</td><td><code>long long</code></td></tr>
+          <tr><td><code>42</code></td><td>Intero decimale</td><td><code>int</code> (se ci sta in int)</td></tr>
+          <tr><td><code>0x2A</code></td><td>Esadecimale (42)</td><td><code>int</code> o <code>unsigned int</code> a seconda dell’ampiezza</td></tr>
+          <tr><td><code>0b101010</code></td><td>Binario (42)</td><td><code>int</code> (C++14+)</td></tr>
+          <tr><td><code>42u</code></td><td>Intero “unsigned”</td><td><code>unsigned int</code></td></tr>
+          <tr><td><code>42L</code></td><td>Intero “long”</td><td><code>long</code></td></tr>
+          <tr><td><code>42LL</code></td><td>Intero “long long”</td><td><code>long long</code></td></tr>
         </tbody>
       </table>
-      <p class="warn"><b>Attenzione:</b> se mescoli <em>signed</em> e <em>unsigned</em> nella stessa espressione, può avvenire una <em>promozione</em> a <code>unsigned</code> con effetti inattesi sui confronti.</p>
+
+      <p class="warn">
+        <b>Mix signed/unsigned:</b><br/>
+        Se metti insieme un <code>int</code> negativo e un <code>unsigned int</code> positivo nella stessa operazione o confronto,
+        il negativo può “trasformarsi” in un numero enorme positivo (conversione a unsigned). Questo porta a confronti strani.
+      </p>
     </div>
 
+    <!-- Letterali floating point -->
     <div class="inner-box box">
-      <h2>Letterali floating-point</h2>
+      <h2>Letterali floating-point (virgola mobile)</h2>
       <ul>
-        <li><b>Forme</b>: decimale (<code>3.14</code>), esponenziale (<code>1.0e-3</code>), con o senza parte intera (<code>.5</code>, <code>2.</code> in C++).</li>
-        <li><b>Tipo di default</b>: <code>double</code>.</li>
-        <li><b>Suffissi</b>: <code>f/F</code> → <code>float</code>, <code>l/L</code> → <code>long double</code>. Esempi: <code>3.14f</code>, <code>2.0L</code>.</li>
+        <li><b>Forme:</b> <code>3.14</code>, <code>1.0e-3</code> (cioè 0.001), <code>.5</code>, <code>2.</code></li>
+        <li><b>Tipo di default:</b> senza suffissi è <code>double</code>.</li>
+        <li><b>Suffissi:</b> <code>f</code>/<code>F</code> → <code>float</code>, <code>l</code>/<code>L</code> → <code>long double</code>.</li>
       </ul>
-<pre><code class="language-cpp">// C++: esempi di letterali
-double a = 3.14;
-float  b = 3.14f;      // f → float
-auto   c = 1.0e-3;     // double
-long double d = 2.0L;  // L → long double</code></pre>
-      <p class="note">Confronti tra floating-point: evita <code>==</code> su valori calcolati; usa una tolleranza (epsilon). Ne parleremo nelle espressioni.</p>
+
+<pre><code class="language-cpp">// C++ esempi
+double a = 3.14;   // 3.14 è double
+float  b = 3.14f;  // 'f' forza il tipo float
+auto   c = 1.0e-3; // 1.0e-3 è double, quindi c è double
+long double d = 2.0L; // 'L' forza long double
+</code></pre>
+
+      <p class="note">
+        I numeri in virgola mobile sono approssimati in binario. Due numeri “che sembrano uguali”
+        potrebbero differire di pochissimo nei bit. Per questo normalmente NON si confrontano con <code>==</code>
+        dopo calcoli, ma si controlla se la differenza assoluta è minore di una certa soglia (“epsilon”).
+      </p>
     </div>
 
     <!-- Caratteri e escape -->
     <div class="inner-box box">
-      <h2>Letterali carattere &amp; stringa, escape</h2>
+      <h2>Letterali carattere &amp; stringa, sequenze di escape</h2>
       <ul>
-        <li><b>Char</b>: <code>'A'</code>, <code>'\n'</code>, <code>'\t'</code>, <code>'\\'</code>, <code>'\''</code>, <code>'\"'</code>, <code>'\x41'</code> (hex).</li>
-        <li><b>Stringhe</b>: <code>"Ciao"</code> è un array di <code>char</code> terminato da <code>'\0'</code>. In C++ spesso gestite via <code>std::string</code> (più avanti).</li>
-        <li><b>Unicode (C++)</b>: prefissi <code>u</code>, <code>U</code>, <code>L</code> per <code>char16_t</code>/<code>char32_t</code>/<code>wchar_t</code>: <code>u'Ā'</code>, <code>U"\u0100"</code>.</li>
+        <li><b>Carattere singolo</b>: <code>'A'</code>, <code>'\n'</code> (newline), <code>'\t'</code> (tab), <code>'\\'</code> (backslash), <code>'\''</code> (apostrofo), <code>'\"'</code> (virgolette), <code>'\x41'</code> (esadecimale).</li>
+        <li><b>Stringa</b>: <code>"Ciao"</code> è una sequenza di <code>char</code> terminata da <code>'\0'</code> (carattere NUL). In C++ useremo spesso <code>std::string</code> che gestisce dinamicamente la lunghezza e semplifica molte operazioni.</li>
+        <li><b>Unicode (C++)</b>: prefissi <code>u</code>, <code>U</code>, <code>L</code> per caratteri wide/unicode: <code>u'Ā'</code>, <code>U"\u0100"</code>.</li>
       </ul>
-<pre><code class="language-c">// C: alcune escape comuni
-printf("ciao\tmondo\n");   // \t = tab, \n = newline
-printf("Virgolette: \"test\" e backslash: \\\n");</code></pre>
-      <p class="warn"><b>Signedness di <code>char</code>:</b> in C e C++ <code>char</code> può essere signed o unsigned a seconda del compilatore/piattaforma. Per valori 0..255 preferisci <code>unsigned char</code>.</p>
+
+<pre><code class="language-c">// C: esempi di escape
+printf("ciao\tmondo\n");   // \t = tab orizzontale, \n = newline
+printf("Virgolette: \"test\" e backslash: \\\n");
+</code></pre>
+
+      <p class="warn">
+        In C e C++ il tipo <code>char</code> può essere <em>signed</em> o <em>unsigned</em> a seconda del compilatore/piattaforma.
+        Se stai manipolando byte “puri” (dati binari, valori 0..255) e non caratteri testuali,
+        è spesso più sicuro usare <code>unsigned char</code> per evitare problemi con valori negativi.
+      </p>
     </div>
 
     <!-- Promozioni e conversioni -->
     <div class="inner-box box">
       <h2>Promozioni e conversioni: cosa succede “in mezzo”</h2>
+
+      <p>
+        Quando fai un’espressione come <code>a + b</code> e <code>a</code> e <code>b</code> non hanno lo stesso tipo,
+        il compilatore deve scegliere un tipo comune per eseguire l’operazione. Questo passaggio di “accordo”
+        tra tipi diversi si chiama <b>promozione / conversione</b>.
+      </p>
+
       <ul>
-        <li><b>Integer promotions</b>: tipi interi “piccoli” (<code>char</code>, <code>short</code>) si promuovono ad almeno <code>int</code> nelle espressioni.</li>
-        <li><b>Usual arithmetic conversions</b>: quando combini tipi diversi, si convertono a un tipo comune (spesso verso quello “più grande” o unsigned).</li>
-        <li><b>Narrowing</b> (C++): assegnare un valore “grande” a un tipo “più piccolo” può perdere informazione. La <b>brace-init</b> (<code>int x{3.14}</code>) <em>impedisce</em> narrowing a compile-time.</li>
-        <li><b>Overflow</b>: sugli interi <em>signed</em> è <b>undefined behavior</b>; sugli <em>unsigned</em> avviene modulo 2<sup>n</sup>.</li>
+        <li><b>Integer promotions</b>: tipi interi piccoli (<code>char</code>, <code>short</code>) vengono “promossi” almeno a <code>int</code> prima del calcolo. Quindi l’operazione aritmetica spesso avviene come se tutto fosse <code>int</code> o più grande.</li>
+
+        <li><b>Usual arithmetic conversions</b>: se mescoli tipi diversi (es. <code>unsigned int</code> e <code>int</code>, oppure <code>int</code> e <code>double</code>), il compilatore converte entrambi verso un tipo “più capiente” o “più generale”. Questo può cambiare il risultato se non stai attento, specialmente con <code>unsigned</code>.</li>
+
+        <li><b>Narrowing</b> (C++): quando provi a infilare un valore “grande/preciso” in un tipo “più piccolo/meno preciso”, rischi di perdere informazione. Esempi:
+          <ul>
+            <li>da <code>double</code> a <code>int</code>: perdi la parte decimale;</li>
+            <li>da <code>long long</code> (64 bit) a <code>int</code> (32 bit): se il numero è troppo grande, viene tagliato;</li>
+            <li>da un numero negativo a un <code>unsigned int</code>: il valore diventa un numero enorme positivo (interpretazione modulo 2^N).</li>
+          </ul>
+          La sintassi con le graffe <code>{}</code> in C++ è pensata per <strong>bloccare il narrowing sospetto</strong> al momento della compilazione.
+        </li>
+
+        <li><b>Overflow</b>: se superi l’intervallo del tipo:
+          <ul>
+            <li>per gli interi <em>unsigned</em> l’overflow “torna a zero” modulo 2<sup>N</sup> (comportamento definito);</li>
+            <li>per gli interi <em>signed</em> l’overflow è comportamento <strong>non definito</strong>: il programma può fare qualunque cosa, anche sbagliata in modo imprevedibile.</li>
+          </ul>
+        </li>
       </ul>
+
 <pre><code class="language-cpp">// Esempi C++ di promozioni/narrowing
 unsigned int u = 1u;
 int          s = -1;
-std::cout &lt;&lt; (s &lt; u) &lt;&lt; "\n"; // true? Attenzione: s viene convertito a unsigned!
+std::cout &lt;&lt; (s &lt; u) &lt;&lt; "\n"; 
+// ATTENZIONE: s viene convertito a unsigned ⇒ confronto sorprendente!
 
 int a = 300;
-unsigned char b = a;     // narrowing: possibile perdita (b può valere 44 su 8 bit)
-int c{3.14};             // ERROR in C++: brace-init blocca narrowing</code></pre>
-      <p class="ok"><b>Regole d’oro:</b> evita di mescolare signed/unsigned; scegli un tipo “sufficiente” a contenere i calcoli; usa brace-init per intercettare errori in C++.</p>
+unsigned char b = a;   // narrowing: se unsigned char è 8 bit, b può diventare 44
+int c{3.14};           // ERRORE: brace-init blocca il narrowing (perdita di decimali)
+</code></pre>
+
+      <p class="ok">
+        Regole d’oro operative:<br/>
+        • Evita di mischiare <code>signed</code> e <code>unsigned</code> nella stessa espressione quando puoi.<br/>
+        • Scegli tipi abbastanza grandi per contenere i calcoli (es. usa <code>int</code> o <code>long long</code> invece di <code>char</code> per contare).<br/>
+        • In C++ inizializza con <code>{}</code> per farti avvisare dal compilatore se rischi perdita di informazione.
+      </p>
     </div>
 
-    <!-- Esempi sintetici C++ e C -->
+    <!-- Esempi comparativi -->
     <div class="inner-box box">
       <h2>Esempi rapidi (C++ → C)</h2>
+
       <h3>C++</h3>
 <pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;cstdint&gt;
+#include &lt;vector&gt;
 
 int main(){
     std::uint32_t n = 0xFFu;   // 255 in esadecimale
-    auto big = 1'000'000;      // separatore (C++14+)
+    auto big = 1'000'000;      // separatore leggibile (C++14+), tipo dedotto: int
     bool ok = true;
 
+    std::vector&lt;long long&gt; v = {10,20,30};
+    auto it = v.begin();       // 'auto' deduce il tipo dell'iteratore
+
     std::cout &lt;&lt; n &lt;&lt; " " &lt;&lt; big &lt;&lt; " " &lt;&lt; ok &lt;&lt; "\n";
-}</code></pre>
-      <h3>C (equivalente)</h3>
+    (void)it; // per evitare warning "unused"
+}
+</code></pre>
+
+      <h3>C (equivalente “concettuale”)</h3>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;stdint.h&gt;
 #include &lt;stdbool.h&gt;
 
 int main(void){
-    uint32_t n = 0xFFu;   // 255
-    int big = 1000000;    // niente separatore in C "classico"
-    bool ok = true;
+    uint32_t n = 0xFFu;    // 255
+    int big = 1000000;     // niente separatore ' per le cifre in C classico
+    bool ok = true;        // da &lt;stdbool.h&gt;
 
     printf("%u %d %d\n", n, big, ok);
     return 0;
-}</code></pre>
-      <p class="note">In C:: <code>stdbool.h</code> fornisce <code>bool</code>, <code>true</code>, <code>false</code> come alias di <code>_Bool</code> e 0/1.</p>
+}
+</code></pre>
+
+      <p class="note">
+        Osservazioni:<br/>
+        • In C++ usiamo <code>auto</code> per evitare di scrivere tipi lunghissimi.<br/>
+        • In C dobbiamo sempre scrivere il tipo esplicito.<br/>
+        • In C++ <code>std::vector&lt;...&gt;</code> è un contenitore dinamico pronto all’uso; in C useremmo tipicamente array statici o memoria dinamica manualmente gestita (più avanti).
+      </p>
     </div>
 
     <!-- Pitfall -->
     <div class="inner-box box">
       <h2>Pitfall comuni (e rimedi pratici)</h2>
       <ul>
-        <li><strong>Narrowing silenzioso</strong> (perdita di dati). <br/><br/><span class="ok">C++: usa <code>{}</code> per inizializzare; C: verifica range prima di assegnare.</span></li>
-        <li><strong>Signed vs unsigned</strong> nei confronti/aritmetica. <br/><br/><span class="ok">Evita mix; se serve, converti esplicitamente allo stesso tipo.</span></li>
-        <li><strong>Assumere dimensioni fisse</strong> di <code>int/long</code>. <br/><br/><span class="ok">Controlla con <code>sizeof</code> o usa <code>stdint.h</code>/<code>cstdint</code>.</span></li>
-        <li><strong>Uso improprio di <code>std::endl</code></strong> per andare a capo. <br/><br/><span class="ok">Preferisci <code>'\n'</code>; <code>std::endl</code> fa anche flush (più lento).</span></li>
-        <li><strong><code>char</code> negativo</strong> usato come indice/byte. <br/><br/><span class="ok">Per dati binari usa <code>unsigned char</code>.</span></li>
+        <li><strong>Narrowing silenzioso</strong> (perdita di dati) quando assegni un <code>double</code> a un <code>int</code> o un intero grande a un tipo più piccolo.<br/><br/><span class="ok">In C++: usa <code>{}</code> per inizializzare, così il compilatore ti blocca se c’è perdita di informazione. In C: controlla tu manualmente che il valore rientri nel range.</span></li>
+
+        <li><strong>Signed vs unsigned</strong> nei confronti</li>
+        <ul>
+          <li>Mischiare <code>int</code> negativi e <code>unsigned int</code> può produrre risultati “a sorpresa”.</li>
+          <li><span class="ok">Tieni i contatori tutti <code>unsigned</code> se contano cose che non possono essere negative, oppure tutti <code>int</code> se fai calcoli con valori negativi.</span></li>
+        </ul>
+
+        <li><strong>Assumere che <code>int</code> o <code>long</code> abbiano sempre la stessa dimensione</strong> su tutte le piattaforme.<br/><br/><span class="ok">Quando il formato di memorizzazione deve essere identico (file binari, rete), usa i tipi a larghezza fissa da <code>stdint.h</code>/<code>cstdint</code> (<code>uint32_t</code>, <code>int64_t</code>, ...).</span></li>
+
+        <li><strong>Uso di <code>auto</code> senza capire il tipo reale</strong> (C++).<br/><br/><span class="ok">Se <code>auto v = 3.14;</code>, <code>v</code> è un <code>double</code>. Se tu “pensavi int”, potresti poi sorprenderti nei calcoli. Controlla mentalmente che tipo viene dedotto.</span></li>
+
+        <li><strong>Overflow degli interi</strong> (soprattutto signed)</li>
+        <ul>
+          <li>Se superi il massimo di un <code>int</code> firmato, il comportamento del programma è non definito (può fare qualunque cosa).</li>
+          <li><span class="ok">Usa tipi più grandi (<code>long long</code>, <code>uint64_t</code>) se ti serve contare cose molto grandi.</span></li>
+        </ul>
       </ul>
     </div>
 
     <!-- Esercizi -->
     <div class="inner-box box">
       <h2>Esercizi lampo (con soluzione a comparsa)</h2>
+
       <ol>
         <li><b>E1 — Intervalli e sizeof</b><br/>
           <em>Testo:</em> Scrivi un programmino (C++ o C) che stampi <code>sizeof</code> e min/max di <code>short</code>, <code>int</code>, <code>long</code>.
           <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
           <div id="box-e1" style="display:none;margin-top:8px">
 <pre><code class="language-cpp">// C++ (versione sintetica)
-#include &lt;iostream&gt; #include &lt;limits&gt;
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
 int main(){
-  std::cout &lt;&lt; "int: " &lt;&lt; sizeof(int) &lt;&lt; " min " &lt;&lt; std::numeric_limits&lt;int&gt;::min()
-            &lt;&lt; " max " &lt;&lt; std::numeric_limits&lt;int&gt;::max() &lt;&lt; "\n";
+  std::cout &lt;&lt; "int: " &lt;&lt; sizeof(int)
+            &lt;&lt; " byte, min " &lt;&lt; std::numeric_limits&lt;int&gt;::min()
+            &lt;&lt; " max " &lt;&lt; std::numeric_limits&lt;int&gt;::max()
+            &lt;&lt; "\n";
   // ripeti per short/long
-}</code></pre>
+}
+</code></pre>
+
 <pre><code class="language-c">// C (uso limits.h)
-#include &lt;stdio.h&gt; #include &lt;limits.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;limits.h&gt;
+
 int main(void){
-  printf("int: %zu byte, min %d max %d\n", sizeof(int), INT_MIN, INT_MAX);
+  printf("int: %zu byte, min %d max %d\n",
+         sizeof(int), INT_MIN, INT_MAX);
   // ripeti per short/long usando SHRT_MIN/SHRT_MAX, LONG_MIN/LONG_MAX
-}</code></pre>
+  return 0;
+}
+</code></pre>
           </div>
         </li>
 
         <li><b>E2 — Letterali e tipi</b><br/>
-          <em>Testo:</em> Indica il tipo risultante (tipico) per: <code>42</code>, <code>42u</code>, <code>42L</code>, <code>42LL</code>, <code>0xFFu</code>, <code>3.0</code>, <code>3.0f</code>.
+          <em>Testo:</em> Indica il tipo risultante (su una piattaforma tipica 64-bit) per: <code>42</code>, <code>42u</code>, <code>42L</code>, <code>42LL</code>, <code>0xFFu</code>, <code>3.0</code>, <code>3.0f</code>.
           <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
           <div id="box-e2" style="display:none;margin-top:8px">
-            <p class="note"><b>Soluzione (tipica):</b> <code>42</code>→<code>int</code>; <code>42u</code>→<code>unsigned int</code>; <code>42L</code>→<code>long</code>; <code>42LL</code>→<code>long long</code>; <code>0xFFu</code>→<code>unsigned int</code>; <code>3.0</code>→<code>double</code>; <code>3.0f</code>→<code>float</code>.</p>
+            <p class="note"><b>Soluzione (tipica):</b><br/>
+              <code>42</code> → <code>int</code><br/>
+              <code>42u</code> → <code>unsigned int</code><br/>
+              <code>42L</code> → <code>long</code><br/>
+              <code>42LL</code> → <code>long long</code><br/>
+              <code>0xFFu</code> → <code>unsigned int</code><br/>
+              <code>3.0</code> → <code>double</code><br/>
+              <code>3.0f</code> → <code>float</code>
+            </p>
           </div>
         </li>
 
         <li><b>E3 — Signed vs unsigned</b><br/>
-          <em>Testo:</em> In C++ che cosa stampa il seguente programma e perché?
+          <em>Testo:</em> In C++ che cosa stampa e perché questo codice?
 <pre><code class="language-cpp">int main(){
-  int s = -1; unsigned int u = 1u;
+  int s = -1;
+  unsigned int u = 1u;
   std::cout &lt;&lt; (s &lt; u) &lt;&lt; "\n";
-}</code></pre>
+}
+</code></pre>
           <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
           <div id="box-e3" style="display:none;margin-top:8px">
-            <p class="warn"><b>Spiegazione:</b> <code>s</code> viene convertito a <code>unsigned</code> (promozioni aritmetiche comuni), diventando un grande valore positivo; quindi <code>(s &lt; u)</code> è <code>false</code> (stampa <code>0</code>).</p>
+            <p class="warn"><b>Spiegazione:</b> prima del confronto, <code>s</code> viene convertito a <code>unsigned int</code>.
+              <code>-1</code> diventa un numero enorme positivo, quindi <code>(s &lt; u)</code> è <code>false</code> (stampa <code>0</code>).
+              Questo è il classico esempio di “occhio a signed/unsigned”.
+            </p>
+          </div>
+        </li>
+
+        <li><b>E4 — Uso ragionevole di <code>auto</code></b><br/>
+          <em>Testo:</em> Scrivi tre dichiarazioni con <code>auto</code>: una da un intero, una da un double, una da un iteratore su <code>std::vector&lt;int&gt;</code>. Spiega perché <code>auto</code> ti è utile nel terzo caso.
+          <div class="nav-buttons" style="justify-content:left"><button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button></div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">auto n = 5;           // int
+auto r = 2.5;         // double
+std::vector&lt;int&gt; v{1,2,3};
+auto it = v.begin();  // tipo dell'iteratore dedotto dal compilatore
+</code></pre>
+            <p class="ok">
+              Il terzo caso è il vero vantaggio pratico: il tipo di <code>v.begin()</code> è lungo da scrivere a mano.
+              Con <code>auto</code> eviti errori e scrivi meno.
+            </p>
           </div>
         </li>
       </ol>
     </div>
 
     <div class="inner-box note">
-      <b>Anticipo (utile più avanti):</b> in C++ useremo <code>std::string</code> per le stringhe; in C useremo array di <code>char</code> e funzioni di <code>&lt;string.h&gt;</code>. La gestione dell’I/O nel dettaglio verrà nella slide successiva.
+      <b>Anticipo (utile per la prossima slide):</b>
+      ora che abbiamo chiarito i tipi di base, i letterali e l’uso di <code>auto</code>,
+      nella prossima lezione parleremo di variabili, inizializzazione sicura, assegnamento, incremento e soprattutto del concetto di <b>narrowing</b> in modo operativo (cioè: quando il compilatore ti lascia fare cose pericolose e quando ti blocca).
     </div>
 
   </div>
