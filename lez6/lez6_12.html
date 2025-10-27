@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_12 · Esercizi base di programmazione in C/C++</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_11.html"; }
+    function nextSlide(){ window.location.href = "lez6_13.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+    .box  { background:#fff; border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+
+    .note { background:#f7faff; border-left:4px solid #3b82f6;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+    <li><a href="lez6_11.html">Lez6_11: Array (1D)</a></li>
+    <li><a class="active" href="lez6_12.html">Lez6_12: Esercizi base</a></li>
+    <li><a href="lez6_13.html">Lez6_13: Esercizi intermedi</a></li>
+    <li><a href="lez6_14.html">Lez6_14: Esercizi avanzati</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Esercizi base — Fondamentali di C e C++</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Intro -->
+    <div class="inner-box box">
+      <h2>Obiettivo della lezione</h2>
+      <p>
+        Questa lezione raccoglie esercizi “di base” sugli argomenti visti finora:
+      </p>
+      <ul>
+        <li>input / output;</li>
+        <li>variabili e tipi base;</li>
+        <li>operatori aritmetici;</li>
+        <li>if / else di base;</li>
+        <li>cicli <code>for</code> e <code>while</code> semplici;</li>
+        <li>array monodimensionali (lettura e stampa).</li>
+      </ul>
+      <p class="note">
+        Ogni esercizio ha la soluzione a comparsa.  
+        Prima, però, prova mentalmente (o su carta!) a prevedere cosa faresti tu.
+      </p>
+    </div>
+
+    <!-- E1 -->
+    <div class="inner-box box">
+      <h2>E1 — Saluto personalizzato</h2>
+      <p><b>Testo:</b> Scrivi un programma che chieda all’utente il suo nome e poi stampi a schermo:<br>
+      <code>Ciao, &lt;nome&gt;!</code></p>
+
+      <p><b>Competenze:</b> input, output, stringhe semplici.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+      </div>
+      <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// Versione C++
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+int main() {
+    std::string nome;
+    std::cout &lt;&lt; "Come ti chiami? ";
+    std::cin &gt;&gt; nome; // legge fino al primo spazio
+    std::cout &lt;&lt; "Ciao, " &lt;&lt; nome &lt;&lt; "!\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// Versione C
+#include &lt;stdio.h&gt;
+int main(void) {
+    char nome[100];
+    printf("Come ti chiami? ");
+    scanf("%99s", nome); // legge una parola senza spazi, massimo 99 char
+    printf("Ciao, %s!\n", nome);
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Nota: in C usiamo <code>char nome[100]</code> perché le stringhe sono array di char.
+        </p>
+      </div>
+    </div>
+
+    <!-- E2 -->
+    <div class="inner-box box">
+      <h2>E2 — Somma di due numeri interi</h2>
+      <p><b>Testo:</b> Chiedi all’utente due numeri interi e stampa la loro somma.</p>
+
+      <p><b>Competenze:</b> tipi interi, somma, uso di due variabili, output formattato.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+      </div>
+      <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int a, b;
+    std::cout &lt;&lt; "Inserisci due interi: ";
+    std::cin &gt;&gt; a &gt;&gt; b;
+    std::cout &lt;&lt; "Somma = " &lt;&lt; (a + b) &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int a, b;
+    printf("Inserisci due interi: ");
+    scanf("%d %d", &amp;a, &amp;b);
+    printf("Somma = %d\n", a + b);
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Qui usiamo solo operatori aritmetici base (<code>+</code>) e I/O.
+        </p>
+      </div>
+    </div>
+
+    <!-- E3 -->
+    <div class="inner-box box">
+      <h2>E3 — Area del rettangolo</h2>
+      <p><b>Testo:</b> Leggi base e altezza (interi positivi), calcola l’area = base × altezza, stampa il risultato.</p>
+
+      <p><b>Competenze:</b> input, prodotto, variabili significative.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+      </div>
+      <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int base, altezza;
+    std::cout &lt;&lt; "Base? ";
+    std::cin &gt;&gt; base;
+    std::cout &lt;&lt; "Altezza? ";
+    std::cin &gt;&gt; altezza;
+
+    int area = base * altezza;
+    std::cout &lt;&lt; "Area = " &lt;&lt; area &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int base, altezza;
+    printf("Base? ");
+    scanf("%d", &amp;base);
+    printf("Altezza? ");
+    scanf("%d", &amp;altezza);
+
+    int area = base * altezza;
+    printf("Area = %d\n", area);
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Consiglio: scegli sempre nomi di variabile significativi.
+          Evita <code>x,y</code> se puoi scrivere <code>base, altezza</code>.
+        </p>
+      </div>
+    </div>
+
+    <!-- E4 -->
+    <div class="inner-box box">
+      <h2>E4 — Pari o dispari?</h2>
+      <p><b>Testo:</b> Leggi un intero.  
+      Se è pari stampa "pari", altrimenti stampa "dispari".</p>
+
+      <p><b>Competenze:</b> operatore resto <code>%</code>, <code>if / else</code> base.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+      </div>
+      <div id="box-e4" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int n;
+    std::cout &lt;&lt; "Numero intero: ";
+    std::cin &gt;&gt; n;
+
+    if (n % 2 == 0) {
+        std::cout &lt;&lt; "pari\n";
+    } else {
+        std::cout &lt;&lt; "dispari\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int n;
+    printf("Numero intero: ");
+    scanf("%d", &amp;n);
+
+    if (n % 2 == 0) {
+        printf("pari\n");
+    } else {
+        printf("dispari\n");
+    }
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          <code>n % 2</code> calcola il resto della divisione per 2.
+          Se il resto è 0 → il numero è pari.
+        </p>
+      </div>
+    </div>
+
+    <!-- E5 -->
+    <div class="inner-box box">
+      <h2>E5 — Minimo tra due numeri</h2>
+      <p><b>Testo:</b> Leggi due interi e stampa qual è il più piccolo.  
+      Se sono uguali, dillo chiaramente.</p>
+
+      <p><b>Competenze:</b> confronto numerico con <code>&lt;</code> e <code>==</code>, <code>if / else</code>.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e5" onclick="toggleBox('btn-e5','box-e5')">Mostra ▼</button>
+      </div>
+      <div id="box-e5" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int a, b;
+    std::cout &lt;&lt; "Inserisci due numeri: ";
+    std::cin &gt;&gt; a &gt;&gt; b;
+
+    if (a &lt; b) {
+        std::cout &lt;&lt; "Minore = " &lt;&lt; a &lt;&lt; "\n";
+    } else if (b &lt; a) {
+        std::cout &lt;&lt; "Minore = " &lt;&lt; b &lt;&lt; "\n";
+    } else {
+        std::cout &lt;&lt; "Sono uguali\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int a, b;
+    printf("Inserisci due numeri: ");
+    scanf("%d %d", &amp;a, &amp;b);
+
+    if (a &lt; b) {
+        printf("Minore = %d\n", a);
+    } else if (b &lt; a) {
+        printf("Minore = %d\n", b);
+    } else {
+        printf("Sono uguali\n");
+    }
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Qui stai già ragionando in termini di casi esclusivi:
+          <code>a&lt;b</code>, <code>b&lt;a</code>, oppure “nessuna delle due”, quindi uguali.
+        </p>
+      </div>
+    </div>
+
+    <!-- E6 -->
+    <div class="inner-box box">
+      <h2>E6 — Conta da 1 a 10 (for)</h2>
+      <p><b>Testo:</b> Stampa i numeri da 1 a 10 (uno per riga) usando un ciclo <code>for</code>.</p>
+
+      <p><b>Competenze:</b> ciclo <code>for</code>, incremento.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e6" onclick="toggleBox('btn-e6','box-e6')">Mostra ▼</button>
+      </div>
+      <div id="box-e6" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    for (int i = 1; i &lt;= 10; i++) {
+        std::cout &lt;&lt; i &lt;&lt; "\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int i;
+    for (i = 1; i &lt;= 10; i++) {
+        printf("%d\n", i);
+    }
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Struttura tipica: <code>for (inizio; condizione; aggiornamento)</code>.
+          Qui: inizia da 1, finché ≤10, ogni giro fai i++.
+        </p>
+      </div>
+    </div>
+
+    <!-- E7 -->
+    <div class="inner-box box">
+      <h2>E7 — Tabellina di un numero</h2>
+      <p><b>Testo:</b> Chiedi un intero <code>n</code>.  
+      Stampa la sua tabellina da <code>n×1</code> fino a <code>n×10</code>.</p>
+
+      <p><b>Competenze:</b> input, ciclo <code>for</code>, moltiplicazione.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e7" onclick="toggleBox('btn-e7','box-e7')">Mostra ▼</button>
+      </div>
+      <div id="box-e7" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int n;
+    std::cout &lt;&lt; "Numero: ";
+    std::cin &gt;&gt; n;
+
+    for (int i = 1; i &lt;= 10; i++) {
+        std::cout &lt;&lt; n &lt;&lt; " x " &lt;&lt; i
+                  &lt;&lt; " = " &lt;&lt; (n * i) &lt;&lt; "\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int n, i;
+    printf("Numero: ");
+    scanf("%d", &amp;n);
+
+    for (i = 1; i &lt;= 10; i++) {
+        printf("%d x %d = %d\n", n, i, n * i);
+    }
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Questo è un pattern perfetto per iniziare a “generare tabelle” con un ciclo.
+        </p>
+      </div>
+    </div>
+
+    <!-- E8 -->
+    <div class="inner-box box">
+      <h2>E8 — Numero positivo obbligatorio (while)</h2>
+      <p><b>Testo:</b> Chiedi all’utente un intero positivo (&gt;0).  
+      Se inserisce un valore ≤0, richiedilo finché non è valido.</p>
+
+      <p><b>Competenze:</b> ciclo <code>while</code> di validazione input.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e8" onclick="toggleBox('btn-e8','box-e8')">Mostra ▼</button>
+      </div>
+      <div id="box-e8" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int n;
+    std::cout &lt;&lt; "Inserisci un intero positivo: ";
+    std::cin &gt;&gt; n;
+
+    while (n &lt;= 0) {
+        std::cout &lt;&lt; "Valore non valido. Riprova: ";
+        std::cin &gt;&gt; n;
+    }
+
+    std::cout &lt;&lt; "Hai inserito: " &lt;&lt; n &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int n;
+    printf("Inserisci un intero positivo: ");
+    scanf("%d", &amp;n);
+
+    while (n &lt;= 0) {
+        printf("Valore non valido. Riprova: ");
+        scanf("%d", &amp;n);
+    }
+
+    printf("Hai inserito: %d\n", n);
+    return 0;
+}</code></pre>
+
+        <p class="warn">
+          Questo è un "ciclo di controllo input": finché l’utente sbaglia, non lo lasci uscire.
+        </p>
+      </div>
+    </div>
+
+    <!-- E9 -->
+    <div class="inner-box box">
+      <h2>E9 — Media di 5 voti (array)</h2>
+      <p><b>Testo:</b> Leggi 5 voti interi in un array <code>v</code>.  
+      Calcola e stampa la media (anche decimale).</p>
+
+      <p><b>Competenze:</b> array 1D, ciclo <code>for</code>, somma cumulativa, cast a double.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e9" onclick="toggleBox('btn-e9','box-e9')">Mostra ▼</button>
+      </div>
+      <div id="box-e9" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    const int N = 5;
+    int v[N];
+    int somma = 0;
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "Voto " &lt;&lt; i &lt;&lt; ": ";
+        std::cin &gt;&gt; v[i];
+        somma += v[i];
+    }
+
+    double media = (double)somma / N;
+    std::cout &lt;&lt; "Media = " &lt;&lt; media &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 5;
+    int v[N];
+    int somma = 0;
+    int i;
+
+    for (i = 0; i &lt; N; i++) {
+        printf("Voto %d: ", i);
+        scanf("%d", &amp;v[i]);
+        somma += v[i];
+    }
+
+    double media = (double)somma / N;
+    printf("Media = %.2f\n", media);
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Qui introduciamo l’idea “array = tanti valori con un solo nome”, e facciamo
+          un’operazione globale sulla collezione.
+        </p>
+      </div>
+    </div>
+
+    <!-- E10 -->
+    <div class="inner-box box">
+      <h2>E10 — Stampa l’array al contrario</h2>
+      <p><b>Testo:</b> Leggi 5 interi in un array <code>a</code>.  
+      Poi stampali in ordine inverso, dall’ultimo al primo.</p>
+
+      <p><b>Competenze:</b> array, ciclo <code>for</code> in discesa, attenzione all’indice finale.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e10" onclick="toggleBox('btn-e10','box-e10')">Mostra ▼</button>
+      </div>
+      <div id="box-e10" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    const int N = 5;
+    int a[N];
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "a[" &lt;&lt; i &lt;&lt; "] = ";
+        std::cin &gt;&gt; a[i];
+    }
+
+    std::cout &lt;&lt; "Ordine inverso: ";
+    for (int i = N-1; i &gt;= 0; i--) {
+        std::cout &lt;&lt; a[i] &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 5;
+    int a[N];
+    int i;
+
+    for (i = 0; i &lt; N; i++) {
+        printf("a[%d] = ", i);
+        scanf("%d", &amp;a[i]);
+    }
+
+    printf("Ordine inverso: ");
+    for (i = N-1; i &gt;= 0; i--) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+    return 0;
+}</code></pre>
+
+        <p class="warn">
+          Occhio: il ciclo in discesa deve fermarsi dopo l’indice 0.
+          Qui controlliamo <code>i &gt;= 0</code> e poi facciamo <code>i--</code>.  
+          Funziona perché <code>i</code> è <code>int</code> (cioè con segno).  
+          Evita per ora tipi <code>unsigned</code> nei contatori in discesa.
+        </p>
+      </div>
+    </div>
+
+    <!-- Sintesi -->
+    <div class="inner-box note">
+      <b>In sintesi</b><br/>
+      <ul>
+        <li>Se sai fare input/output, sai leggere i dati dal mondo.</li>
+        <li>Se sai usare <code>if</code>, puoi prendere decisioni.</li>
+        <li>Se sai usare <code>for</code>/<code>while</code>, puoi ripetere azioni e costruire tabelle di output.</li>
+        <li>Se sai usare gli array, puoi salvare e processare molti valori insieme.</li>
+      </ul>
+      Prossima lezione (Lez6_13): esercizi di livello intermedio — menù interattivi, ricerca, massimo/minimo, cicli annidati.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
