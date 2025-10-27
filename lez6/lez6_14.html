@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_14 · Esercizi avanzati (C / C++)</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_13.html"; }
+    function nextSlide(){ window.location.href = "lez6_15.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:#fff; border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444;
+            padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+    <li><a href="lez6_11.html">Lez6_11: Array (1D)</a></li>
+    <li><a href="lez6_12.html">Lez6_12: Esercizi base</a></li>
+    <li><a href="lez6_13.html">Lez6_13: Esercizi intermedi</a></li>
+    <li><a class="active" href="lez6_14.html">Lez6_14: Esercizi avanzati</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Esercizi avanzati — Piccoli programmi completi</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Intro -->
+    <div class="inner-box box">
+      <h2>Obiettivo della lezione</h2>
+      <p>
+        In questa lezione affrontiamo esercizi che non sono più
+        “una sola cosa”, ma un <b>mini-programma</b> con più funzionalità combinate:
+      </p>
+      <ul>
+        <li>uso combinato di <code>if</code>, <code>while</code>, <code>for</code>, <code>switch</code>;</li>
+        <li>gestione di più variabili di stato (es. saldo di un conto);</li>
+        <li>array come contenitore di dati realistici (voti di una classe);</li>
+        <li>controllo dei tentativi e validazione input.</li>
+      </ul>
+      <p class="note">
+        Qui siamo già nel territorio “scrivo un programma che fai girare davvero”.
+        Questo è l’obiettivo pratico del corso.
+      </p>
+    </div>
+
+    <!-- E1 -->
+    <div class="inner-box box">
+      <h2>E1 — Verifica password con tentativi limitati</h2>
+      <p><b>Testo:</b> Salva una password corretta (es. "abc123").  
+      Chiedi all’utente di inserirla.  
+      L’utente ha massimo 3 tentativi.  
+      Se indovina prima dei 3 tentativi → "Accesso consentito".  
+      Se dopo 3 tentativi ancora sbaglia → "Bloccato".</p>
+
+      <p><b>Competenze:</b> ciclo con contatore tentativi, confronto stringhe, <code>if</code> annidati.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+      </div>
+      <div id="box-e1" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+// NOTA: qui usiamo std::string per semplicità.
+// In C++ l'operatore == su std::string confronta il contenuto testuale.
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+int main() {
+    const std::string password_corretta = "abc123";
+    std::string tentativo;
+
+    bool accesso = false;
+
+    for (int tent = 1; tent &lt;= 3; tent++) {
+        std::cout &lt;&lt; "Inserisci password (" &lt;&lt; tent
+                  &lt;&lt; "/3): ";
+        std::cin &gt;&gt; tentativo;
+
+        if (tentativo == password_corretta) {
+            accesso = true;
+            break;
+        } else {
+            std::cout &lt;&lt; "Errata.\n";
+        }
+    }
+
+    if (accesso) {
+        std::cout &lt;&lt; "Accesso consentito.\n";
+    } else {
+        std::cout &lt;&lt; "Bloccato.\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+// In C le stringhe sono array di char terminati da '\0'.
+// Per confrontarle si usa strcmp, non l'operatore ==.
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    const char password_corretta[] = "abc123";
+    char tentativo[100];
+    int accesso = 0;
+
+    for (int tent = 1; tent &lt;= 3; tent++) {
+        printf("Inserisci password (%d/3): ", tent);
+        scanf("%99s", tentativo);
+
+        if (strcmp(tentativo, password_corretta) == 0) {
+            accesso = 1;
+            break;
+        } else {
+            printf("Errata.\n");
+        }
+    }
+
+    if (accesso) {
+        printf("Accesso consentito.\n");
+    } else {
+        printf("Bloccato.\n");
+    }
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Questo schema (tentativi limitati) è tipico della sicurezza base:
+          non lasci tentativi infiniti.
+        </p>
+      </div>
+    </div>
+
+    <!-- E2 -->
+    <div class="inner-box box">
+      <h2>E2 — Statistiche su una classe</h2>
+      <p><b>Testo:</b> Leggi i voti di 10 studenti in un array di interi.  
+      Calcola e stampa:
+      <ul>
+        <li>media;</li>
+        <li>voto massimo e minimo;</li>
+        <li>quanti voti &lt; 6 (insufficienti).</li>
+      </ul></p>
+
+      <p><b>Competenze:</b> scansione array multipla, accumulo di statistiche, analisi di dati.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+      </div>
+      <div id="box-e2" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    const int N = 10;
+    int voti[N];
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "Voto studente " &lt;&lt; i &lt;&lt; ": ";
+        std::cin &gt;&gt; voti[i];
+    }
+
+    int somma = 0;
+    int min = voti[0];
+    int max = voti[0];
+    int insuff = 0;
+
+    for (int i = 0; i &lt; N; i++) {
+        somma += voti[i];
+        if (voti[i] &lt; min) min = voti[i];
+        if (voti[i] &gt; max) max = voti[i];
+        if (voti[i] &lt; 6)   insuff++;
+    }
+
+    double media = (double)somma / N;
+
+    std::cout &lt;&lt; "Media classe = " &lt;&lt; media &lt;&lt; "\n";
+    std::cout &lt;&lt; "Min = " &lt;&lt; min &lt;&lt; ", Max = " &lt;&lt; max &lt;&lt; "\n";
+    std::cout &lt;&lt; "Insufficienti (&lt;6): " &lt;&lt; insuff &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 10;
+    int voti[N];
+    int i;
+
+    for (i = 0; i &lt; N; i++) {
+        printf("Voto studente %d: ", i);
+        scanf("%d", &amp;voti[i]);
+    }
+
+    int somma = 0;
+    int min = voti[0];
+    int max = voti[0];
+    int insuff = 0;
+
+    for (i = 0; i &lt; N; i++) {
+        somma += voti[i];
+        if (voti[i] &lt; min) min = voti[i];
+        if (voti[i] &gt; max) max = voti[i];
+        if (voti[i] &lt; 6)   insuff++;
+    }
+
+    double media = (double)somma / N;
+
+    printf("Media classe = %.2f\n", media);
+    printf("Min = %d, Max = %d\n", min, max);
+    printf("Insufficienti (&lt;6): %d\n", insuff);
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Questo è un “mini report”: prende dati grezzi e produce statistiche utili.
+          È esattamente ciò che fanno tanti programmi di analisi.
+        </p>
+      </div>
+    </div>
+
+    <!-- E3 -->
+    <div class="inner-box box">
+      <h2>E3 — Normalizzazione dei valori</h2>
+      <p><b>Testo:</b> Leggi 5 numeri interi in un array.  
+      Trova il valore massimo.  
+      Per ogni valore stampa il rapporto <code>valore / massimo</code> come numero in virgola mobile (double, quindi con la parte decimale).</p>
+
+      <p><b>Competenze:</b> trovare max, attenzione alla divisione intera vs divisione reale, cast a double.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+      </div>
+      <div id="box-e3" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    const int N = 5;
+    int v[N];
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "v[" &lt;&lt; i &lt;&lt; "] = ";
+        std::cin &gt;&gt; v[i];
+    }
+
+    int massimo = v[0];
+    for (int i = 1; i &lt; N; i++) {
+        if (v[i] &gt; massimo) massimo = v[i];
+    }
+
+    std::cout &lt;&lt; "Valori normalizzati (val/max):\n";
+    for (int i = 0; i &lt; N; i++) {
+        double ratio = (double)v[i] / massimo;
+        std::cout &lt;&lt; v[i] &lt;&lt; " -> " &lt;&lt; ratio &lt;&lt; "\n";
+    }
+
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 5;
+    int v[N];
+    int i;
+
+    for (i = 0; i &lt; N; i++) {
+        printf("v[%d] = ", i);
+        scanf("%d", &amp;v[i]);
+    }
+
+    int massimo = v[0];
+    for (i = 1; i &lt; N; i++) {
+        if (v[i] &gt; massimo) massimo = v[i];
+    }
+
+    printf("Valori normalizzati (val/max):\n");
+    for (i = 0; i &lt; N; i++) {
+        double ratio = (double)v[i] / massimo;
+        printf("%d -> %f\n", v[i], ratio);
+    }
+
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Questo è fondamentale in analisi dati: riportare i valori tutti nella scala [0,1].
+        </p>
+      </div>
+    </div>
+
+    <!-- E4 -->
+    <div class="inner-box box">
+      <h2>E4 — Frequenza delle cifre (0..9)</h2>
+      <p><b>Testo:</b> Chiedi un numero intero “grande” all’utente, trattandolo come testo (stringa).  
+      Conta quante volte compare ciascuna cifra da 0 a 9.  
+      Stampa il risultato.</p>
+
+      <p><b>Competenze:</b> array come contatore di frequenze, scansione di una stringa char per char, indicizzazione tramite valore numerico della cifra.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+      </div>
+      <div id="box-e4" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+// Strategia:
+// 1. leggo un numero come stringa (es "5012227")
+// 2. creo un array freq[10] inizializzato a 0
+// 3. per ogni carattere c, calcolo cifra = c - '0'
+// 4. incremento freq[cifra]
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+int main() {
+    std::string numero;
+    std::cout &lt;&lt; "Inserisci un numero intero grande: ";
+    std::cin &gt;&gt; numero;
+
+    int freq[10] = {0}; // tutte le frequenze inizialmente 0
+
+    for (char c : numero) {
+        if (c &gt;= '0' &amp;&amp; c &lt;= '9') {
+            int cifra = c - '0'; // '0'->0, '1'->1, ..., '9'->9
+            freq[cifra]++;
+        }
+    }
+
+    std::cout &lt;&lt; "Frequenze cifre:\n";
+    for (int d = 0; d &lt; 10; d++) {
+        std::cout &lt;&lt; d &lt;&lt; ": " &lt;&lt; freq[d] &lt;&lt; "\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+// In C non abbiamo std::string, ma possiamo leggere una stringa in un array di char.
+// Poi facciamo la stessa scansione e usiamo un array freq[10] di contatori.
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    char numero[256];
+    int freq[10] = {0};
+    int i;
+
+    printf("Inserisci un numero intero grande: ");
+    scanf("%255s", numero);
+
+    for (i = 0; numero[i] != '\0'; i++) {
+        char c = numero[i];
+        if (c &gt;= '0' &amp;&amp; c &lt;= '9') {
+            int cifra = c - '0';
+            freq[cifra]++;
+        }
+    }
+
+    printf("Frequenze cifre:\n");
+    for (i = 0; i &lt; 10; i++) {
+        printf("%d: %d\n", i, freq[i]);
+    }
+
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Questo è già “analisi dati”. L’array <code>freq</code> è un
+          <b>istogramma</b>: conta quante volte compare ciascuna categoria (qui: le cifre).
+        </p>
+      </div>
+    </div>
+
+    <!-- E5 -->
+    <div class="inner-box box">
+      <h2>E5 — Somma riga per riga di una matrice 3×3</h2>
+      <p><b>Testo:</b> Leggi una matrice 3×3 di interi.  
+      Per ogni riga calcola la somma degli elementi di quella riga e stampala.</p>
+
+      <p><b>Competenze:</b> cicli annidati su una matrice, uso di una variabile “accumulatore” che si azzera a ogni riga.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e5" onclick="toggleBox('btn-e5','box-e5')">Mostra ▼</button>
+      </div>
+      <div id="box-e5" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int mat[3][3];
+
+    // input matrice
+    for (int r = 0; r &lt; 3; r++) {
+        for (int c = 0; c &lt; 3; c++) {
+            std::cout &lt;&lt; "mat[" &lt;&lt; r &lt;&lt; "][" &lt;&lt; c &lt;&lt; "] = ";
+            std::cin &gt;&gt; mat[r][c];
+        }
+    }
+
+    // somma per riga
+    for (int r = 0; r &lt; 3; r++) {
+        int somma_riga = 0;
+        for (int c = 0; c &lt; 3; c++) {
+            somma_riga += mat[r][c];
+        }
+        std::cout &lt;&lt; "Somma riga " &lt;&lt; r
+                  &lt;&lt; " = " &lt;&lt; somma_riga &lt;&lt; "\n";
+    }
+
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int mat[3][3];
+    int r, c;
+
+    // input matrice
+    for (r = 0; r &lt; 3; r++) {
+        for (c = 0; c &lt; 3; c++) {
+            printf("mat[%d][%d] = ", r, c);
+            scanf("%d", &amp;mat[r][c]);
+        }
+    }
+
+    // somma per riga
+    for (r = 0; r &lt; 3; r++) {
+        int somma_riga = 0;
+        for (c = 0; c &lt; 3; c++) {
+            somma_riga += mat[r][c];
+        }
+        printf("Somma riga %d = %d\n", r, somma_riga);
+    }
+
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Questo esercizio è molto vicino a operazioni su tabelle (es. fogli di calcolo).
+        </p>
+      </div>
+    </div>
+
+    <!-- E6 -->
+    <div class="inner-box box">
+      <h2>E6 — Valore massimo in una matrice 3×3 e sue coordinate</h2>
+      <p><b>Testo:</b> Leggi una matrice 3×3 di interi.  
+      Trova l’elemento massimo e stampa:
+      <ul>
+        <li>il valore massimo;</li>
+        <li>la sua riga e colonna (indice r,c).</li>
+      </ul></p>
+
+      <p><b>Competenze:</b> confronto in doppio ciclo annidato, memorizzazione della posizione “migliore finora”.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e6" onclick="toggleBox('btn-e6','box-e6')">Mostra ▼</button>
+      </div>
+      <div id="box-e6" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int mat[3][3];
+
+    for (int r = 0; r &lt; 3; r++) {
+        for (int c = 0; c &lt; 3; c++) {
+            std::cout &lt;&lt; "mat[" &lt;&lt; r &lt;&lt; "][" &lt;&lt; c &lt;&lt; "] = ";
+            std::cin &gt;&gt; mat[r][c];
+        }
+    }
+
+    int maxVal = mat[0][0];
+    int maxR = 0;
+    int maxC = 0;
+
+    for (int r = 0; r &lt; 3; r++) {
+        for (int c = 0; c &lt; 3; c++) {
+            if (mat[r][c] &gt; maxVal) {
+                maxVal = mat[r][c];
+                maxR = r;
+                maxC = c;
+            }
+        }
+    }
+
+    std::cout &lt;&lt; "Massimo = " &lt;&lt; maxVal
+              &lt;&lt; " in posizione (" &lt;&lt; maxR
+              &lt;&lt; "," &lt;&lt; maxC &lt;&lt; ")\n";
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int mat[3][3];
+    int r, c;
+
+    for (r = 0; r &lt; 3; r++) {
+        for (c = 0; c &lt; 3; c++) {
+            printf("mat[%d][%d] = ", r, c);
+            scanf("%d", &amp;mat[r][c]);
+        }
+    }
+
+    int maxVal = mat[0][0];
+    int maxR = 0;
+    int maxC = 0;
+
+    for (r = 0; r &lt; 3; r++) {
+        for (c = 0; c &lt; 3; c++) {
+            if (mat[r][c] &gt; maxVal) {
+                maxVal = mat[r][c];
+                maxR = r;
+                maxC = c;
+            }
+        }
+    }
+
+    printf("Massimo = %d in posizione (%d,%d)\n", maxVal, maxR, maxC);
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Questo schema (tieni traccia del "migliore finora" + le sue coordinate) è fondamentale nella ricerca su matrici e immagini.
+        </p>
+      </div>
+    </div>
+
+    <!-- E7 -->
+    <div class="inner-box box">
+      <h2>E7 — Menù robusto con validazione input</h2>
+      <p><b>Testo:</b> Realizza un menù numerato (1..4).  
+      Chiedi la scelta all’utente.  
+      Se l’utente inserisce un numero fuori da 1..4, stampa “Scelta non valida” e richiedi di nuovo senza uscire.</p>
+
+      <p><b>Competenze:</b> ciclo <code>do-while</code> o <code>while</code> di validazione, <code>switch</code>, controllo dell’intervallo valido.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e7" onclick="toggleBox('btn-e7','box-e7')">Mostra ▼</button>
+      </div>
+      <div id="box-e7" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int scelta = 0;
+
+    do {
+        std::cout &lt;&lt; "\nMenu:\n"
+                  &lt;&lt; "1) Saluta\n"
+                  &lt;&lt; "2) Mostra data finta\n"
+                  &lt;&lt; "3) Mostra numero random finto\n"
+                  &lt;&lt; "4) Esci\n"
+                  &lt;&lt; "Scelta (1-4): ";
+        std::cin &gt;&gt; scelta;
+
+        if (scelta &lt; 1 || scelta &gt; 4) {
+            std::cout &lt;&lt; "Scelta non valida\n";
+            continue;
+        }
+
+        switch (scelta) {
+        case 1:
+            std::cout &lt;&lt; "Ciao!\n";
+            break;
+        case 2:
+            std::cout &lt;&lt; "Oggi e' 01/01/2099\n";
+            break;
+        case 3:
+            std::cout &lt;&lt; "Numero segreto: 12345\n";
+            break;
+        case 4:
+            std::cout &lt;&lt; "Chiusura menù...\n";
+            break;
+        }
+    } while (scelta != 4);
+
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int scelta = 0;
+
+    do {
+        printf("\nMenu:\n");
+        printf("1) Saluta\n");
+        printf("2) Mostra data finta\n");
+        printf("3) Mostra numero random finto\n");
+        printf("4) Esci\n");
+        printf("Scelta (1-4): ");
+        scanf("%d", &amp;scelta);
+
+        if (scelta &lt; 1 || scelta &gt; 4) {
+            printf("Scelta non valida\n");
+            continue;
+        }
+
+        switch (scelta) {
+        case 1:
+            printf("Ciao!\n");
+            break;
+        case 2:
+            printf("Oggi e' 01/01/2099\n");
+            break;
+        case 3:
+            printf("Numero segreto: 12345\n");
+            break;
+        case 4:
+            printf("Chiusura menù...\n");
+            break;
+        }
+    } while (scelta != 4);
+
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Questo esercizio è importante perché mostra come “tenere vivo” un programma finché l’utente non chiede di uscire,
+          e come intercettare scelte non valide senza far crashare tutto.
+        </p>
+      </div>
+    </div>
+
+    <!-- E8 -->
+    <div class="inner-box box">
+      <h2>E8 — Triangolo di asterischi</h2>
+      <p><b>Testo:</b> Chiedi un numero <code>N</code>.  
+      Stampa un triangolo di asterischi:
+      <pre>
+*
+**
+***
+...
+      </pre>
+      fino a N righe.</p>
+
+      <p><b>Competenze:</b> cicli annidati con rapporto “riga → quante colonne stampo”.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e8" onclick="toggleBox('btn-e8','box-e8')">Mostra ▼</button>
+      </div>
+      <div id="box-e8" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+#include &lt;iostream&gt;
+int main() {
+    int N;
+    std::cout &lt;&lt; "N: ";
+    std::cin &gt;&gt; N;
+
+    for (int r = 1; r &lt;= N; r++) {
+        for (int c = 1; c &lt;= r; c++) {
+            std::cout &lt;&lt; "*";
+        }
+        std::cout &lt;&lt; "\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    int N;
+    int r, c;
+    printf("N: ");
+    scanf("%d", &amp;N);
+
+    for (r = 1; r &lt;= N; r++) {
+        for (c = 1; c &lt;= r; c++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+
+        <p class="note">
+          Questo esercizio ti fa “pensare in 2D”: riga e colonna sono due contatori diversi,
+          con limiti diversi (la colonna arriva fino alla riga).
+        </p>
+      </div>
+    </div>
+
+    <!-- E9 -->
+    <div class="inner-box box">
+      <h2>E9 — Parola palindroma (versione base)</h2>
+      <p><b>Testo:</b> Chiedi una parola senza spazi.  
+      Verifica se è palindroma, cioè se è uguale letta da sinistra a destra e da destra a sinistra (es. "anna", "osso").  
+      Stampa "palindroma" o "non palindroma".</p>
+
+      <p><b>Competenze:</b> confronto di caratteri a coppie, indice che parte da inizio e indice che parte da fine.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e9" onclick="toggleBox('btn-e9','box-e9')">Mostra ▼</button>
+      </div>
+      <div id="box-e9" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+// Strategia:
+// i parte da 0, j parte da lunghezza-1
+// Finché i&lt;j confronta parola[i] e parola[j]
+// Se trovi differenza -> non palindroma
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+int main() {
+    std::string parola;
+    std::cout &lt;&lt; "Parola (senza spazi): ";
+    std::cin &gt;&gt; parola;
+
+    bool pal = true;
+    int i = 0;
+    int j = (int)parola.size() - 1;
+
+    while (i &lt; j) {
+        if (parola[i] != parola[j]) {
+            pal = false;
+            break;
+        }
+        i++;
+        j--;
+    }
+
+    if (pal) {
+        std::cout &lt;&lt; "palindroma\n";
+    } else {
+        std::cout &lt;&lt; "non palindroma\n";
+    }
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main(void) {
+    char parola[256];
+    printf("Parola (senza spazi): ");
+    scanf("%255s", parola);
+
+    int i = 0;
+    int j = (int)strlen(parola) - 1;
+    int pal = 1; // 1 = palindroma finora
+
+    while (i &lt; j) {
+        if (parola[i] != parola[j]) {
+            pal = 0;
+            break;
+        }
+        i++;
+        j--;
+    }
+
+    if (pal) {
+        printf("palindroma\n");
+    } else {
+        printf("non palindroma\n");
+    }
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Qui applichi un ragionamento algoritmico:
+          non serve creare la stringa inversa completa, basta confrontare caratteri “a specchio”.
+        </p>
+      </div>
+    </div>
+
+    <!-- E10 -->
+    <div class="inner-box box">
+      <h2>E10 — Mini-bancomat</h2>
+      <p><b>Testo:</b> Simula un piccolo bancomat.  
+      Parti con un saldo iniziale (es. 1000).  
+      Mostra un menù:
+      <ol>
+        <li>Mostra saldo</li>
+        <li>Prelievo</li>
+        <li>Versamento</li>
+        <li>Esci</li>
+      </ol>
+      Regole:
+      <ul>
+        <li>il prelievo non può portare il saldo sotto 0 (se succede, rifiuta l’operazione);</li>
+        <li>versamento aggiunge denaro al saldo;</li>
+        <li>il menù si ripete finché l’utente non sceglie “Esci”.</li>
+      </ul></p>
+
+      <p><b>Competenze:</b> stato persistente (<code>saldo</code>), <code>switch</code> in un ciclo, controllo degli errori logici.</p>
+
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-e10" onclick="toggleBox('btn-e10','box-e10')">Mostra ▼</button>
+      </div>
+      <div id="box-e10" style="display:none;margin-top:8px">
+
+<pre><code class="language-cpp">// C++
+// Nota: qui stiamo simulando un sistema reale.
+// Abbiamo uno "stato" (il saldo) che sopravvive tra una scelta e la successiva.
+#include &lt;iostream&gt;
+int main() {
+    double saldo = 1000.0;
+    int scelta;
+
+    do {
+        std::cout &lt;&lt; "\n--- BANCOMAT ---\n"
+                  &lt;&lt; "1) Mostra saldo\n"
+                  &lt;&lt; "2) Prelievo\n"
+                  &lt;&lt; "3) Versamento\n"
+                  &lt;&lt; "4) Esci\n"
+                  &lt;&lt; "Scelta: ";
+        std::cin &gt;&gt; scelta;
+
+        if (scelta == 1) {
+            std::cout &lt;&lt; "Saldo attuale: " &lt;&lt; saldo &lt;&lt; " euro\n";
+        } else if (scelta == 2) {
+            double quantita;
+            std::cout &lt;&lt; "Importo da prelevare: ";
+            std::cin &gt;&gt; quantita;
+            if (quantita &lt;= saldo &amp;&amp; quantita &gt; 0) {
+                saldo -= quantita;
+                std::cout &lt;&lt; "Prelievo effettuato. Nuovo saldo: "
+                          &lt;&lt; saldo &lt;&lt; " euro\n";
+            } else {
+                std::cout &lt;&lt; "Operazione rifiutata (fondi insufficienti o importo non valido).\n";
+            }
+        } else if (scelta == 3) {
+            double quantita;
+            std::cout &lt;&lt; "Importo da versare: ";
+            std::cin &gt;&gt; quantita;
+            if (quantita &gt; 0) {
+                saldo += quantita;
+                std::cout &lt;&lt; "Versamento effettuato. Nuovo saldo: "
+                          &lt;&lt; saldo &lt;&lt; " euro\n";
+            } else {
+                std::cout &lt;&lt; "Importo non valido.\n";
+            }
+        } else if (scelta == 4) {
+            std::cout &lt;&lt; "Uscita...\n";
+        } else {
+            std::cout &lt;&lt; "Scelta non valida.\n";
+        }
+
+    } while (scelta != 4);
+
+    return 0;
+}</code></pre>
+
+<pre><code class="language-c">// C
+#include &lt;stdio.h&gt;
+int main(void) {
+    double saldo = 1000.0;
+    int scelta;
+
+    do {
+        printf("\n--- BANCOMAT ---\n");
+        printf("1) Mostra saldo\n");
+        printf("2) Prelievo\n");
+        printf("3) Versamento\n");
+        printf("4) Esci\n");
+        printf("Scelta: ");
+        scanf("%d", &amp;scelta);
+
+        if (scelta == 1) {
+            printf("Saldo attuale: %.2f euro\n", saldo);
+
+        } else if (scelta == 2) {
+            double quantita;
+            printf("Importo da prelevare: ");
+            scanf("%lf", &amp;quantita);
+            if (quantita &lt;= saldo &amp;&amp; quantita &gt; 0) {
+                saldo -= quantita;
+                printf("Prelievo effettuato. Nuovo saldo: %.2f euro\n", saldo);
+            } else {
+                printf("Operazione rifiutata (fondi insufficienti o importo non valido).\n");
+            }
+
+        } else if (scelta == 3) {
+            double quantita;
+            printf("Importo da versare: ");
+            scanf("%lf", &amp;quantita);
+            if (quantita &gt; 0) {
+                saldo += quantita;
+                printf("Versamento effettuato. Nuovo saldo: %.2f euro\n", saldo);
+            } else {
+                printf("Importo non valido.\n");
+            }
+
+        } else if (scelta == 4) {
+            printf("Uscita...\n");
+
+        } else {
+            printf("Scelta non valida.\n");
+        }
+
+    } while (scelta != 4);
+
+    return 0;
+}</code></pre>
+
+        <p class="ok">
+          Questo è praticamente un <b>programma gestionale minimale</b>.
+          Mantiene dati tra le scelte dell’utente, controlla la validità delle operazioni,
+          e termina solo quando l’utente sceglie “Esci”.
+        </p>
+      </div>
+    </div>
+
+    <!-- Sintesi -->
+    <div class="inner-box note">
+      <b>In sintesi</b><br/>
+      <ul>
+        <li>Hai usato array, cicli, condizioni e menù per costruire piccoli “prodotti” funzionanti.</li>
+        <li>Hai gestito input non valido (password sbagliata, scelta sbagliata, prelievo impossibile).</li>
+        <li>Hai ragionato sullo stato: una variabile (saldo, tentativi, ecc.) che vive per tutto il programma.</li>
+        <li>Hai visto matrici e analisi statistica dei dati.</li>
+      </ul>
+      A questo punto sei in grado di leggere un problema descritto a parole e trasformarlo in un algoritmo C/C++ che interagisce con l’utente.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
