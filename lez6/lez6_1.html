@@ -224,6 +224,67 @@
       </ul>
       <p class="note">Build system: <b>make</b> e <b>CMake</b> (concetto di “generatori” per IDE/ambienti diversi).</p>
     </div>
+	
+	<div class="inner-box box">
+  <h2>Capire i parametri di compilazione (livello studente)</h2>
+
+  <p>
+    Quando usiamo un compilatore come <code>g++</code> o <code>gcc</code>, possiamo fornire
+    <strong>parametri</strong> (chiamati <em>flag</em>) per controllare come avviene la compilazione.
+    Questi flag influenzano tre aspetti principali: <b>velocità di esecuzione</b>, <b>debug</b> e <b>sicurezza del codice</b>.
+  </p>
+
+  <h3>Ottimizzazioni – <code>-O0 … -O3</code></h3>
+  <ul>
+    <li><b>-O0</b> (“zero”): nessuna ottimizzazione. Il compilatore produce codice semplice, leggibile dal debugger.  
+        È la scelta giusta <b>durante lo sviluppo o il debug</b>, perché permette di seguire il flusso esatto del programma.</li>
+    <li><b>-O1</b>: attiva ottimizzazioni leggere (rimozione di codice inutile, semplificazioni basilari).</li>
+    <li><b>-O2</b>: livello “standard” per programmi finiti. Applica ottimizzazioni più aggressive (fusione di cicli, miglior uso dei registri).</li>
+    <li><b>-O3</b>: livello massimo. Cerca la massima velocità, ma può aumentare molto il tempo di compilazione e generare binari più grandi.</li>
+  </ul>
+  <p class="note">
+    In laboratorio: <b>usa -O0</b> per esercitarti e fare debug.  
+    Quando vuoi misurare le performance reali, prova con <b>-O2</b>.
+  </p>
+
+  <h3>Debug – <code>-g</code></h3>
+  <p>
+    Il flag <code>-g</code> inserisce nel file eseguibile le <b>informazioni di debug</b> (nomi di variabili, linee di codice, simboli).
+    Queste informazioni servono a strumenti come <code>gdb</code> o i debugger integrati negli IDE per permetterti di
+    <b>fermare il programma</b>, <b>vedere il contenuto delle variabili</b> e <b>capire dove si è verificato un errore</b>.
+  </p>
+  <p class="ok">
+    Esempio tipico in fase di sviluppo:  
+    <code>g++ -std=c++17 -Wall -Wextra -O0 -g main.cpp -o main</code>
+  </p>
+
+  <h3>Avvisi (Warning) – <code>-Wall -Wextra</code></h3>
+  <p>
+    I compilatori GCC e Clang possono segnalare comportamenti sospetti o potenzialmente sbagliati nel codice.
+    Con i flag <code>-Wall</code> (“tutti gli avvisi principali”) e <code>-Wextra</code> (“ancora più controlli”),
+    il compilatore <b>non blocca</b> la compilazione, ma ti mostra dei <b>messaggi di warning</b>.
+    È buona pratica considerarli <em>errori anticipati</em>: spesso indicano bug logici o dimenticanze.
+  </p>
+  <p class="warn">
+    Ignorare i warning significa lasciare nel codice comportamenti imprevisti o rischiosi.
+    Meglio correggerli subito!
+  </p>
+
+  <h3>MSVC (Microsoft Visual C++)</h3>
+  <p>
+    Su Windows, il compilatore <code>cl.exe</code> usa una sintassi diversa per i warning:
+    il flag equivalente è <code>/W4</code>, che attiva un livello di avvisi dettagliato simile a <code>-Wall -Wextra</code>.
+  </p>
+
+  <div class="note">
+    <b>In sintesi:</b>
+    <ul>
+      <li>Usa <code>-O0 -g</code> per studiare e fare debug passo-passo.</li>
+      <li>Usa <code>-O2</code> o <code>-O3</code> solo per versioni finali e test di velocità.</li>
+      <li>Attiva sempre <code>-Wall -Wextra</code> per abituarti a scrivere codice pulito e sicuro.</li>
+    </ul>
+  </div>
+</div>
 
     <div class="inner-box">
       <h2>Toolchain in pratica: C++ prima, poi C</h2>

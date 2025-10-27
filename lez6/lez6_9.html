@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_9 · Cicli while e do-while (C++ e C)</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_8.html"; }
+    function nextSlide(){ window.location.href = "lez6_10.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a class="active" href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Cicli di iterazione: <code>while</code> e <code>do-while</code> (C++ e C)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Obiettivi -->
+    <div class="inner-box box">
+      <h2>Obiettivi della lezione</h2>
+      <ul>
+        <li>Capire cos’è un ciclo (loop): <b>ripetere</b> un blocco di istruzioni più volte.</li>
+        <li>Capire la differenza tra <code>while</code> e <code>do-while</code>.</li>
+        <li>Capire il ruolo della <b>condizione</b> booleana nel controllo del ciclo.</li>
+        <li>Imparare a scrivere un ciclo <code>while</code> controllato da un contatore.</li>
+        <li>Imparare a scrivere un ciclo di input che continua finché l’utente non inserisce un certo valore.</li>
+        <li>Capire il concetto di <b>ciclo infinito</b> e come evitarlo.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> un ciclo è come dire al computer “finché questa condizione è vera, continua a ripetere queste istruzioni”.</p>
+    </div>
+
+    <!-- Introduzione concettuale -->
+    <div class="inner-box box">
+      <h2>Perché servono i cicli?</h2>
+      <p>
+        Senza cicli, il programma esegue ogni istruzione una sola volta, dall’alto verso il basso.
+        Con i cicli, possiamo:
+      </p>
+      <ul>
+        <li>Ripetere un’operazione per 10 volte, 100 volte, 1 milione di volte…</li>
+        <li>Continuare a chiedere dati finché l’utente non inserisce un valore valido.</li>
+        <li>Scorrere una sequenza di valori (per esempio numeri da 1 a 10, caratteri di una stringa, dati letti da un file).</li>
+      </ul>
+      <p class="note">
+        Quando progetti un ciclo devi sempre pensare a:
+        <b>(1)</b> Quando inizia?  
+        <b>(2)</b> Quando finisce?  
+        <b>(3)</b> Cosa cambia a ogni giro per avvicinarti alla fine?
+      </p>
+    </div>
+
+    <!-- while -->
+    <div class="inner-box box">
+      <h2>Il ciclo <code>while</code></h2>
+
+      <p>
+        Struttura generale (C++ e C, stessa sintassi):
+      </p>
+
+<pre><code class="language-cpp">while (condizione) {
+    // blocco di istruzioni ripetute
+}</code></pre>
+
+      <p>
+        Funzionamento logico:
+      </p>
+      <ul>
+        <li>Controlla <code>condizione</code>.</li>
+        <li>Se è vera ⇒ esegue il blocco tra <code>{ }</code>.</li>
+        <li>Poi torna a ricontrollare la condizione.</li>
+        <li>Se è falsa ⇒ esce dal ciclo e continua il programma dopo il blocco.</li>
+      </ul>
+
+      <p class="warn">
+        Osserva bene: la condizione viene controllata <b>prima</b> di ogni iterazione.  
+        Se è già falsa all’inizio, il corpo del ciclo può non essere eseguito nemmeno una volta.
+      </p>
+    </div>
+
+    <!-- while con contatore: C++ -->
+    <div class="inner-box box">
+      <h2>Esempio base: contare da 1 a 5 (C++)</h2>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int i = 1; // valore iniziale (partenza)
+
+    while (i &lt;= 5) {  // condizione di permanenza
+        std::cout &lt;&lt; i &lt;&lt; "\n";
+        i = i + 1;    // aggiornamento per avvicinarsi all'uscita
+    }
+
+    std::cout &lt;&lt; "Fatto!\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Spiegazione passo-passo:
+      </p>
+      <ul>
+        <li>Partiamo con <code>i = 1</code>.</li>
+        <li>“Finché <code>i &lt;= 5</code>”: stampa <code>i</code>.</li>
+        <li>Dopo aver stampato, facciamo <code>i = i + 1</code>, quindi <code>i</code> cresce.</li>
+        <li>Quando <code>i</code> diventa 6, la condizione <code>i &lt;= 5</code> è falsa ⇒ il ciclo termina.</li>
+      </ul>
+
+      <p class="ok">
+        Questo è un <b>ciclo controllato da contatore</b>.  
+        È fondamentale che il contatore cambi, altrimenti il ciclo non finisce mai.
+      </p>
+    </div>
+
+    <!-- while con contatore: C -->
+    <div class="inner-box box">
+      <h2>Stesso esempio in C</h2>
+
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int i = 1;
+
+    while (i &lt;= 5) {
+        printf("%d\n", i);
+        i = i + 1;
+    }
+
+    printf("Fatto!\n");
+    return 0;
+}</code></pre>
+
+      <p class="note">
+        Stessa logica, cambia solo I/O: <code>printf</code> invece di <code>std::cout</code>.
+      </p>
+    </div>
+
+    <!-- while per validazione input -->
+    <div class="inner-box box">
+      <h2>Ciclo <code>while</code> per controllare l'input</h2>
+
+      <p>
+        Possiamo usare <code>while</code> per chiedere di nuovo un dato finché non è valido.
+        Questo è molto comune nel codice reale.
+      </p>
+
+      <h3>Esempio C++: chiedi un numero positivo</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int n;
+    std::cout &lt;&lt; "Inserisci un intero positivo: ";
+    std::cin &gt;&gt; n;
+
+    while (n &lt;= 0) {
+        std::cout &lt;&lt; "Valore non valido. Riprova: ";
+        std::cin &gt;&gt; n;
+    }
+
+    std::cout &lt;&lt; "Hai inserito: " &lt;&lt; n &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Spiegazione:
+      </p>
+      <ul>
+        <li>Chiediamo un numero.</li>
+        <li>Se è &le; 0, la condizione <code>n &lt;= 0</code> è vera ⇒ entriamo nel ciclo e chiediamo di nuovo.</li>
+        <li>Il ciclo prosegue finché l’utente non inserisce un numero &gt; 0.</li>
+      </ul>
+
+      <p class="ok">
+        Questo schema è chiamato <b>ciclo di validazione</b>.  
+        “Finché è sbagliato, riprova.”
+      </p>
+
+      <h3>Versione C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int n;
+    printf("Inserisci un intero positivo: ");
+    scanf("%d", &amp;n);
+
+    while (n &lt;= 0) {
+        printf("Valore non valido. Riprova: ");
+        scanf("%d", &amp;n);
+    }
+
+    printf("Hai inserito: %d\n", n);
+    return 0;
+}</code></pre>
+    </div>
+
+    <!-- do-while -->
+    <div class="inner-box box">
+      <h2>Il ciclo <code>do-while</code></h2>
+
+      <p>
+        Struttura generale (C++ e C):
+      </p>
+
+<pre><code class="language-cpp">do {
+    // blocco di istruzioni
+} while (condizione);</code></pre>
+
+      <p>
+        Differenza rispetto a <code>while</code>:
+      </p>
+      <ul>
+        <li>Con <code>while</code> la condizione viene controllata PRIMA di entrare nel blocco.</li>
+        <li>Con <code>do-while</code> il blocco viene eseguito ALMENO UNA VOLTA, e poi alla fine si controlla la condizione per decidere se ripetere.</li>
+      </ul>
+
+      <p class="note">
+        Usa <code>do-while</code> quando vuoi che il corpo del ciclo giri almeno una volta, ad esempio per mostrare un menù e chiedere una scelta all’utente.
+      </p>
+    </div>
+
+    <!-- do-while esempio classico: menu ripetuto -->
+    <div class="inner-box box">
+      <h2>Esempio con <code>do-while</code>: menù ripetuto finché non scelgo "esci"</h2>
+
+      <h3>Versione C++</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int scelta;
+    do {
+        std::cout &lt;&lt; "\nMenu:\n";
+        std::cout &lt;&lt; "1) Di' ciao\n";
+        std::cout &lt;&lt; "2) Stampa un numero segreto\n";
+        std::cout &lt;&lt; "3) Esci\n";
+        std::cout &lt;&lt; "Scelta: ";
+        std::cin &gt;&gt; scelta;
+
+        if (scelta == 1) {
+            std::cout &lt;&lt; "Ciao!\n";
+        } else if (scelta == 2) {
+            std::cout &lt;&lt; "Il numero segreto e' 42\n";
+        } else if (scelta != 3) {
+            std::cout &lt;&lt; "Scelta non valida\n";
+        }
+
+    } while (scelta != 3);
+
+    std::cout &lt;&lt; "Uscita dal programma.\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Spiegazione:
+      </p>
+      <ul>
+        <li>Mostriamo il menù, leggiamo la scelta, reagiamo.</li>
+        <li>A fine blocco chiediamo: “la scelta è diversa da 3?”  
+            Se sì ⇒ ripeti.  
+            Se no ⇒ esci.</li>
+        <li>Il blocco viene eseguito almeno una volta comunque, anche se l’utente scegliesse “3” subito.</li>
+      </ul>
+
+      <h3>Versione C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int scelta;
+    do {
+        printf("\nMenu:\n");
+        printf("1) Di' ciao\n");
+        printf("2) Stampa un numero segreto\n");
+        printf("3) Esci\n");
+        printf("Scelta: ");
+        scanf("%d", &amp;scelta);
+
+        if (scelta == 1) {
+            printf("Ciao!\n");
+        } else if (scelta == 2) {
+            printf("Il numero segreto e' 42\n");
+        } else if (scelta != 3) {
+            printf("Scelta non valida\n");
+        }
+
+    } while (scelta != 3);
+
+    printf("Uscita dal programma.\n");
+    return 0;
+}</code></pre>
+
+      <p class="ok">
+        Questo schema (menù ripetuto finché non scegli “Esci”) è tipicissimo nei programmi procedurali.
+        È una delle situazioni più naturali per usare <code>do-while</code>.
+      </p>
+    </div>
+
+    <!-- Ciclo infinito -->
+    <div class="inner-box box">
+      <h2>Attenzione ai cicli infiniti</h2>
+
+      <p>
+        Un <b>ciclo infinito</b> è un ciclo che non finisce mai.
+        A volte è voluto (per programmi server che rimangono sempre attivi), ma spesso è un errore.
+      </p>
+
+<pre><code class="language-cpp">int i = 1;
+while (i &lt;= 5) {
+    std::cout &lt;&lt; i &lt;&lt; "\n";
+    // i = i + 1;  <-- OOPS! dimenticato!
+}
+</code></pre>
+
+      <p>
+        Qui <code>i</code> non cambia mai, quindi <code>i &lt;= 5</code> resta sempre vera.  
+        Il programma entrerà in un loop senza fine.
+      </p>
+
+      <p class="warn">
+        Per evitare cicli infiniti accidentali:
+      </p>
+      <ul>
+        <li>Identifica sempre la variabile di controllo (es. <code>i</code>).</li>
+        <li>Chiarisci la condizione di uscita (<code>i &lt;= 5</code> diventa falsa quando <code>i</code> cresce).</li>
+        <li>Verifica che nel corpo del ciclo quella variabile venga aggiornata (<code>i = i + 1</code>).</li>
+      </ul>
+
+      <p class="ok">
+        Regola d’oro: prima di eseguire, chiediti “Questo ciclo è garantito finire?” Se non sai rispondere, c’è un bug logico.
+      </p>
+    </div>
+
+    <!-- Esercizi con soluzioni -->
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+
+        <li>
+          <b>E1 — Somma da 1 a N (C++)</b><br/>
+          <em>Testo:</em> Scrivi un programma che:
+          <ul>
+            <li>chiede un numero intero positivo <code>N</code>;</li>
+            <li>usa un ciclo <code>while</code> per sommare tutti i numeri da 1 a N;</li>
+            <li>stampa il risultato finale.</li>
+          </ul>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int N;
+    std::cout &lt;&lt; "Inserisci N (>0): ";
+    std::cin &gt;&gt; N;
+
+    int i = 1;
+    int somma = 0;
+
+    while (i &lt;= N) {
+        somma = somma + i;
+        i = i + 1;
+    }
+
+    std::cout &lt;&lt; "Somma = " &lt;&lt; somma &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+            <p class="note">
+              Qui <code>i</code> è il contatore,
+              <code>somma</code> accumula il totale,
+              e la condizione <code>i &lt;= N</code> decide quando fermarsi.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — Conta cifre decimali (C)</b><br/>
+          <em>Testo:</em> Scrivi un programma in C che legge un intero positivo <code>x</code> e conta quante cifre ha (es. 7 → 1 cifra, 123 → 3 cifre).
+          Suggerimento: dividi <code>x</code> per 10 finché non diventa 0.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int x;
+    printf("Inserisci un intero positivo: ");
+    scanf("%d", &amp;x);
+
+    int count = 0;
+    if (x == 0) {
+        count = 1;
+    } else {
+        while (x != 0) {
+            x = x / 10;   // elimina l'ultima cifra
+            count = count + 1;
+        }
+    }
+
+    printf("Numero di cifre: %d\n", count);
+    return 0;
+}</code></pre>
+            <p class="ok">
+              Questo mostra un uso importante del ciclo: <b>ripetere la stessa operazione finché la variabile diventa 0</b>.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Menù ripetuto finché non scelgo “esci” (C++)</b><br/>
+          <em>Testo:</em> Scrivi un programma C++ che mostra un menù con 3 voci e continua a mostrare il menù finché l’utente non sceglie l’opzione “esci”.
+          Usa un ciclo <code>do-while</code>.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int scelta;
+    do {
+        std::cout &lt;&lt; "\n1) Saluta\n";
+        std::cout &lt;&lt; "2) Di' un numero fortunato\n";
+        std::cout &lt;&lt; "3) Esci\n";
+        std::cout &lt;&lt; "Scelta: ";
+        std::cin &gt;&gt; scelta;
+
+        if (scelta == 1) {
+            std::cout &lt;&lt; "Ciao!\n";
+        } else if (scelta == 2) {
+            std::cout &lt;&lt; "Il numero fortunato e' 7!\n";
+        } else if (scelta != 3) {
+            std::cout &lt;&lt; "Scelta non valida.\n";
+        }
+
+    } while (scelta != 3);
+
+    std::cout &lt;&lt; "Fine.\n";
+    return 0;
+}</code></pre>
+            <p class="note">
+              Questo è un pattern ricorrente: <b>do-while</b> è perfetto per i menù interattivi.  
+              Il blocco viene eseguito almeno una volta per mostrare il menù iniziale.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E4 — Individua il bug</b><br/>
+          <em>Testo:</em> In questo frammento C++, c’è un errore logico. Individualo e spiega perché è grave:
+<pre><code class="language-cpp">int i = 10;
+while (i &gt; 0) {
+    std::cout &lt;&lt; i &lt;&lt; "\n";
+    // manca qualcosa qui
+}
+</code></pre>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+          </div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+            <p class="bad">
+              La variabile <code>i</code> non viene mai modificata dentro il ciclo.
+              Quindi <code>i &gt; 0</code> rimane sempre vera ⇒ ciclo infinito.
+              Dovevi aggiungere qualcosa tipo <code>i = i - 1;</code>.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>In sintesi</b><br/>
+      <ul>
+        <li><code>while</code>: controlla la condizione PRIMA di ogni iterazione. Il corpo può non eseguire mai.</li>
+        <li><code>do-while</code>: esegue il corpo ALMENO UNA volta, poi controlla la condizione.</li>
+        <li>Devi sempre assicurarti che, a ogni giro, qualcosa cambi per avvicinarti alla fine del ciclo.</li>
+        <li>I cicli sono potentissimi per: contare, sommare, controllare input, ripetere menù.</li>
+      </ul>
+      Prossima lezione (Lez6_10): il ciclo <strong><code>for</code></strong>, che è molto comodo quando sappiamo già quante volte dobbiamo ripetere.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
