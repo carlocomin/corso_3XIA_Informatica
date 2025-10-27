@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_10 · Ciclo for in C e C++</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_9.html"; }
+    function nextSlide(){ window.location.href = "lez7_1.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+    .box  { background:#fff; border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a class="active" href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Il ciclo <code>for</code> in C e C++</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <div class="inner-box box">
+      <h2>Cos’è un ciclo <code>for</code>?</h2>
+      <p>
+        Il ciclo <code>for</code> è una forma compatta di <b>ciclo controllato da contatore</b>.
+        Si usa quando conosciamo in anticipo quante volte vogliamo ripetere un blocco di istruzioni.
+      </p>
+      <p>
+        La sua sintassi è:
+      </p>
+<pre><code class="language-cpp">for (inizializzazione; condizione; aggiornamento) {
+    // corpo del ciclo
+}</code></pre>
+      <ul>
+        <li><b>inizializzazione</b>: viene eseguita una sola volta, all’inizio;</li>
+        <li><b>condizione</b>: viene valutata prima di ogni iterazione;</li>
+        <li><b>aggiornamento</b>: eseguito alla fine di ogni giro.</li>
+      </ul>
+      <p class="ok">
+        È l’equivalente compatto di un ciclo <code>while</code> con contatore.
+      </p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Esempio base in C++: contare da 1 a 5</h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    for (int i = 1; i &lt;= 5; i = i + 1) {
+        std::cout &lt;&lt; i &lt;&lt; "\n";
+    }
+    std::cout &lt;&lt; "Fatto!\n";
+    return 0;
+}</code></pre>
+      <p>
+        In questo esempio:
+      </p>
+      <ul>
+        <li><code>int i = 1</code>: inizializzazione;</li>
+        <li><code>i &lt;= 5</code>: condizione di permanenza;</li>
+        <li><code>i = i + 1</code>: aggiornamento dopo ogni iterazione.</li>
+      </ul>
+      <p class="note">
+        Quando <code>i</code> diventa 6, la condizione è falsa e il ciclo termina.
+      </p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Esempio equivalente in C</h2>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    for (int i = 1; i &lt;= 5; i = i + 1) {
+        printf("%d\n", i);
+    }
+    printf("Fatto!\n");
+    return 0;
+}</code></pre>
+      <p class="ok">
+        Stessa logica: cambia solo la sintassi di stampa (<code>printf</code> invece di <code>std::cout</code>).
+      </p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Confronto <code>for</code> vs <code>while</code></h2>
+      <table>
+        <tr><th>for</th><th>while</th></tr>
+        <tr>
+          <td>Tutto il controllo (inizio, condizione, aggiornamento) è concentrato in un’unica riga.</td>
+          <td>Le tre parti sono scritte in punti diversi (prima, dentro e dopo il ciclo).</td>
+        </tr>
+        <tr>
+          <td>Più leggibile per cicli con contatore.</td>
+          <td>Più flessibile per condizioni generiche (es. input).</td>
+        </tr>
+      </table>
+      <p class="note">
+        Usa <b><code>for</code></b> quando sai già quante volte devi ripetere qualcosa;
+        usa <b><code>while</code></b> quando la durata del ciclo dipende da una condizione esterna o da un input.
+      </p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Uso di <code>break</code> e <code>continue</code></h2>
+      <p>
+        All’interno di un ciclo possiamo controllare il flusso con due parole chiave:
+      </p>
+      <ul>
+        <li><code>break</code>: interrompe il ciclo immediatamente.</li>
+        <li><code>continue</code>: salta direttamente all’iterazione successiva.</li>
+      </ul>
+<pre><code class="language-cpp">for (int i = 1; i &lt;= 10; i++) {
+    if (i == 5) continue;   // salta il numero 5
+    if (i == 9) break;      // ferma il ciclo
+    std::cout &lt;&lt; i &lt;&lt; " ";
+}</code></pre>
+      <p>
+        Output: <code>1 2 3 4 6 7 8</code>
+      </p>
+      <p class="ok">
+        <code>continue</code> è utile per saltare casi particolari;  
+        <code>break</code> serve per interrompere quando raggiungi una condizione di fine anticipata.
+      </p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Esempio pratico: tabella pitagorica (for annidati)</h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    for (int r = 1; r &lt;= 10; r++) {
+        for (int c = 1; c &lt;= 10; c++) {
+            std::cout &lt;&lt; r * c &lt;&lt; "\t";
+        }
+        std::cout &lt;&lt; "\n";
+    }
+    return 0;
+}</code></pre>
+      <p>
+        Questo esempio mostra <b>due cicli annidati</b>:
+      </p>
+      <ul>
+        <li>Il ciclo esterno (r) controlla le righe.</li>
+        <li>Il ciclo interno (c) stampa le colonne per ogni riga.</li>
+      </ul>
+      <p class="note">
+        Questo è lo schema tipico per stampare tabelle o scorrere matrici.
+      </p>
+    </div>
+
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+        <li>
+          <b>E1 — Somma dei numeri da 1 a N</b><br/>
+          <em>Testo:</em> Scrivi un programma che chiede N e calcola la somma dei numeri da 1 a N usando <code>for</code>.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int N, somma = 0;
+    std::cout &lt;&lt; "Inserisci N: ";
+    std::cin &gt;&gt; N;
+    for (int i = 1; i &lt;= N; i++) {
+        somma += i;
+    }
+    std::cout &lt;&lt; "Somma = " &lt;&lt; somma &lt;&lt; "\n";
+}</code></pre>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — Stampa numeri pari da 2 a 20</b>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    for (int i = 2; i &lt;= 20; i += 2)
+        printf("%d ", i);
+    printf("\n");
+}</code></pre>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Conta le cifre di un numero</b>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int n, cifre = 0;
+    std::cout &lt;&lt; "Inserisci un numero: ";
+    std::cin &gt;&gt; n;
+    for (; n &gt; 0; n /= 10) {
+        cifre++;
+    }
+    std::cout &lt;&lt; "Numero di cifre: " &lt;&lt; cifre &lt;&lt; "\n";
+}</code></pre>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>In sintesi</b>
+      <ul>
+        <li>Il ciclo <code>for</code> è perfetto quando conosci il numero di iterazioni.</li>
+        <li>Ha tre parti: inizializzazione, condizione e aggiornamento.</li>
+        <li>È leggibile, compatto e molto usato in programmazione.</li>
+        <li>Può essere annidato per creare strutture a due o più dimensioni.</li>
+        <li>Evita di modificare il contatore dentro il corpo: crea confusione.</li>
+      </ul>
+      Prossima lezione: introduzione agli <b>array</b> e al loro uso nei cicli.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>

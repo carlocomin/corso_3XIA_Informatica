@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_11 · Introduzione agli array (C e C++)</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_10.html"; }
+    function nextSlide(){ window.location.href = "lez6_12.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+    .box  { background:#fff; border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+    <li><a class="active" href="lez6_11.html">Lez6_11: Array (introduzione)</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Array (vettori) in C e C++</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Motivazione -->
+    <div class="inner-box box">
+      <h2>Perché servono gli array?</h2>
+      <p>
+        Finora abbiamo usato variabili singole:
+      </p>
+<pre><code class="language-cpp">int voto1;
+int voto2;
+int voto3;
+...</code></pre>
+
+      <p>
+        Problema: se devo gestire 30 voti, dovrei fare 30 variabili diverse. È ingestibile.
+      </p>
+
+      <p class="ok">
+        Un <b>array</b> è una collezione ordinata di elementi <u>tutti dello stesso tipo</u>, memorizzati uno dopo l’altro in memoria,
+        e accessibili tramite un <b>indice</b>.
+      </p>
+
+      <p>
+        Quindi invece di 30 variabili <code>voto1</code>, <code>voto2</code>, …, abbiamo una sola variabile:
+      </p>
+<pre><code class="language-cpp">int voti[30];   // 30 interi</code></pre>
+
+      <p>
+        Ora posso dire “il voto numero 0”, “il voto numero 1”, ecc.
+      </p>
+
+      <p class="note">
+        Gli array sono fondamentali per rappresentare liste, tabelle, righe di dati, serie di campioni, ecc.
+      </p>
+    </div>
+
+    <!-- Dichiarazione e memoria -->
+    <div class="inner-box box">
+      <h2>Dichiarare un array</h2>
+
+      <h3>In C e in C++ (forma base)</h3>
+<pre><code class="language-cpp">int a[5];        // array di 5 interi
+double misure[10]; // array di 10 double
+char nome[100];    // array di 100 char (per stringhe in stile C)</code></pre>
+
+      <ul>
+        <li><code>int a[5];</code> crea 5 celle consecutive di tipo <code>int</code>.</li>
+        <li>Gli indici partono da 0, quindi in <code>a[5]</code> gli elementi validi sono:
+          <code>a[0]</code>, <code>a[1]</code>, <code>a[2]</code>, <code>a[3]</code>, <code>a[4]</code>.
+        </li>
+        <li><strong>Attenzione:</strong> <code>a[5]</code> NON esiste. Andare fuori dai limiti è errore grave (comportamento indefinito).</li>
+      </ul>
+
+      <p class="warn">
+        Suggerimento mentale: se la dimensione è N, l’ultimo indice valido è N-1.
+      </p>
+
+      <h3>Inizializzazione al momento della dichiarazione</h3>
+<pre><code class="language-cpp">int numeri[4] = {10, 20, 30, 40};
+
+int zero[5] = {0};    // tutti 0: {0,0,0,0,0}
+
+char vocali[5] = {'a','e','i','o','u'};</code></pre>
+
+      <p>
+        Possiamo anche lasciare che il compilatore calcoli la dimensione:
+      </p>
+<pre><code class="language-cpp">int valori[] = {3, 5, 7, 11}; // dimensione = 4
+</code></pre>
+
+      <p class="note">
+        Questo è molto comodo: se aggiungo/tolgo elementi dalla lista di inizializzazione, la dimensione si aggiorna da sola.
+      </p>
+    </div>
+
+    <!-- Accesso con indice -->
+    <div class="inner-box box">
+      <h2>Accedere agli elementi</h2>
+      <p>
+        Per leggere o scrivere in una certa posizione dell’array uso l’<b>indice</b> tra parentesi quadre <code>[ ]</code>.
+      </p>
+
+      <h3>Esempio in C++</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int a[5];
+    a[0] = 10;        // scrittura
+    a[1] = 20;
+
+    std::cout &lt;&lt; a[0] &lt;&lt; "\n"; // lettura (stampa 10)
+    std::cout &lt;&lt; a[1] &lt;&lt; "\n"; // stampa 20
+
+    return 0;
+}</code></pre>
+
+      <h3>Esempio in C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int a[5];
+    a[0] = 10;
+    a[1] = 20;
+
+    printf("%d\n", a[0]); // stampa 10
+    printf("%d\n", a[1]); // stampa 20
+
+    return 0;
+}</code></pre>
+
+      <p class="warn">
+        Se usi un indice che non esiste (per esempio <code>a[1000]</code> in un array da 5 elementi),
+        vai a leggere/scrivere memoria che non è tua → comportamento imprevedibile, potenzialmente crash.
+      </p>
+    </div>
+
+    <!-- Input/output di array con for -->
+    <div class="inner-box box">
+      <h2>Riempire e stampare un array con un ciclo <code>for</code></h2>
+
+      <p>
+        In pratica, quasi sempre useremo un ciclo per “visitare” tutti gli elementi dell’array.
+        Questo è un <b>pattern fondamentale</b> che useremo per tutta l’informatica.
+      </p>
+
+      <h3>C++ — leggi 5 numeri dall’utente e poi ristampali</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int v[5];
+
+    // input
+    for (int i = 0; i &lt; 5; i++) {
+        std::cout &lt;&lt; "Inserisci v[" &lt;&lt; i &lt;&lt; "]: ";
+        std::cin &gt;&gt; v[i];
+    }
+
+    // output
+    std::cout &lt;&lt; "Hai inserito: ";
+    for (int i = 0; i &lt; 5; i++) {
+        std::cout &lt;&lt; v[i] &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+
+    return 0;
+}</code></pre>
+
+      <h3>C — stesso esercizio</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int v[5];
+    int i;
+
+    // input
+    for (i = 0; i &lt; 5; i++) {
+        printf("Inserisci v[%d]: ", i);
+        scanf("%d", &amp;v[i]);
+    }
+
+    // output
+    printf("Hai inserito: ");
+    for (i = 0; i &lt; 5; i++) {
+        printf("%d ", v[i]);
+    }
+    printf("\n");
+
+    return 0;
+}</code></pre>
+
+      <p class="ok">
+        Nota lo schema:  
+        <b>for (i = 0; i &lt; 5; i++)</b> significa “visita tutte le posizioni valide dell’array v”.
+      </p>
+
+      <p class="note">
+        Se un array ha dimensione <code>N</code>, il ciclo tipico è:
+        <code>for (i = 0; i &lt; N; i++)</code>.
+        Lo useremo sempre.
+      </p>
+    </div>
+
+    <!-- Somma, massimo, media -->
+    <div class="inner-box box">
+      <h2>Elaborare un array: somma, massimo, media</h2>
+
+      <p>
+        Una volta che i dati sono nel vettore, possiamo fare calcoli su tutti gli elementi.
+      </p>
+
+      <h3>Somma e media (C++)</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    const int N = 5;
+    int v[N];
+    int somma = 0;
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "v[" &lt;&lt; i &lt;&lt; "] = ";
+        std::cin &gt;&gt; v[i];
+        somma += v[i];
+    }
+
+    double media = (double)somma / N;
+    std::cout &lt;&lt; "Somma = " &lt;&lt; somma &lt;&lt; "\n";
+    std::cout &lt;&lt; "Media = " &lt;&lt; media &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Ragionamento:
+      </p>
+      <ul>
+        <li>Leggiamo tutti i valori in <code>v[i]</code>.</li>
+        <li>Aggiungiamo ogni valore a <code>somma</code>.</li>
+        <li>La media è somma diviso quantità di elementi.</li>
+      </ul>
+
+      <h3>Massimo (C)</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 5;
+    int v[N];
+    int i;
+
+    // input
+    for (i = 0; i &lt; N; i++) {
+        printf("v[%d] = ", i);
+        scanf("%d", &amp;v[i]);
+    }
+
+    // ipotizzo che il massimo iniziale sia il primo elemento
+    int massimo = v[0];
+
+    for (i = 1; i &lt; N; i++) {
+        if (v[i] &gt; massimo) {
+            massimo = v[i];
+        }
+    }
+
+    printf("Il massimo e': %d\n", massimo);
+    return 0;
+}</code></pre>
+
+      <p class="ok">
+        Schema generale per trovare il massimo:
+        <ol>
+          <li>salva il primo elemento come “candidato massimo”;</li>
+          <li>confronta tutti gli altri con il massimo attuale;</li>
+          <li>se trovi un valore più grande, aggiornalo.</li>
+        </ol>
+      </p>
+    </div>
+
+    <!-- Differenze C e C++ -->
+    <div class="inner-box box">
+      <h2>Piccole differenze tra C e C++ (per ora)</h2>
+
+      <p>
+        Per ora, stiamo usando array “in stile C”: <code>int v[10];</code> in entrambi i linguaggi.
+      </p>
+
+      <p>
+        In C++ moderno esiste anche <code>std::array</code> (serve <code>#include &lt;array&gt;</code>):
+      </p>
+<pre><code class="language-cpp">#include &lt;array&gt;
+#include &lt;iostream&gt;
+int main() {
+    std::array&lt;int, 5&gt; v = {1,2,3,4,5};
+    for (int i = 0; i &lt; 5; i++) {
+        std::cout &lt;&lt; v[i] &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Perché usarlo?
+      </p>
+      <ul>
+        <li><code>std::array</code> “sa” la propria dimensione (puoi fare <code>v.size()</code>);</li>
+        <li>funziona bene con funzioni e librerie C++ moderne;</li>
+        <li>è più “sicuro” e leggibile nel codice grande.</li>
+      </ul>
+
+      <p class="note">
+        Ma a livello basso, <code>std::array&lt;T,N&gt;</code> è comunque un blocco di N elementi contigui, come <code>T v[N];</code>.
+        Per noi, in questa fase, possiamo tranquillamente restare sugli array classici.
+      </p>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+
+        <li>
+          <b>E1 — Media della classe</b><br/>
+          <em>Testo:</em> Chiedi all’utente di inserire i voti di 5 studenti (numeri interi).  
+          Stampa la media dei voti.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    const int N = 5;
+    int voti[N];
+    int somma = 0;
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "Voto " &lt;&lt; i &lt;&lt; ": ";
+        std::cin &gt;&gt; voti[i];
+        somma += voti[i];
+    }
+
+    double media = (double)somma / N;
+    std::cout &lt;&lt; "Media classe = " &lt;&lt; media &lt;&lt; "\n";
+    return 0;
+}</code></pre>
+
+            <p class="ok">
+              Questo esercizio ti fa lavorare su:
+              <b>input in array</b>, <b>somma</b>, <b>media</b>.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — Minimo e massimo</b><br/>
+          <em>Testo:</em> Leggi 5 numeri interi in un array (in C).  
+          Stampa il valore minimo e massimo.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 5;
+    int v[N];
+    int i;
+
+    for (i = 0; i &lt; N; i++) {
+        printf("v[%d] = ", i);
+        scanf("%d", &amp;v[i]);
+    }
+
+    int min = v[0];
+    int max = v[0];
+
+    for (i = 1; i &lt; N; i++) {
+        if (v[i] &lt; min) min = v[i];
+        if (v[i] &gt; max) max = v[i];
+    }
+
+    printf("Min = %d, Max = %d\n", min, max);
+    return 0;
+}</code></pre>
+
+            <p class="note">
+              Stiamo facendo due confronti in un unico ciclo: è un’ottima abitudine (efficiente e chiaro).
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Stampa inversa</b><br/>
+          <em>Testo:</em> Leggi 5 numeri interi in un array.  
+          Poi stampali al contrario (dall’ultimo al primo).
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    const int N = 5;
+    int v[N];
+
+    for (int i = 0; i &lt; N; i++) {
+        std::cout &lt;&lt; "v[" &lt;&lt; i &lt;&lt; "] = ";
+        std::cin &gt;&gt; v[i];
+    }
+
+    std::cout &lt;&lt; "Inverso: ";
+    for (int i = N-1; i &gt;= 0; i--) {
+        std::cout &lt;&lt; v[i] &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+
+    return 0;
+}</code></pre>
+
+            <p class="warn">
+              Attenzione al ciclo in discesa:
+              <code>for (int i = N-1; i &gt;= 0; i--)</code>.  
+              Se <code>i</code> fosse senza segno (es. <code>unsigned</code>), rischieresti un ciclo infinito.  
+              Per ora usa <code>int</code>.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E4 — Trova un valore nell’array</b><br/>
+          <em>Testo:</em> Leggi 5 numeri.  
+          Poi chiedi un numero X e stampa se X è presente nell’array oppure no.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+          </div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    const int N = 5;
+    int v[N];
+    int i, x;
+    int trovato = 0; // 0 = no, 1 = si
+
+    for (i = 0; i &lt; N; i++) {
+        printf("v[%d] = ", i);
+        scanf("%d", &amp;v[i]);
+    }
+
+    printf("Cerca il valore: ");
+    scanf("%d", &amp;x);
+
+    for (i = 0; i &lt; N; i++) {
+        if (v[i] == x) {
+            trovato = 1;
+            break; // posso uscire prima
+        }
+    }
+
+    if (trovato) {
+        printf("Presente nell'array.\n");
+    } else {
+        printf("Non presente.\n");
+    }
+
+    return 0;
+}</code></pre>
+
+            <p class="ok">
+              Questo è chiamato <b>ricerca lineare</b>: controlliamo ogni elemento, uno alla volta, finché troviamo quello che ci interessa.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>In sintesi</b><br/>
+      <ul>
+        <li>Un array è un blocco di celle tutte dello stesso tipo, indicizzate da 0 a N-1.</li>
+        <li>Si dichiara con <code>tipo nome[dim];</code>.</li>
+        <li>Per accedere uso <code>nome[indice]</code>.</li>
+        <li>Scorro un array quasi sempre con un ciclo <code>for</code> che va da 0 a N-1.</li>
+        <li>Posso calcolare somma, media, massimo, minimo, cercare un elemento… tutto con un ciclo.</li>
+      </ul>
+      Prossimo passo: array bidimensionali (matrici) e come percorrerli con cicli annidati.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
