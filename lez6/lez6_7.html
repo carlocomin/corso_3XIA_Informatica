@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_7 · Strutture di controllo: if / else in C++ e C</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_6.html"; }
+    function nextSlide(){ window.location.href = "lez6_8.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .kbd  { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:0 .35rem }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a class="active" href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Strutture di controllo: if / else (C++ e C)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Obiettivi -->
+    <div class="inner-box box">
+      <h2>Obiettivi della lezione</h2>
+      <ul>
+        <li>Capire a cosa serve un <code>if</code>: prendere decisioni nel programma (“se succede X allora fai Y”).</li>
+        <li>Capire la differenza tra <code>if</code> semplice, <code>if ... else</code> e <code>if ... else if ... else</code>.</li>
+        <li>Capire come vengono valutate le condizioni booleane (<code>true</code>/<code>false</code> in C++, 1/0 in C).</li>
+        <li>Conoscere errori comuni: usare <code>=</code> al posto di <code>==</code>, condizioni sempre vere, parentesi mancanti.</li>
+        <li>Vedere esempi completi con input da tastiera, output, e logica di decisione.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> il <code>if</code> è il punto in cui il programma “sceglie una strada”. Senza <code>if</code> il programma è solo una sequenza fissa di istruzioni sempre uguali.</p>
+    </div>
+
+    <!-- Blocco if: concetto -->
+    <div class="inner-box box">
+      <h2>Il concetto di condizione</h2>
+      <p>
+        Una <b>condizione</b> è un’espressione che può essere vera o falsa.  
+        Esempi di condizioni:
+      </p>
+      <ul>
+        <li><code>eta &gt;= 18</code> (vero se l’utente ha almeno 18 anni)</li>
+        <li><code>nome == "Mario"</code> (in C++ con <code>std::string</code>)</li>
+        <li><code>saldo &lt; 0</code> (vero se stai “in rosso”)</li>
+        <li><code>temperatura &gt; 37.5</code> (febbre?)</li>
+      </ul>
+
+      <p>
+        Il blocco <code>if</code> esegue <em>un pezzo di codice</em> solo se la condizione è vera.
+      </p>
+
+      <p class="note">
+        In C++ la condizione è vera se l’espressione è <code>true</code>.  
+        In C la condizione è vera se l’espressione è diversa da 0 (cioè 1, 2, 100... sono considerati “vero”; 0 è “falso”).
+      </p>
+
+      <p class="warn">
+        Se una condizione non è chiarissima da leggere, mettila tra parentesi e magari spezzala in sotto-espressioni più semplici con variabili temporanee. Il codice deve essere leggibile, non “furbo”.
+      </p>
+    </div>
+
+    <!-- if semplice -->
+    <div class="inner-box box">
+      <h2>Struttura base: <code>if</code> semplice</h2>
+
+      <p>
+        Forma generale (C++ e C, stessa sintassi):
+      </p>
+
+<pre><code class="language-cpp">if (condizione) {
+    // blocco di istruzioni
+}</code></pre>
+
+      <p>
+        Significa: se <code>condizione</code> è vera, esegui il blocco di istruzioni tra le <code>{ }</code>.  
+        Se è falsa, salta quel blocco e continua dopo.
+      </p>
+
+      <h3>Esempio in C++</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int eta;
+    std::cout &lt;&lt; "Quanti anni hai? ";
+    std::cin &gt;&gt; eta;
+
+    if (eta &gt;= 18) {
+        std::cout &lt;&lt; "Sei maggiorenne.\n";
+    }
+
+    std::cout &lt;&lt; "Fine del programma.\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Se l’utente inserisce ad esempio 20, la condizione <code>eta &gt;= 18</code> è vera ⇒ stampa “Sei maggiorenne.”  
+        Se inserisce 16, è falsa ⇒ non stampa quella riga.
+      </p>
+
+      <h3>Versione in C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int eta;
+    printf("Quanti anni hai? ");
+    scanf("%d", &amp;eta);
+
+    if (eta &gt;= 18) {
+        printf("Sei maggiorenne.\n");
+    }
+
+    printf("Fine del programma.\n");
+    return 0;
+}</code></pre>
+
+      <p class="ok">
+        Nota bene: stessa struttura logica, cambia solo lo stile I/O.
+      </p>
+    </div>
+
+    <!-- if...else -->
+    <div class="inner-box box">
+      <h2><code>if ... else</code>: scegliere tra due strade</h2>
+
+      <p>
+        Se vogliamo fare una cosa quando la condizione è vera e un’altra quando è falsa, usiamo <code>if ... else</code>.
+      </p>
+
+<pre><code class="language-cpp">if (condizione) {
+    // ramo 1: condizione vera
+} else {
+    // ramo 2: condizione falsa
+}</code></pre>
+
+      <h3>Esempio in C++</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int eta;
+    std::cout &lt;&lt; "Quanti anni hai? ";
+    std::cin &gt;&gt; eta;
+
+    if (eta &gt;= 18) {
+        std::cout &lt;&lt; "Accesso consentito.\n";
+    } else {
+        std::cout &lt;&lt; "Accesso negato.\n";
+    }
+
+    return 0;
+}</code></pre>
+
+      <p>
+        Se la condizione (<code>eta &gt;= 18</code>) è vera → primo blocco.  
+        Se è falsa → secondo blocco.
+      </p>
+
+      <h3>Versione equivalente in C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int eta;
+    printf("Quanti anni hai? ");
+    scanf("%d", &amp;eta);
+
+    if (eta &gt;= 18) {
+        printf("Accesso consentito.\n");
+    } else {
+        printf("Accesso negato.\n");
+    }
+
+    return 0;
+}</code></pre>
+
+      <p class="note">
+        Questo tipo di struttura è detto “se/altrimenti”: SE condizione allora fai A, ALTRIMENTI fai B.  
+        È la forma logica più comune nei programmi reali.
+      </p>
+    </div>
+
+    <!-- if ... else if ... else -->
+    <div class="inner-box box">
+      <h2>Catene di controllo: <code>if ... else if ... else</code></h2>
+
+      <p>
+        Spesso non ci basta “vero vs falso”.  
+        Vogliamo più casi distinti (es. voto 0–5 = insufficiente, 6–7 = sufficiente, 8–9 = buono, 10 = eccellente).
+      </p>
+
+<pre><code class="language-cpp">if (condizione1) {
+    // caso 1
+} else if (condizione2) {
+    // caso 2
+} else if (condizione3) {
+    // caso 3
+} else {
+    // caso di default (nessuna condizione sopra era vera)
+}</code></pre>
+
+      <h3>Esempio in C++</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int voto;
+    std::cout &lt;&lt; "Inserisci voto (0-10): ";
+    std::cin &gt;&gt; voto;
+
+    if (voto &lt; 6) {
+        std::cout &lt;&lt; "Insufficiente\n";
+    } else if (voto &lt;= 7) {
+        std::cout &lt;&lt; "Sufficiente\n";
+    } else if (voto &lt;= 9) {
+        std::cout &lt;&lt; "Buono\n";
+    } else {
+        std::cout &lt;&lt; "Eccellente\n";
+    }
+
+    return 0;
+}</code></pre>
+
+      <p>
+        Il flusso è: controlla la prima condizione.  
+        Se è vera, esegue quel blocco e <strong>poi salta tutto il resto</strong>.  
+        Se è falsa, prova la seconda, e così via.
+      </p>
+
+      <h3>Versione in C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int voto;
+    printf("Inserisci voto (0-10): ");
+    scanf("%d", &amp;voto);
+
+    if (voto &lt; 6) {
+        printf("Insufficiente\n");
+    } else if (voto &lt;= 7) {
+        printf("Sufficiente\n");
+    } else if (voto &lt;= 9) {
+        printf("Buono\n");
+    } else {
+        printf("Eccellente\n");
+    }
+
+    return 0;
+}</code></pre>
+
+      <p class="ok">
+        Nota bene: appena una condizione è vera, le successive NON vengono valutate.
+        Questo è importante per l’efficienza e per evitare di stampare più di una categoria.
+      </p>
+    </div>
+
+    <!-- Booleani e uso corretto nelle condizioni -->
+    <div class="inner-box box">
+      <h2>Valori booleani (vero/falso)</h2>
+
+      <ul>
+        <li>In C++ il tipo <code>bool</code> ha solo due valori legali: <code>true</code> e <code>false</code>.</li>
+        <li>In C, tradizionalmente, <code>if(condizione)</code> considera “vero” qualunque cosa ≠ 0 e “falso” lo 0.  
+            (Da C99 esiste <code>_Bool</code> e <code>&lt;stdbool.h&gt;</code> che ti dà <code>bool</code>, <code>true</code>, <code>false</code>).</li>
+        <li>In entrambi i linguaggi vale che <code>(a &gt; b)</code> è una condizione booleana: “è vero che a è maggiore di b?”</li>
+      </ul>
+
+      <p class="note">
+        È buona abitudine usare condizioni che leggono bene ad alta voce:
+        <code>if (saldo &lt; 0)</code>  
+        si legge “se il saldo è minore di zero”.  
+        Evita cose criptiche tipo <code>if (saldo)</code> se non è chiaro cosa significa “saldo diverso da zero”.
+      </p>
+    </div>
+
+    <!-- Errori comuni -->
+    <div class="inner-box box">
+      <h2>Errori comuni (da evitare SUBITO)</h2>
+
+      <ul>
+        <li><b>Usare <code>=</code> invece di <code>==</code></b><br/>
+          <div class="bad">
+            <code>if (x = 5) { ... }</code><br/>
+            Qui <code>x = 5</code> è un’assegnazione, non un confronto.  
+            L’espressione vale 5, e 5 viene interpretato come “vero”.  
+            Quindi questo <code>if</code> è sempre vero e cambia anche il valore di x!
+          </div>
+          <div class="ok">
+            <code>if (x == 5) { ... }</code><br/>
+            Ora stai facendo un confronto (“x è uguale a 5?”).
+          </div>
+        </li>
+
+        <li><b>Dimenticare le parentesi graffe</b><br/>
+          In C e C++ <code>if (cond) istruzione;</code> è legale senza <code>{ }</code>.  
+          Ma appena aggiungi una seconda istruzione devi ricordarti di aggiungere <code>{ }</code>.
+          <div class="warn">
+<pre><code class="language-cpp">if (x &gt; 10)
+    std::cout &lt;&lt; "Grande\n";
+    std::cout &lt;&lt; "Sempre stampata\n"; // ATTENZIONE: NON fa parte dell'if!</code></pre>
+          </div>
+          <div class="ok">
+<pre><code class="language-cpp">if (x &gt; 10) {
+    std::cout &lt;&lt; "Grande\n";
+    std::cout &lt;&lt; "Solo se x&gt;10\n";
+}</code></pre>
+          </div>
+          <p>Per studenti alle prime armi: <b>usa sempre le graffe</b>, anche se c’è una sola istruzione.</p>
+        </li>
+
+        <li><b>Condizioni sempre vere o sempre false</b><br/>
+          Se scrivi qualcosa tipo <code>if (1)</code> o <code>if (true)</code> non è un errore di sintassi, ma spesso è un errore logico:
+          stai eseguendo sempre quel ramo.
+        </li>
+
+        <li><b>Catene di <code>else if</code> incoerenti</b><br/>
+          Se fai:
+<pre><code class="language-cpp">if (voto &lt; 6) ...
+else if (voto &lt; 6) ...
+</code></pre>
+          Il secondo ramo non verrà mai eseguito, perché è identico al primo.  
+          Controlla sempre gli intervalli logici (ad esempio <code>&lt; 6</code>, poi <code>&lt;= 7</code>, ecc.).
+        </li>
+      </ul>
+    </div>
+
+    <!-- Esercizi con soluzione a comparsa -->
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+
+        <li>
+          <b>E1 — Pari o dispari?</b><br/>
+          <em>Testo:</em> Scrivi un programma che:
+          <ul>
+            <li>chiede un intero all’utente;</li>
+            <li>stampa “pari” se il numero è divisibile per 2, altrimenti “dispari”.</li>
+          </ul>
+          Fai sia una versione C++ che una versione C.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+            <p class="note"><b>Soluzione C++:</b></p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int n;
+    std::cout &lt;&lt; "Inserisci un numero intero: ";
+    std::cin &gt;&gt; n;
+
+    if (n % 2 == 0) {
+        std::cout &lt;&lt; "pari\n";
+    } else {
+        std::cout &lt;&lt; "dispari\n";
+    }
+
+    return 0;
+}</code></pre>
+
+            <p class="note"><b>Soluzione C:</b></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int n;
+    printf("Inserisci un numero intero: ");
+    scanf("%d", &amp;n);
+
+    if (n % 2 == 0) {
+        printf("pari\n");
+    } else {
+        printf("dispari\n");
+    }
+
+    return 0;
+}</code></pre>
+
+            <p class="ok">
+              Qui la condizione è <code>n % 2 == 0</code> (“il resto della divisione di n per 2 è zero?”).  
+              È un confronto, quindi usiamo <code>==</code>, non <code>=</code>.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — Classificazione voti</b><br/>
+          <em>Testo:</em> Scrivi un programma che legge un voto (0–10) e stampa:
+          <ul>
+            <li>“insufficiente” se &lt; 6</li>
+            <li>“sufficiente” se 6 o 7</li>
+            <li>“buono” se 8 o 9</li>
+            <li>“eccellente” se 10</li>
+          </ul>
+          Usa una catena <code>if ... else if ... else</code>.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int voto;
+    std::cout &lt;&lt; "Voto (0-10): ";
+    std::cin &gt;&gt; voto;
+
+    if (voto &lt; 6) {
+        std::cout &lt;&lt; "insufficiente\n";
+    } else if (voto &lt;= 7) {
+        std::cout &lt;&lt; "sufficiente\n";
+    } else if (voto &lt;= 9) {
+        std::cout &lt;&lt; "buono\n";
+    } else {
+        std::cout &lt;&lt; "eccellente\n";
+    }
+    return 0;
+}</code></pre>
+
+            <p class="ok">
+              Nota la logica sugli intervalli:
+              <code>if (voto &lt; 6)</code> prende 0..5,
+              <code>else if (voto &lt;= 7)</code> prende 6..7,
+              <code>else if (voto &lt;= 9)</code> prende 8..9,
+              <code>else</code> prende solo 10.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Controllo accesso sicuro</b><br/>
+          <em>Testo:</em> Chiedi una password (stringa) all’utente e confrontala con quella “giusta”.  
+          Se è corretta, stampa “Accesso riuscito”, altrimenti “Accesso negato”.
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+            <p class="note"><b>Spiegazione concettuale (C++):</b><br/>
+              <code>if (passwordInserita == passwordCorretta)</code> funziona con <code>std::string</code>
+              perché l’operatore <code>==</code> per <code>std::string</code> confronta il contenuto delle stringhe.
+            </p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+int main() {
+    std::string pass;
+    const std::string corretta = "segreto";
+
+    std::cout &lt;&lt; "Password: ";
+    std::cin &gt;&gt; pass;
+
+    if (pass == corretta) {
+        std::cout &lt;&lt; "Accesso riuscito\n";
+    } else {
+        std::cout &lt;&lt; "Accesso negato\n";
+    }
+    return 0;
+}</code></pre>
+
+            <p class="warn">
+              In C classico il confronto tra stringhe non si fa con <code>==</code> ma con <code>strcmp</code>, perché le stringhe in C sono array di char.  
+              Questo è un anticipo di una difficoltà del C puro con le stringhe.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E4 — Bug da scovare</b><br/>
+          <em>Testo:</em> Trova l’errore logico qui sotto e spiega perché è pericoloso:
+<pre><code class="language-cpp">int x = 0;
+if (x = 5) {
+    std::cout &lt;&lt; "OK\n";
+} else {
+    std::cout &lt;&lt; "NO\n";
+}</code></pre>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+          </div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+            <p class="bad"><b>Errore:</b> <code>x = 5</code> è un’assegnazione, non un confronto.  
+              L’assegnazione mette 5 in <code>x</code> e “vale” 5, che è considerato vero.  
+              Quindi il ramo <code>else</code> non verrà MAI eseguito.
+              Andava scritto <code>if (x == 5)</code>.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>In sintesi</b><br/>
+      <ul>
+        <li><code>if</code> decide se eseguire o no un blocco.</li>
+        <li><code>if ... else</code> sceglie fra due blocchi.</li>
+        <li><code>if ... else if ... else</code> modella più casi esclusivi (fasce di valori, categorie, stati diversi).</li>
+        <li>Usa sempre <code>==</code> per confrontare, NON <code>=</code>.</li>
+        <li>Chiudi SEMPRE i blocchi tra <code>{ }</code>, anche se c’è una sola istruzione.</li>
+      </ul>
+      Prossima tappa (Lez6_8): quando abbiamo molti casi “a scelta multipla”, conviene usare <strong><code>switch</code></strong>.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
