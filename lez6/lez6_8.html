@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3BIA – Lez6_8 · Selezione multipla con switch (C++ e C)</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <script src="../highlight.js"></script>
+  <script>try{hljs.highlightAll();}catch(e){}</script>
+
+  <script>
+    function prevSlide(){ window.location.href = "lez6_7.html"; }
+    function nextSlide(){ window.location.href = "lez6_9.html"; }
+    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleBox(btnId, boxId){
+      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
+      const open = box.style.display==='block';
+      box.style.display = open ? 'none':'block';
+      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    }
+  </script>
+
+  <style>
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 { text-align:left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position:outside }
+    .inner-box li { margin:.25rem 0 }
+    pre, pre code { white-space:pre; tab-size:4; margin:0 0 1rem 0; padding:.5rem .75rem; }
+    code { white-space:pre-wrap; }
+
+    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0; display:inline-block }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+    .bad  { background:#ffefef; border-left:4px solid #ef4444; padding:.6rem .8rem; border-radius:8px; margin:.35rem 0 }
+
+    table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
+    th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; font-weight:600 }
+  </style>
+</head>
+<body>
+
+<!-- BEGIN MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <ul>
+    <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
+    <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
+    <li><a href="lez6_3.html">Lez6_3: Tipi di dato &amp; letterali</a></li>
+    <li><a href="lez6_4.html">Lez6_4: Variabili &amp; assegnamento</a></li>
+    <li><a href="lez6_5.html">Lez6_5: Espressioni &amp; precedenza</a></li>
+    <li><a href="lez6_6.html">Lez6_6: I/O di base</a></li>
+    <li><a href="lez6_7.html">Lez6_7: if / else</a></li>
+    <li><a class="active" href="lez6_8.html">Lez6_8: switch</a></li>
+    <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
+    <li><a href="lez6_10.html">Lez6_10: for</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Selezione multipla con <code>switch</code> (C++ e C)</h1>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <div class="content-box">
+
+    <!-- Obiettivi -->
+    <div class="inner-box box">
+      <h2>Obiettivi della lezione</h2>
+      <ul>
+        <li>Capire a cosa serve <code>switch</code>: gestire tanti casi diversi sullo stesso valore (es. un menu).</li>
+        <li>Capire la struttura base <code>switch (...) { case ...: ... break; ... }</code>.</li>
+        <li>Capire il ruolo di <code>break</code> e perché è fondamentale.</li>
+        <li>Capire il caso <code>default</code> (cosa succede se non corrisponde nessun <code>case</code>).</li>
+        <li>Vedere esempi pratici sia in C++ sia in C.</li>
+        <li>Confrontare <code>switch</code> con una catena <code>if / else if / else</code> e capire quando conviene usare uno o l'altro.</li>
+      </ul>
+      <p class="ok"><b>Idea chiave:</b> <code>switch</code> è ideale quando stai controllando lo stesso valore contro tante opzioni concrete (1,2,3,...). Ti evita di scrivere 10 <code>else if</code> di fila.</p>
+    </div>
+
+    <!-- Cos'è switch -->
+    <div class="inner-box box">
+      <h2>Che cos’è uno <code>switch</code>?</h2>
+
+      <p>
+        Uno <code>switch</code> è una struttura di controllo a selezione multipla.  
+        Funziona così:
+      </p>
+
+<pre><code class="language-cpp">switch (espressione) {
+    case COSTANTE1:
+        // codice se espressione == COSTANTE1
+        break;
+
+    case COSTANTE2:
+        // codice se espressione == COSTANTE2
+        break;
+
+    default:
+        // codice se non è nessuno dei casi sopra
+        break; // opzionale qui
+}</code></pre>
+
+      <p>
+        Logica: calcola <code>espressione</code>, poi confrontala con ogni <code>case COSTANTE</code> (che deve essere un valore costante, non una variabile).  
+        Quando trova il caso giusto, entra lì e comincia a eseguire le istruzioni da quel punto in poi.
+      </p>
+
+      <p class="note">
+        <strong>Importantissimo:</strong> senza <code>break</code> l’esecuzione “cade giù” anche nei case successivi (fall-through).
+        A volte è voluto, spesso è un bug dei principianti.
+      </p>
+
+      <p class="warn">
+        In C e C++ classici, il valore usato nello <code>switch</code> deve essere di tipo intero (int, char, enum...).  
+        In C++ moderno (C++11 e oltre) è permesso usare anche <code>enum class</code> ecc., ma l’idea base è: non metti dentro condizioni booleane complesse, metti un “codice”.
+      </p>
+    </div>
+
+    <!-- Esempio base menu: C++ -->
+    <div class="inner-box box">
+      <h2>Esempio pratico in C++: menù semplice</h2>
+
+      <p>
+        Programma che mostra un piccolo menù di scelta all’utente e reagisce in base all’opzione inserita.
+      </p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int scelta;
+
+    std::cout &lt;&lt; "Menu:\n";
+    std::cout &lt;&lt; "1) Saluta\n";
+    std::cout &lt;&lt; "2) Stampa la data (finta)\n";
+    std::cout &lt;&lt; "3) Esci\n";
+    std::cout &lt;&lt; "Selezione: ";
+
+    std::cin &gt;&gt; scelta;
+
+    switch (scelta) {
+        case 1:
+            std::cout &lt;&lt; "Ciao!\n";
+            break;
+
+        case 2:
+            std::cout &lt;&lt; "Oggi è 01/01/2025 (finto)\n";
+            break;
+
+        case 3:
+            std::cout &lt;&lt; "Uscita...\n";
+            break;
+
+        default:
+            std::cout &lt;&lt; "Scelta non valida.\n";
+            break;
+    }
+
+    std::cout &lt;&lt; "Fine programma.\n";
+    return 0;
+}</code></pre>
+
+      <p>
+        Spiegazione:
+      </p>
+      <ul>
+        <li>L’utente digita un numero (1,2,3,...).</li>
+        <li><code>switch (scelta)</code> controlla il valore di <code>scelta</code>.</li>
+        <li>Se <code>scelta == 1</code>, entra nel <code>case 1:</code> e stampa “Ciao!”. Poi incontra <code>break;</code> ed esce dallo switch.</li>
+        <li>Se <code>scelta</code> non è nessuno dei casi previsti, esegue il blocco <code>default:</code>.</li>
+      </ul>
+
+      <p class="ok">
+        <b>Perché <code>break</code> è fondamentale?</b><br/>
+        Senza <code>break</code>, dopo aver stampato “Ciao!” il codice continuerebbe a eseguire anche il <code>case 2</code>, poi il <code>case 3</code>, ecc. (fall-through).  
+        Di solito NON lo vuoi.
+      </p>
+    </div>
+
+    <!-- Esempio in C -->
+    <div class="inner-box box">
+      <h2>Stesso menù in C</h2>
+
+      <p>
+        In C, il codice è quasi identico; cambiano solo le funzioni di input/output.
+      </p>
+
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int scelta;
+
+    printf("Menu:\n");
+    printf("1) Saluta\n");
+    printf("2) Stampa la data (finta)\n");
+    printf("3) Esci\n");
+    printf("Selezione: ");
+
+    scanf("%d", &amp;scelta);
+
+    switch (scelta) {
+        case 1:
+            printf("Ciao!\n");
+            break;
+
+        case 2:
+            printf("Oggi e' 01/01/2025 (finto)\n");
+            break;
+
+        case 3:
+            printf("Uscita...\n");
+            break;
+
+        default:
+            printf("Scelta non valida.\n");
+            break;
+    }
+
+    printf("Fine programma.\n");
+    return 0;
+}</code></pre>
+
+      <p class="note">
+        Qui <code>scanf("%d", &amp;scelta);</code> legge un intero dalla tastiera.  
+        Poi <code>switch (scelta)</code> funziona come in C++.
+      </p>
+
+      <p class="warn">
+        Ancora: se dimentichi <code>break;</code> dentro un <code>case</code>, il programma “continua a cadere” nel case successivo anche se non corrisponde.
+      </p>
+    </div>
+
+    <!-- break e fall-through -->
+    <div class="inner-box box">
+      <h2>Il ruolo di <code>break</code> e il "fall-through"</h2>
+
+      <p>
+        Dentro uno <code>switch</code>, quando un <code>case</code> viene eseguito, il flusso <b>non si ferma</b> automaticamente.  
+        Il <code>break;</code> serve per “saltare fuori” dallo switch.
+      </p>
+
+<pre><code class="language-cpp">switch (x) {
+    case 1:
+        std::cout &lt;&lt; "Caso 1\n";
+        // niente break qui!
+    case 2:
+        std::cout &lt;&lt; "Caso 2\n";
+        break;
+}</code></pre>
+
+      <p>
+        Se <code>x == 1</code>, il programma stampa “Caso 1” e poi CONTINUA dentro il case 2, stampando anche “Caso 2”, e poi trova il break.  
+        Questo comportamento si chiama <b>fall-through</b> (“caduta nel caso successivo”).
+      </p>
+
+      <p class="warn">
+        Per uno studente alle prime armi il fall-through è quasi sempre un <b>bug</b>, non una feature.  
+        Quindi: metti sempre il <code>break</code> a meno che tu non voglia davvero unire più casi.
+      </p>
+
+      <p class="ok">
+        Uso legittimo di fall-through:<br/>
+        Quando diversi valori devono fare la stessa cosa, puoi “accorpare” più <code>case</code> di fila senza <code>break</code> in mezzo.
+      </p>
+
+<pre><code class="language-cpp">switch (lettera) {
+    case 'a':
+    case 'e':
+    case 'i':
+    case 'o':
+    case 'u':
+        std::cout &lt;&lt; "Vocale\n";
+        break;
+    default:
+        std::cout &lt;&lt; "Consonante o altro\n";
+        break;
+}</code></pre>
+
+      <p>
+        Qui vogliamo trattare tutte le vocali allo stesso modo.  
+        Quando trova 'a', entra nel caso 'a', poi “cade” nei successivi ('e','i','o','u') fino al primo <code>break</code>, ed esegue “Vocale”.
+      </p>
+    </div>
+
+    <!-- default -->
+    <div class="inner-box box">
+      <h2>Il blocco <code>default</code></h2>
+
+      <p>
+        Il ramo <code>default</code> è il “tutti gli altri casi” o “errore / scelta non valida”.  
+        Viene eseguito se nessuno dei <code>case</code> precedenti corrisponde.
+      </p>
+
+      <p>
+        È buona pratica avere sempre un <code>default</code> per gestire input sbagliati dell’utente o stati imprevisti.
+      </p>
+
+      <p class="ok">
+        Esempio: in un menù numerico di opzioni, <code>default</code> è dove stampi “Scelta non valida”.
+      </p>
+
+      <p class="warn">
+        Se il tuo programma riceve un valore che non ti aspetti e tu non hai messo il <code>default</code>, non farà nulla per quel caso.  
+        Spesso questo significa: nessun messaggio di errore ⇒ difficile da capire perché “non funziona”.
+      </p>
+    </div>
+
+    <!-- switch vs if/else -->
+    <div class="inner-box box">
+      <h2><code>switch</code> vs catena <code>if / else if / else</code></h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Situazione</th>
+            <th>Meglio usare</th>
+            <th>Perché</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Confrontare la <b>stessa variabile</b> contro molti valori interi specifici (1,2,3,...)</td>
+            <td><code>switch</code></td>
+            <td>Codice più ordinato, più leggibile come un menù.</td>
+          </tr>
+          <tr>
+            <td>Controllare intervalli di valori (<code>x &lt; 0</code>, <code>x &gt; 100</code>, <code>x%2==0</code>, ...)</td>
+            <td><code>if / else if / else</code></td>
+            <td><code>switch</code> non può fare confronti generali / espressioni booleane complesse, solo uguaglianza a costanti.</td>
+          </tr>
+          <tr>
+            <td>Logica con più condizioni combinate (<code>a &gt; b &amp;&amp; c &lt; d</code>, ecc.)</td>
+            <td><code>if / else if / else</code></td>
+            <td>Il <code>switch</code> classico non gestisce bene condizioni composte.</td>
+          </tr>
+          <tr>
+            <td>Menù utente con scelta numerica (1=stampa, 2=salva, 3=esci...)</td>
+            <td><code>switch</code></td>
+            <td>Ogni <code>case</code> è chiaramente un’opzione del menù.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="note">
+        Quindi: <b>switch</b> è ottimo quando la domanda è “Quale di queste opzioni numerate ha scelto l’utente?”.  
+        <b>if / else</b> è meglio quando la domanda è “In quale intervallo / stato logico complesso mi trovo?”.
+      </p>
+    </div>
+
+    <!-- Esercizi -->
+    <div class="inner-box box">
+      <h2>Esercizi (con soluzione a comparsa)</h2>
+      <ol>
+
+        <li>
+          <b>E1 — Menù calcolatrice (C++)</b><br/>
+          <em>Testo:</em> Scrivi un programma C++ che:
+          <ul>
+            <li>chiede all’utente di scegliere un’operazione: 1) somma, 2) sottrazione, 3) moltiplicazione, 4) divisione;</li>
+            <li>chiede due numeri interi <code>a</code> e <code>b</code>;</li>
+            <li>usa <code>switch</code> sulla scelta per eseguire l’operazione e stampare il risultato.</li>
+          </ul>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button>
+          </div>
+          <div id="box-e1" style="display:none;margin-top:8px">
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+int main() {
+    int op;
+    int a, b;
+
+    std::cout &lt;&lt; "Operazioni:\n";
+    std::cout &lt;&lt; "1) somma\n";
+    std::cout &lt;&lt; "2) sottrazione\n";
+    std::cout &lt;&lt; "3) moltiplicazione\n";
+    std::cout &lt;&lt; "4) divisione intera\n";
+    std::cout &lt;&lt; "Scelta: ";
+    std::cin &gt;&gt; op;
+
+    std::cout &lt;&lt; "Inserisci a e b: ";
+    std::cin &gt;&gt; a &gt;&gt; b;
+
+    switch (op) {
+        case 1:
+            std::cout &lt;&lt; "Risultato: " &lt;&lt; (a + b) &lt;&lt; "\n";
+            break;
+        case 2:
+            std::cout &lt;&lt; "Risultato: " &lt;&lt; (a - b) &lt;&lt; "\n";
+            break;
+        case 3:
+            std::cout &lt;&lt; "Risultato: " &lt;&lt; (a * b) &lt;&lt; "\n";
+            break;
+        case 4:
+            if (b != 0) {
+                std::cout &lt;&lt; "Risultato: " &lt;&lt; (a / b) &lt;&lt; "\n";
+            } else {
+                std::cout &lt;&lt; "Errore: divisione per zero\n";
+            }
+            break;
+        default:
+            std::cout &lt;&lt; "Scelta non valida\n";
+            break;
+    }
+
+    return 0;
+}</code></pre>
+
+            <p class="ok">
+              Nota l’uso di <code>if (b != 0)</code> dentro il <code>case 4</code>: protezione da divisione per zero.
+              Sì, possiamo combinare <code>switch</code> e <code>if</code>.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E2 — Giorno della settimana (C)</b><br/>
+          <em>Testo:</em> Scrivi un programma in C che:
+          <ul>
+            <li>chiede un numero da 1 a 7;</li>
+            <li>stampa il nome del giorno della settimana (1 = lunedì, 2 = martedì, ...);</li>
+            <li>se il numero non è tra 1 e 7, stampa “numero non valido”.</li>
+          </ul>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button>
+          </div>
+          <div id="box-e2" style="display:none;margin-top:8px">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main(void) {
+    int d;
+    printf("Numero giorno (1-7): ");
+    scanf("%d", &amp;d);
+
+    switch (d) {
+        case 1: printf("Lunedi'\n");    break;
+        case 2: printf("Martedi'\n");   break;
+        case 3: printf("Mercoledi'\n"); break;
+        case 4: printf("Giovedi'\n");   break;
+        case 5: printf("Venerdi'\n");   break;
+        case 6: printf("Sabato\n");     break;
+        case 7: printf("Domenica\n");   break;
+        default:
+            printf("Numero non valido\n");
+            break;
+    }
+    return 0;
+}</code></pre>
+
+            <p class="note">
+              Questo è un classico esempio da menù: un codice numerico (1–7) decide quale messaggio mostrare.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E3 — Fall-through controllato</b><br/>
+          <em>Testo:</em> Completa mentalmente il comportamento del seguente frammento C++:
+<pre><code class="language-cpp">switch (c) {
+    case 'a':
+    case 'e':
+    case 'i':
+    case 'o':
+    case 'u':
+        std::cout &lt;&lt; "vocale\n";
+        break;
+    default:
+        std::cout &lt;&lt; "non vocale\n";
+        break;
+}</code></pre>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
+          </div>
+          <div id="box-e3" style="display:none;margin-top:8px">
+            <p class="ok">
+              Se <code>c</code> è una delle vocali minuscole 'a','e','i','o','u', allora stampa "vocale".  
+              Se <code>c</code> non corrisponde a nessun <code>case</code>, si arriva al <code>default</code> che stampa "non vocale".  
+              Qui il fall-through è usato VOLONTARIAMENTE per trattare tutti quei caratteri allo stesso modo.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <b>E4 — Quando NON usare switch</b><br/>
+          <em>Testo:</em> Perché il seguente codice NON è adatto a uno <code>switch</code>?
+<pre><code class="language-cpp">if (temperatura &lt; 0) {
+    std::cout &lt;&lt; "Ghiaccio\n";
+} else if (temperatura &gt; 100) {
+    std::cout &lt;&lt; "Vapore\n";
+} else {
+    std::cout &lt;&lt; "Liquida\n";
+}</code></pre>
+          <div class="nav-buttons" style="justify-content:left">
+            <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button>
+          </div>
+          <div id="box-e4" style="display:none;margin-top:8px">
+            <p class="warn">
+              Qui stiamo controllando <b>intervalli</b> (“temperatura &lt; 0”, “temperatura &gt; 100”), non uguaglianze contro valori precisi.
+              <code>switch</code> non è pensato per esprimere “&lt;0”, “&gt;100” ecc.
+              È più naturale e leggibile usare una catena di <code>if / else if / else</code>.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+
+    <div class="inner-box note">
+      <b>In sintesi</b><br/>
+      <ul>
+        <li><code>switch</code> è una scelta multipla basata sul valore di una singola variabile intera / enum.</li>
+        <li>Ogni <code>case</code> gestisce un valore preciso.</li>
+        <li><code>break</code> evita che si continui nei case successivi (fall-through).</li>
+        <li><code>default</code> gestisce tutti i casi non previsti (es. input sbagliati).</li>
+        <li><code>switch</code> è perfetto per menù a scelta numerica, per categorie semplici e fisse.</li>
+        <li>Per intervalli, confronti tra variabili o condizioni complesse ⇒ resta con <code>if / else</code>.</li>
+      </ul>
+      Prossima lezione (Lez6_9): cicli <strong><code>while</code></strong> e <strong><code>do-while</code></strong>, cioè “ripeti finché la condizione è vera”.
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+
+<script>
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+</script>
+</body>
+</html>
