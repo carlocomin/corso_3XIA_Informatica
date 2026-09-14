@@ -1,206 +1,275 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3BIA – L2.3 · Istruzioni in sequenza & tabella di traccia</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 2.3 – Sequenze e tabelle di traccia</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../default.css">
   <script src="../highlight.js"></script>
   <script>try{hljs.highlightAll();}catch(e){}</script>
   <script>
     function prevSlide(){ window.location.href = "lez2_2.html"; }
-    function nextSlide(){ window.location.href = "../lez3/lez3_1.html"; } // placeholder
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function nextSlide(){ window.location.href = "../lez3/lez3_1.html"; }
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
+    }
     function toggleBox(btnId, boxId){
       const box = document.getElementById(boxId);
       const btn = document.getElementById(btnId);
-      const open = box.style.display === 'block';
-      box.style.display = open ? 'none' : 'block';
-      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+      const opening = box.hidden;
+      box.hidden = !opening;
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      const label = btn.dataset.label || "la soluzione";
+      btn.textContent = opening ? "Nascondi " + label + " ▲" : "Mostra " + label + " ▼";
     }
   </script>
   <style>
-    /* Stile locale per tabella di traccia */
-    .trace { width:100%; border-collapse:collapse; margin-top:8px; }
-    .trace th, .trace td { border:1px solid #ccc; padding:6px 8px; text-align:center; }
-    .trace th { background:#f7f7f7; }
-    .trace td.l { text-align:left; }
-    .fc-wrap {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); margin-top:8px}
-    .fc-card {background:var(--panel, #fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
-    .fc-title{font-weight:600; margin:4px 0 8px}
-    .fc-svg{width:100%; height:auto}
-    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
-    .fc-text{font: 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill:#111}
-    .fc-marker path{fill:#222}
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 {
+      text-align:left !important;
+    }
+    .inner-box ul, .inner-box ol {
+      margin:.5rem 0 .75rem 1rem;
+      padding-left:1.25rem;
+      list-style-position:outside;
+    }
+    .inner-box li { margin:.25rem 0; }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; }
+    .ok { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; }
+    .table-wrap { overflow-x:auto; margin-top:.5rem; }
+    table { width:100%; border-collapse:collapse; min-width:560px; }
+    th, td { border:1px solid #ccd8d6; padding:.5rem .6rem; text-align:center; vertical-align:top; }
+    th { background:#f1f8f7; }
+    td.left, th.left { text-align:left; }
+    .fc-card {
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+      margin-top:10px;
+    }
+    .fc-svg { width:100%; height:auto; }
+    .fc-shape { fill:#fff; stroke:#00695c; stroke-width:2.5; }
+    .fc-text { font-family:Arial, sans-serif; font-size:18px; fill:#123; }
+    .fc-arrow path { fill:#263238; }
+    @media (max-width:720px) {
+      table { font-size:.9rem; }
+      th, td { padding:.35rem; }
+    }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Menu Lezioni</h2>
+  <h2>Menu Lezione 2</h2>
   <ul>
-    <li><a href="lez2.html">Lezione 2: Flowchart (diagrammi di flusso)</a></li>
-    <li><a href="lez2_2.html">L2.2: Variabili, tipi, assegnamento</a></li>
-    <li><a href="lez2_3.html">L2.3: Sequenza & tabella di traccia</a></li>
+    <li><a href="lez2_1.html">2.1 — Diagrammi di flusso</a></li>
+    <li><a href="lez2_2.html">2.2 — Variabili, tipi e assegnamento</a></li>
+    <li><a href="lez2_3.html">2.3 — Sequenze e tabelle di traccia</a></li>
   </ul>
 </div>
 <!-- END MENU -->
 
 <div class="slide">
-  <h1>L2.3 — Istruzioni in <em>sequenza</em> & tabella di traccia</h1>
+  <h1>Lezione 2.3 — Istruzioni in <em>sequenza</em> e tabelle di traccia</h1>
+  <p><strong>Obiettivo:</strong> eseguire manualmente una sequenza, registrare ogni cambiamento di stato e prevedere il risultato finale.</p>
+
   <div class="nav-buttons" style="margin-bottom:10px">
     <button onclick="prevSlide()">&#8592; Indietro</button>
     <button onclick="nextSlide()">Avanti &#8594;</button>
   </div>
 
   <div class="content-box">
+    <div class="inner-box">
+      <h2>Che cos'è una sequenza?</h2>
+      <ul>
+        <li>È un gruppo di istruzioni eseguite nell'ordine indicato dalle frecce.</li>
+        <li>Non contiene scelte tra rami alternativi e non torna a istruzioni già eseguite.</li>
+        <li>Ogni istruzione vede lo stato prodotto dalle istruzioni precedenti.</li>
+        <li>L'ordine è parte del significato dell'algoritmo: cambiandolo può cambiare il risultato.</li>
+      </ul>
+    </div>
 
     <div class="inner-box">
-      <h2>Sequenza: definizione operativa</h2>
-      <ul>
-        <li>Una <strong>sequenza</strong> è un blocco di istruzioni eseguite <em>in ordine</em>, dalla prima all’ultima, senza salti né scelte.</li>
-        <li>Ogni istruzione può <em>leggere</em> e <em>scrivere</em> variabili: l’ordine è cruciale perché cambia lo <strong>stato</strong> del programma.</li>
-        <li>Flowchart: una catena di rettangoli <em>Process</em> collegati da frecce.</li>
-      </ul>
-      <div class="fc-wrap">
-        <div class="fc-card">
-          <div class="fc-title">Flowchart: sequenza (spazi ampliati)</div>
-          <svg class="fc-svg" viewBox="0 0 520 300" role="img" aria-label="Sequenza di tre istruzioni">
-            <defs>
-              <marker id="arr" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
-                <path d="M 0 0 L 10 5 L 0 10 z"></path>
-              </marker>
-            </defs>
-            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
+      <h2>Un frammento sequenziale</h2>
+      <p>Supponiamo che lo stato iniziale sia <code>a=2</code>, <code>b=5</code>, <code>s=0</code>.</p>
+      <div class="fc-card">
+        <svg class="fc-svg" viewBox="0 0 720 620" role="img" aria-label="Sequenza di tre assegnamenti">
+          <defs>
+            <marker id="sequence-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z"></path>
+            </marker>
+          </defs>
+          <ellipse class="fc-shape" cx="360" cy="45" rx="85" ry="28"></ellipse>
+          <text class="fc-text" x="360" y="51" text-anchor="middle">Inizio sequenza</text>
 
-            <rect class="fc-shape" x="150" y="80" width="220" height="36" rx="6" ry="6"></rect>
-            <text class="fc-text" x="260" y="102" text-anchor="middle">s ← a + b</text>
+          <rect class="fc-shape" x="225" y="135" width="270" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="172" text-anchor="middle">s ← a + b</text>
 
-            <rect class="fc-shape" x="150" y="150" width="220" height="36" rx="6" ry="6"></rect>
-            <text class="fc-text" x="260" y="172" text-anchor="middle">a ← s − 1</text>
+          <rect class="fc-shape" x="225" y="270" width="270" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="307" text-anchor="middle">a ← s − 1</text>
 
-            <rect class="fc-shape" x="150" y="220" width="220" height="36" rx="6" ry="6"></rect>
-            <text class="fc-text" x="260" y="242" text-anchor="middle">b ← a × 2</text>
+          <rect class="fc-shape" x="225" y="405" width="270" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="442" text-anchor="middle">b ← a × 2</text>
 
-            <ellipse class="fc-shape" cx="260" cy="285" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="260" y="289" text-anchor="middle">End</text>
+          <ellipse class="fc-shape" cx="360" cy="570" rx="85" ry="28"></ellipse>
+          <text class="fc-text" x="360" y="576" text-anchor="middle">Fine sequenza</text>
 
-            <line x1="260" y1="46"  x2="260" y2="80"  stroke="#222" stroke-width="2" marker-end="url(#arr)"/>
-            <line x1="260" y1="116" x2="260" y2="150" stroke="#222" stroke-width="2" marker-end="url(#arr)"/>
-            <line x1="260" y1="186" x2="260" y2="220" stroke="#222" stroke-width="2" marker-end="url(#arr)"/>
-            <line x1="260" y1="256" x2="260" y2="269" stroke="#222" stroke-width="2" marker-end="url(#arr)"/>
-          </svg>
+          <line x1="360" y1="73" x2="360" y2="135" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="197" x2="360" y2="270" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="332" x2="360" y2="405" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="467" x2="360" y2="542" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+        </svg>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Come compilare una tabella di traccia</h2>
+      <ol>
+        <li>Scrivi nella riga 0 lo <strong>stato iniziale</strong>.</li>
+        <li>Leggi una sola istruzione e valuta il suo lato destro usando i valori della riga precedente.</li>
+        <li>Aggiorna soltanto la variabile scritta dall'istruzione; copia senza modifiche tutti gli altri valori.</li>
+        <li>Ripeti fino all'ultima istruzione e controlla lo stato finale.</li>
+      </ol>
+      <p class="note">Una riga rappresenta lo stato <strong>dopo</strong> l'esecuzione dell'istruzione indicata.</p>
+    </div>
+
+    <div class="inner-box">
+      <h2>Esempio guidato</h2>
+<pre><code class="language-none">1) s ← a + b
+2) a ← s − 1
+3) b ← a × 2</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Passo</th><th class="left">Istruzione eseguita</th><th>a</th><th>b</th><th>s</th><th class="left">Osservazione</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td class="left">stato iniziale</td><td>2</td><td>5</td><td>0</td><td class="left">valori dati</td></tr>
+            <tr><td>1</td><td class="left"><code>s ← a + b</code></td><td>2</td><td>5</td><td><strong>7</strong></td><td class="left">cambia soltanto <code>s</code></td></tr>
+            <tr><td>2</td><td class="left"><code>a ← s − 1</code></td><td><strong>6</strong></td><td>5</td><td>7</td><td class="left">usa il nuovo valore di <code>s</code></td></tr>
+            <tr><td>3</td><td class="left"><code>b ← a × 2</code></td><td>6</td><td><strong>12</strong></td><td>7</td><td class="left">usa il nuovo valore di <code>a</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Stesse istruzioni, ordine diverso</h2>
+      <p>Stato iniziale per entrambe le sequenze: <code>x=2</code>, <code>y=5</code>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Sequenza A</th><th>Stato finale A</th><th>Sequenza B</th><th>Stato finale B</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="left"><code>x ← x + y</code><br><code>y ← x × 2</code></td>
+              <td><code>x=7</code><br><code>y=14</code></td>
+              <td class="left"><code>y ← x × 2</code><br><code>x ← x + y</code></td>
+              <td><code>x=6</code><br><code>y=4</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ok">Le istruzioni sono le stesse, ma la seconda istruzione usa un valore diverso a seconda dell'ordine.</p>
+    </div>
+
+    <div class="inner-box">
+      <h2>Divisione: tracciare anche il tipo</h2>
+      <p>In Flowgorithm <code>/</code> produce un reale. Con <code>n=7</code>:</p>
+<pre><code class="language-none">x ← n / 2    # x è Integer
+y ← n / 2    # y è Real</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Espressione</th><th>Valore calcolato</th><th>Tipo della destinazione</th><th>Valore conservato</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>n / 2</code></td><td><code>3.5</code></td><td><code>Integer</code></td><td><code>x = 3</code></td></tr>
+            <tr><td><code>n / 2</code></td><td><code>3.5</code></td><td><code>Real</code></td><td><code>y = 3.5</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="warn"><strong>Confronto con C/C++:</strong> se <code>n</code> e <code>2</code> sono interi, l'espressione <code>n/2</code> produce già <code>3</code>. Per ottenere <code>3.5</code> si usa, per esempio, <code>n/2.0</code>.</p>
+    </div>
+
+    <div class="inner-box">
+      <h2>Esercizio guidato — Completa la tabella</h2>
+      <p><strong>Stato iniziale:</strong> <code>x=10</code>, <code>y=3</code>, <code>t=0</code>.</p>
+<pre><code class="language-none">1) t ← x − y
+2) x ← y
+3) y ← t + 1</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Passo</th><th class="left">Istruzione</th><th>x</th><th>y</th><th>t</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td class="left">stato iniziale</td><td>10</td><td>3</td><td>0</td></tr>
+            <tr><td>1</td><td class="left"><code>t ← x − y</code></td><td>?</td><td>?</td><td>?</td></tr>
+            <tr><td>2</td><td class="left"><code>x ← y</code></td><td>?</td><td>?</td><td>?</td></tr>
+            <tr><td>3</td><td class="left"><code>y ← t + 1</code></td><td>?</td><td>?</td><td>?</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-traccia" data-label="la soluzione" aria-controls="box-traccia" aria-expanded="false" onclick="toggleBox('btn-traccia','box-traccia')">Mostra la soluzione ▼</button>
+      </div>
+      <div id="box-traccia" hidden>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Passo</th><th class="left">Istruzione</th><th>x</th><th>y</th><th>t</th><th class="left">Osservazione</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td class="left">stato iniziale</td><td>10</td><td>3</td><td>0</td><td class="left">valori dati</td></tr>
+              <tr><td>1</td><td class="left"><code>t ← x − y</code></td><td>10</td><td>3</td><td><strong>7</strong></td><td class="left"><code>10−3=7</code></td></tr>
+              <tr><td>2</td><td class="left"><code>x ← y</code></td><td><strong>3</strong></td><td>3</td><td>7</td><td class="left">copia il valore corrente di <code>y</code></td></tr>
+              <tr><td>3</td><td class="left"><code>y ← t + 1</code></td><td>3</td><td><strong>8</strong></td><td>7</td><td class="left">usa il valore aggiornato di <code>t</code></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
     <div class="inner-box">
-      <h2>Tabella di traccia: cos’è e come si usa</h2>
+      <h2>Verifica finale</h2>
+      <ol>
+        <li>Che cosa rappresenta una riga di una tabella di traccia?</li>
+        <li>Quali celle cambiano dopo l'istruzione <code>a ← b + 1</code>?</li>
+        <li>Perché lo stato iniziale deve essere indicato?</li>
+        <li>In Flowgorithm, quanto vale <code>7/2</code> prima dell'assegnamento?</li>
+        <li>Una catena che contiene una decisione è ancora una semplice sequenza?</li>
+      </ol>
+      <div class="nav-buttons" style="justify-content:left">
+        <button id="btn-verifica" data-label="le risposte" aria-controls="box-verifica" aria-expanded="false" onclick="toggleBox('btn-verifica','box-verifica')">Mostra le risposte ▼</button>
+      </div>
+      <div id="box-verifica" hidden>
+        <ol>
+          <li>Lo stato delle variabili dopo l'esecuzione dell'istruzione indicata.</li>
+          <li>Cambia soltanto la cella di <code>a</code>; gli altri valori vengono copiati.</li>
+          <li>Perché il risultato di ogni espressione dipende dai valori disponibili prima della prima istruzione.</li>
+          <li><code>3.5</code>.</li>
+          <li>No: una decisione introduce due possibili percorsi ed è un costrutto di selezione.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Cosa ricordare</h2>
       <ul>
-        <li>È una <strong>tabella</strong> che registra, passo per passo, i valori delle variabili mentre la sequenza avanza.</li>
-        <li>Serve a <strong>verificare</strong> la correttezza, chiarire l’ordine degli aggiornamenti, individuare bug logici.</li>
-        <li>Colonne tipiche: <em>Step</em>, <em>Istruzione</em>, quindi una colonna per ogni variabile rilevante.</li>
+        <li>Ogni istruzione legge lo stato corrente e può produrre un nuovo stato.</li>
+        <li>Nella tabella si modifica soltanto la variabile a sinistra dell'assegnamento.</li>
+        <li>Ordine delle istruzioni e tipi delle variabili possono cambiare il risultato finale.</li>
       </ul>
     </div>
-
-    <!-- ESEMPIO 1 -->
-    <div class="inner-box">
-      <h2>Esempio 1 — Sequenza lineare con tre assegnamenti</h2>
-      <p><strong>Stato iniziale:</strong> <code>a=2</code>, <code>b=5</code>, <code>s=0</code></p>
-<pre><code class="language-text">1) s ← a + b
-2) a ← s − 1
-3) b ← a × 2
-</code></pre>
-      <table class="trace">
-        <thead>
-          <tr><th>Step</th><th class="l">Istruzione</th><th>a</th><th>b</th><th>s</th><th class="l">Note</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>0</td><td class="l">— stato iniziale —</td><td>2</td><td>5</td><td>0</td><td class="l">valori dati</td></tr>
-          <tr><td>1</td><td class="l"><code>s ← a + b</code></td><td>2</td><td>5</td><td><strong>7</strong></td><td class="l">usa <code>a,b</code> correnti</td></tr>
-          <tr><td>2</td><td class="l"><code>a ← s − 1</code></td><td><strong>6</strong></td><td>5</td><td>7</td><td class="l">usa <code>s</code> aggiornato</td></tr>
-          <tr><td>3</td><td class="l"><code>b ← a × 2</code></td><td>6</td><td><strong>12</strong></td><td>7</td><td class="l">usa <code>a</code> aggiornato</td></tr>
-        </tbody>
-      </table>
-      <p class="note">Osservazione: cambiare l’ordine cambia il risultato finale ⇒ nelle sequenze l’ordine è semantico, non solo estetico.</p>
-    </div>
-
-    <!-- ESEMPIO 2 con input/divisione intera vs reale -->
-    <div class="inner-box">
-      <h2>Esempio 2 — Input e tipi: divisione intera vs reale</h2>
-      <p><strong>Ipotesi:</strong> <code>n</code> intero, lettura <code>n=7</code>. Confrontiamo <code>x</code> intero vs reale.</p>
-<pre><code class="language-text">1) leggi n        // n = 7
-2) x ← n / 2      // (A) x intero
-3) y ← n / 2.0    // (B) y reale
-</code></pre>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-ex2" onclick="toggleBox('btn-ex2','box-ex2')">Mostra tabella di traccia ▼</button>
-      </div>
-      <div id="box-ex2" style="display:none; margin-top:8px">
-        <table class="trace">
-          <thead>
-            <tr><th>Step</th><th class="l">Istruzione</th><th>n</th><th>x (int)</th><th>y (real)</th><th class="l">Note</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>0</td><td class="l">— iniziale —</td><td>—</td><td>—</td><td>—</td><td class="l"></td></tr>
-            <tr><td>1</td><td class="l"><code>leggi n</code></td><td><strong>7</strong></td><td>—</td><td>—</td><td class="l">n è intero</td></tr>
-            <tr><td>2</td><td class="l"><code>x ← n / 2</code></td><td>7</td><td><strong>3</strong></td><td>—</td><td class="l">divisione intera (troncamento)</td></tr>
-            <tr><td>3</td><td class="l"><code>y ← n / 2.0</code></td><td>7</td><td>3</td><td><strong>3.5</strong></td><td class="l">promozione a reale</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ESERCIZIO GUIDATO -->
-    <div class="inner-box">
-      <h2>Esercizio guidato — Completa la tabella</h2>
-      <p><strong>Stato iniziale:</strong> <code>x=10</code>, <code>y=3</code>, <code>t=0</code>.</p>
-<pre><code class="language-text">1) t ← x − y
-2) x ← y
-3) y ← t + 1
-</code></pre>
-      <table class="trace">
-        <thead>
-          <tr><th>Step</th><th class="l">Istruzione</th><th>x</th><th>y</th><th>t</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>0</td><td class="l">— iniziale —</td><td>10</td><td>3</td><td>0</td></tr>
-          <tr><td>1</td><td class="l"><code>t ← x − y</code></td><td>?</td><td>?</td><td>?</td></tr>
-          <tr><td>2</td><td class="l"><code>x ← y</code></td><td>?</td><td>?</td><td>?</td></tr>
-          <tr><td>3</td><td class="l"><code>y ← t + 1</code></td><td>?</td><td>?</td><td>?</td></tr>
-        </tbody>
-      </table>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-sol1" onclick="toggleBox('btn-sol1','box-sol1')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-sol1" style="display:none; margin-top:8px">
-        <table class="trace">
-          <thead>
-            <tr><th>Step</th><th class="l">Istruzione</th><th>x</th><th>y</th><th>t</th><th class="l">Note</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>0</td><td class="l">— iniziale —</td><td>10</td><td>3</td><td>0</td><td class="l"></td></tr>
-            <tr><td>1</td><td class="l"><code>t ← x − y</code></td><td>10</td><td>3</td><td><strong>7</strong></td><td class="l">10−3=7</td></tr>
-            <tr><td>2</td><td class="l"><code>x ← y</code></td><td><strong>3</strong></td><td>3</td><td>7</td><td class="l">copia il valore corrente di y</td></tr>
-            <tr><td>3</td><td class="l"><code>y ← t + 1</code></td><td>3</td><td><strong>8</strong></td><td>7</td><td class="l">usa t aggiornato</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Takeaways -->
-    <div class="inner-box">
-      <h2>Takeaways</h2>
-      <ul>
-        <li>La <strong>sequenza</strong> è deterministica: ogni istruzione vede lo stato <em>aggiornato</em> da quelle precedenti.</li>
-        <li>La <strong>traccia</strong> rivela dipendenze e bug (es. riuso di una variabile prima di salvarla).</li>
-        <li>Attenzione ai <strong>tipi</strong>: l’effetto di un’istruzione può cambiare (intero vs reale) pur con la stessa sintassi.</li>
-      </ul>
-    </div>
-
   </div>
 
   <div class="nav-buttons">
@@ -208,9 +277,5 @@
     <button onclick="nextSlide()">Avanti &#8594;</button>
   </div>
 </div>
-
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

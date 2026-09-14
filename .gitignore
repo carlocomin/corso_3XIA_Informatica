@@ -1,0 +1,24 @@
+# File di sistema ed editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# Cache e artefatti Python
+__pycache__/
+*.py[cod]
+
+# Output locali di compilazione C/C++
+*.exe
+*.o
+*.obj
+*.out
+
+# Artefatti temporanei dei controlli locali
+.qa_*/
+qa_*.png
+_qa_*.py
+_tmp_*

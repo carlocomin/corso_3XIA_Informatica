@@ -11,13 +11,37 @@
   <script>
     function prevSlide(){ window.location.href = "lez6_1.html"; }
     function nextSlide(){ window.location.href = "lez6_3.html"; }
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-    function toggleBox(btnId, boxId){
-      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
-      const open = box.style.display==='block';
-      box.style.display = open ? 'none':'block';
-      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
     }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      if(!box || !btn) return;
+      const opening = box.style.display !== "block";
+      box.style.display = opening ? "block" : "none";
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      btn.textContent = opening ? "Nascondi ▲" : "Mostra ▼";
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+      const menuBtn = document.querySelector(".menu-toggle");
+      if(menuBtn){
+        menuBtn.setAttribute("aria-controls", "menu");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+      const activeLink = document.querySelector(".sidebar a.active");
+      if(activeLink) activeLink.setAttribute("aria-current", "page");
+      document.querySelectorAll("button[onclick^=\"toggleBox\"]").forEach(function(btn){
+        const match = btn.getAttribute("onclick").match(/toggleBox\('[^']+','([^']+)'\)/);
+        if(match){
+          btn.setAttribute("aria-controls", match[1]);
+          btn.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
   </script>
   <style>
     /* allineamento forte a sinistra e stile coerente */
@@ -35,13 +59,16 @@
     table { width:100%; border-collapse:collapse }
     th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
     th { background:#f8fafc }
+    @media (max-width:720px) {
+      table { display:block; max-width:100%; overflow-x:auto; }
+    }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <h2>Menu Lezione 6</h2>
   <ul>
     <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
     <li><a class="active" href="lez6_2.html">Lez6_2: Hello, World</a></li>
@@ -53,6 +80,10 @@
     <li><a href="lez6_8.html">Lez6_8: switch</a></li>
     <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
     <li><a href="lez6_10.html">Lez6_10: for</a></li>
+    <li><a href="lez6_11.html">Lez6_11: Array (1D)</a></li>
+    <li><a href="lez6_12.html">Lez6_12: Esercizi base</a></li>
+    <li><a href="lez6_13.html">Lez6_13: Esercizi intermedi</a></li>
+    <li><a href="lez6_14.html">Lez6_14: Esercizi avanzati</a></li>
   </ul>
 </div>
 <!-- END MENU -->
@@ -154,7 +185,7 @@ int main(void) {
         <li><strong>Dimenticare <code>#include</code></strong> → identificatori non trovati. <br/><br/><span class="ok">Includi <code>&lt;iostream&gt;</code> (C++) o <code>&lt;stdio.h&gt;</code> (C).</span></li>
         <li><strong>Output “attaccati”</strong> (niente a capo). <br/><br/><span class="ok">Termina con <code>'\n'</code> (o <code>std::endl</code> se ti serve anche il flush).</span></li>
         <li><strong>Usare sempre <code>std::endl</code></strong> (rallenta). <br/><br/><span class="ok">Preferisci <code>'\n'</code>, usa <code>std::endl</code> solo quando ti serve il flush.</span></li>
-        <li><strong>Encoding/Newline su Windows</strong>. <br/><br/><span class="ok">Sorgenti in UTF-8; per file binari apri in modalità binaria (niente traduzione <code>\n↔\r\n</code>).</span></li>
+        <li><strong>Avviare il comando sbagliato su Windows</strong>. <br/><br/><span class="ok">Se hai prodotto <code>hello.exe</code>, da PowerShell esegui <code>.\hello.exe</code>.</span></li>
       </ul>
     </div>
 
@@ -230,8 +261,5 @@ int main(){ return 7; }</code></pre>
   </div>
 </div>
 
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

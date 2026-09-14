@@ -1,59 +1,98 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3BIA – L4.1 · Istruzioni di iterazione: while e repeat–until</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 4.1 – Cicli WHILE e DO</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../default.css">
   <script src="../highlight.js"></script>
   <script>try{hljs.highlightAll();}catch(e){}</script>
   <script>
     function prevSlide(){ window.location.href = "../lez3/lez3_2.html"; }
-    function nextSlide(){ window.location.href = "lez4_2.html"; } // placeholder per la prossima lezione
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function nextSlide(){ window.location.href = "lez4_2.html"; }
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
+    }
     function toggleBox(btnId, boxId){
       const box = document.getElementById(boxId);
       const btn = document.getElementById(btnId);
-      const open = box.style.display === 'block';
-      box.style.display = open ? 'none' : 'block';
-      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+      const opening = box.hidden;
+      box.hidden = !opening;
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      const label = btn.dataset.label || "la soluzione";
+      btn.textContent = opening ? "Nascondi " + label + " ▲" : "Mostra " + label + " ▼";
     }
   </script>
   <style>
-    /* Mini-flowchart style locale */
-    .fc-wrap {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); margin-top:8px}
-    .fc-card {background:var(--panel,#fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
-    .fc-title{font-weight:600; margin:4px 0 8px}
-    .fc-svg{width:100%; height:auto}
-    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
-    .fc-text{font:12px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; fill:#111}
-    .fc-small{font-size:11px; color:#333}
-    .fc-yes{font-weight:600; fill:#0b6}
-    .fc-no{font-weight:600; fill:#c33}
-    .fc-marker path{fill:#222}
-    /* Tabelle di traccia */
-    .trace { width:100%; border-collapse:collapse; margin-top:8px }
-    .trace th, .trace td { border:1px solid #ccc; padding:6px 8px; text-align:center }
-    .trace th { background:#f7f7f7 }
-    .trace td.l { text-align:left }
-    .note-ok { background:#eefbf1; border-left:4px solid #39a36d; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
-    .warn { background:#fff5e6; border-left:4px solid #f0a500; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 {
+      text-align:left !important;
+    }
+    .inner-box ul, .inner-box ol {
+      margin:.5rem 0 .75rem 1rem;
+      padding-left:1.25rem;
+      list-style-position:outside;
+    }
+    .inner-box li { margin:.25rem 0; }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; }
+    .ok { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; }
+    .table-wrap { overflow-x:auto; margin-top:.5rem; }
+    table { width:100%; border-collapse:collapse; min-width:560px; }
+    th, td { border:1px solid #ccd8d6; padding:.5rem .6rem; text-align:center; vertical-align:top; }
+    th { background:#f1f8f7; }
+    td.left, th.left { text-align:left; }
+    .loop-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+      margin-top:10px;
+    }
+    .fc-card {
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+    }
+    .fc-card h3 { margin-top:0; color:#00695c; }
+    .fc-svg { width:100%; height:auto; }
+    .fc-shape { fill:#fff; stroke:#00695c; stroke-width:2.5; }
+    .fc-text { font-family:Arial, sans-serif; font-size:18px; fill:#123; }
+    .fc-label { font-family:Arial, sans-serif; font-size:17px; font-weight:bold; fill:#00695c; }
+    .fc-line { fill:none; stroke:#263238; stroke-width:2.5; }
+    .fc-arrow path { fill:#263238; }
+    .exercise { border-top:4px solid #00695c; }
+    .exercise button { margin:.35rem 0 .75rem; }
+    @media (max-width:800px) {
+      .loop-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:620px) {
+      table { font-size:.9rem; }
+      th, td { padding:.35rem; }
+      .fc-text { font-size:20px; }
+    }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Menu Lezioni</h2>
+  <h2>Menu Lezione 4</h2>
   <ul>
-    <li><a href="lez4_1.html">Lezione 4.1: Iterazione I (while, repeat–until)</a></li>
+    <li><a href="lez4_1.html">4.1 — Cicli WHILE e DO</a></li>
+    <li><a href="lez4_2.html">4.2 — Cicli FOR</a></li>
+    <li><a href="lez4_3.html">4.3 — Cicli annidati</a></li>
   </ul>
 </div>
 <!-- END MENU -->
 
 <div class="slide">
-  <h1>L4.1 — Istruzione di <em>Iterazione</em>: <code>while</code> e <code>repeat–until</code></h1>
+  <h1>Lezione 4.1 — Cicli <code>WHILE</code> e <code>DO</code></h1>
+  <p><strong>Obiettivo:</strong> progettare cicli che terminano, distinguendo il controllo prima del corpo da quello successivo al corpo.</p>
 
   <div class="nav-buttons" style="margin-bottom:10px">
     <button onclick="prevSlide()">&#8592; Indietro</button>
@@ -61,263 +100,231 @@
   </div>
 
   <div class="content-box">
-
-    <!-- 1) Motivazione & obiettivi -->
     <div class="inner-box">
-      <h2>Perché i cicli? Obiettivi della lezione</h2>
-      <p>
-        Molti problemi richiedono di ripetere una stessa operazione su dati diversi o su stati che evolvono nel tempo
-        (somma di N numeri, ricerca, validazione input, simulazioni…). Le <strong>istruzioni di iterazione</strong> ci permettono
-        di esprimere questa ripetizione in modo <em>corretto</em>, <em>legibile</em> e <em>controllato</em>.
-      </p>
+      <h2>Quando serve un ciclo?</h2>
+      <p>Un ciclo ripete un gruppo di istruzioni mentre una condizione lo richiede. È utile quando il numero di ripetizioni dipende dai dati o dallo stato raggiunto durante l'esecuzione.</p>
       <ul>
-        <li>Comprendere il <strong>modello concettuale del ciclo</strong>: guardia (condizione), corpo, aggiornamento.</li>
-        <li>Distinguere <strong>pre-condizione</strong> (<code>while</code>) e <strong>post-condizione</strong> (<code>repeat–until</code>).</li>
-        <li>Leggere/scrivere <strong>flowchart</strong> di base e costruire <strong>tabelle di traccia</strong> dell’esecuzione.</li>
-        <li>Evitare errori tipici: <em>off-by-one</em>, loop infiniti, aggiornamenti mancanti.</li>
+        <li><strong>Inizializzazione:</strong> prepara contatori, accumulatori e altri valori.</li>
+        <li><strong>Condizione:</strong> decide se eseguire o ripetere il corpo.</li>
+        <li><strong>Corpo:</strong> contiene il lavoro da ripetere.</li>
+        <li><strong>Aggiornamento:</strong> modifica lo stato e avvicina il ciclo alla conclusione.</li>
       </ul>
+      <p class="warn">Se le variabili della condizione non cambiano nel modo previsto, il ciclo può non terminare.</p>
     </div>
 
-    <!-- 2) Modello concettuale -->
     <div class="inner-box">
-      <h2>Modello concettuale del ciclo</h2>
-      <p>
-        Un ciclo ripete un <strong>corpo</strong> di istruzioni finché una <strong>condizione</strong> lo richiede.
-        Ad ogni iterazione si esegue un <strong>aggiornamento</strong> dello stato per avvicinarsi all’uscita.
-      </p>
-      <ul>
-        <li><strong>Stato</strong>: insieme dei valori delle variabili rilevanti (<code>i</code>, accumulatore <code>s</code>, flag <code>found</code>…).</li>
-        <li><strong>Guardia</strong>: predicato che decide se continuare (<em>vero</em>) o terminare (<em>falso</em>).</li>
-        <li><strong>Corpo</strong>: operazioni da ripetere (somma, confronto, lettura…).</li>
-        <li><strong>Aggiornamento</strong>: modifica dello stato (es. <code>i ← i+1</code>) che rende la guardia prima o poi falsa.</li>
-      </ul>
+      <h2>Due controlli in posizioni diverse</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th class="left">Struttura</th><th>Quando controlla</th><th>Iterazioni minime</th><th class="left">Significato della condizione</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="left"><code>WHILE</code></td><td>Prima del corpo</td><td>0</td><td class="left">Continua mentre la condizione è <code>True</code>.</td></tr>
+            <tr><td class="left"><code>DO</code> di Flowgorithm</td><td>Dopo il corpo</td><td>1</td><td class="left">Ripete mentre la condizione è <code>True</code>.</td></tr>
+            <tr><td class="left"><code>REPEAT-UNTIL</code> in altro pseudocodice</td><td>Dopo il corpo</td><td>1</td><td class="left">Ripete finché la condizione di uscita è <code>False</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note"><strong>Attenzione alla negazione:</strong> <code>do ... while nonValido</code> e <code>repeat ... until valido</code> descrivono lo stesso comportamento, ma le condizioni hanno significato opposto.</p>
     </div>
 
-    <!-- 3) Pattern: while -->
     <div class="inner-box">
-      <h2>Pattern: <code>while</code> (ciclo a <em>pre-condizione</em>)</h2>
-      <p>
-        Il test è in <strong>alto</strong>: se la condizione è subito falsa, il corpo non viene mai eseguito (0 iterazioni possibili).
-      </p>
-
-      <div class="fc-wrap">
+      <h2>Il flusso di esecuzione</h2>
+      <div class="loop-grid">
         <div class="fc-card">
-          <div class="fc-title">Flowchart <code>while</code> (spezzata a sinistra, senza incroci)</div>
-          <svg class="fc-svg" viewBox="0 0 520 340" role="img" aria-label="While pre-condizione">
+          <h3>WHILE: controllo in testa</h3>
+          <svg class="fc-svg" viewBox="0 0 620 510" role="img" aria-label="Diagramma di un ciclo while con controllo prima del corpo">
             <defs>
-              <marker id="arrW" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
-                <path d="M0 0 L10 5 L0 10 Z"></path>
+              <marker id="while-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z"></path>
               </marker>
             </defs>
-
-            <!-- Start -->
-            <ellipse class="fc-shape" cx="260" cy="30" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="260" y="34" text-anchor="middle">Start</text>
-
-            <!-- Decision -->
-            <polygon class="fc-shape" points="260,90 300,130 260,170 220,130"></polygon>
-            <text class="fc-text" x="260" y="134" text-anchor="middle">condizione?</text>
-            <text class="fc-text fc-yes" x="302" y="126">Sì</text>
-            <text class="fc-text fc-no"  x="218" y="126" text-anchor="end">No</text>
-
-            <!-- Corpo -->
-            <rect class="fc-shape" x="350" y="210" width="140" height="36" rx="6"></rect>
-            <text class="fc-text" x="420" y="232" text-anchor="middle">corpo + update</text>
-
-            <!-- End -->
-            <ellipse class="fc-shape" cx="90" cy="250" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="90" y="254" text-anchor="middle">End</text>
-
-            <!-- Frecce -->
-            <line x1="260" y1="46" x2="260" y2="90" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- Sì -> corpo -->
-            <polyline points="300,130 350,130 350,210" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- back-edge a sinistra (spezzata, senza incroci) -->
-            <polyline points="420,246 170,246 170,180 260,180 260,170" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- No -> End (sinistra) -->
-            <polyline points="220,130 120,130 120,234" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
+            <ellipse class="fc-shape" cx="310" cy="40" rx="78" ry="28"></ellipse>
+            <text class="fc-text" x="310" y="47" text-anchor="middle">Inizio</text>
+            <polygon class="fc-shape" points="310,105 430,175 310,245 190,175"></polygon>
+            <text class="fc-text" x="310" y="181" text-anchor="middle">condizione?</text>
+            <rect class="fc-shape" x="390" y="315" width="180" height="62" rx="6"></rect>
+            <text class="fc-text" x="480" y="352" text-anchor="middle">corpo + update</text>
+            <ellipse class="fc-shape" cx="120" cy="345" rx="78" ry="28"></ellipse>
+            <text class="fc-text" x="120" y="352" text-anchor="middle">Fine</text>
+            <line class="fc-line" x1="310" y1="68" x2="310" y2="105" marker-end="url(#while-arrow)"></line>
+            <path class="fc-line" d="M430 175 L480 175 L480 315" marker-end="url(#while-arrow)"></path>
+            <text class="fc-label" x="460" y="160">True</text>
+            <path class="fc-line" d="M190 175 L120 175 L120 317" marker-end="url(#while-arrow)"></path>
+            <text class="fc-label" x="135" y="160">False</text>
+            <path class="fc-line" d="M480 377 L480 445 L310 445 L310 245" marker-end="url(#while-arrow)"></path>
           </svg>
-          <p class="fc-small">Il ritorno al test (back-edge) passa a sinistra per evitare intersezioni.</p>
         </div>
-      </div>
 
-      <h3>Esempio guida: somma dei primi N interi</h3>
-      <p><strong>Specifiche.</strong> Input: intero <code>N ≥ 0</code>. Output: <code>S = 1 + 2 + … + N</code> (convenz.: <code>S=0</code> se <code>N=0</code>).</p>
-<pre><code class="language-text">// Pseudocodice (while, pre-condizione)
-leggi N
-i ← 1;  S ← 0
-while (i ≤ N) do
-    S ← S + i
-    i ← i + 1
-// stampa S</code></pre>
-      <table class="trace">
-        <thead><tr><th>iter</th><th>cond (i ≤ N)</th><th>i (prima)</th><th>S (prima)</th><th>i (dopo)</th><th>S (dopo)</th></tr></thead>
-        <tbody>
-          <tr><td>0</td><td>—</td><td>1</td><td>0</td><td>—</td><td>—</td></tr>
-          <tr><td>1</td><td>vero</td><td>1</td><td>0</td><td>2</td><td>1</td></tr>
-          <tr><td>2</td><td>vero</td><td>2</td><td>1</td><td>3</td><td>3</td></tr>
-          <tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
-          <tr><td>N</td><td>vero</td><td>N</td><td>…</td><td>N+1</td><td>…+N</td></tr>
-          <tr><td>N+1</td><td><strong>falso</strong></td><td>N+1</td><td>—</td><td>—</td><td><strong>S finale</strong></td></tr>
-        </tbody>
-      </table>
-      <p class="note-ok"><strong>Invariante (intuizione):</strong> all’inizio di ogni iterazione con valore corrente di <code>i</code>,
-        vale <code>S = 1 + 2 + … + (i−1)</code>. L’update preserva la proprietà e avanza verso l’uscita.</p>
-      <p class="warn"><strong>Errori tipici:</strong> dimenticare <code>i ← i+1</code> (loop infinito); usare <code>&lt;</code> invece di <code>≤</code> (off-by-one).</p>
-    </div>
-
-    <!-- 4) Pattern: repeat–until -->
-    <div class="inner-box">
-      <h2>Pattern: <code>repeat–until</code> (ciclo a <em>post-condizione</em>)</h2>
-      <p>
-        Il corpo viene eseguito <strong>almeno una volta</strong>. Si ripete finché la condizione in basso è <em>falsa</em>;
-        si esce quando diventa <em>vera</em>.
-      </p>
-
-      <div class="fc-wrap">
         <div class="fc-card">
-          <div class="fc-title">Flowchart <code>repeat–until</code> (test in basso)</div>
-          <svg class="fc-svg" viewBox="0 0 520 320" role="img" aria-label="Repeat Until">
+          <h3>DO: controllo in coda</h3>
+          <svg class="fc-svg" viewBox="0 0 620 510" role="img" aria-label="Diagramma di un ciclo do con controllo dopo il corpo">
             <defs>
-              <marker id="arrR" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
-                <path d="M0 0 L10 5 L0 10 Z"></path>
+              <marker id="do-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z"></path>
               </marker>
             </defs>
-
-            <!-- Start -->
-            <ellipse class="fc-shape" cx="100" cy="30" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="100" y="34" text-anchor="middle">Start</text>
-
-            <!-- Corpo -->
-            <rect class="fc-shape" x="55" y="90" width="130" height="36" rx="6"></rect>
-            <text class="fc-text" x="120" y="112" text-anchor="middle">corpo + update</text>
-
-            <!-- Decision in basso -->
-            <polygon class="fc-shape" points="120,200 170,230 120,260 70,230"></polygon>
-            <text class="fc-text" x="120" y="234" text-anchor="middle">condizione?</text>
-            <text class="fc-text fc-yes" x="180" y="228">Sì (esci)</text>
-            <text class="fc-text fc-no"  x="60"  y="228" text-anchor="end">No (ripeti)</text>
-
-            <!-- End -->
-            <ellipse class="fc-shape" cx="320" cy="230" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="320" y="234" text-anchor="middle">End</text>
-
-            <!-- Frecce -->
-            <line x1="100" y1="46"  x2="100" y2="90" stroke="#222" stroke-width="2" marker-end="url(#arrR)"/>
-            <line x1="120" y1="126" x2="120" y2="200" stroke="#222" stroke-width="2" marker-end="url(#arrR)"/>
-            <!-- loop (No) a sinistra -->
-            <polyline points="70,230 30,230 30,50 100,50" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrR)"/>
-            <!-- exit (Sì) a destra -->
-            <polyline points="170,230 260,230" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrR)"/>
+            <ellipse class="fc-shape" cx="310" cy="40" rx="78" ry="28"></ellipse>
+            <text class="fc-text" x="310" y="47" text-anchor="middle">Inizio</text>
+            <rect class="fc-shape" x="220" y="120" width="180" height="62" rx="6"></rect>
+            <text class="fc-text" x="310" y="157" text-anchor="middle">corpo + update</text>
+            <polygon class="fc-shape" points="310,240 430,310 310,380 190,310"></polygon>
+            <text class="fc-text" x="310" y="316" text-anchor="middle">continuare?</text>
+            <ellipse class="fc-shape" cx="500" cy="430" rx="78" ry="28"></ellipse>
+            <text class="fc-text" x="500" y="437" text-anchor="middle">Fine</text>
+            <line class="fc-line" x1="310" y1="68" x2="310" y2="120" marker-end="url(#do-arrow)"></line>
+            <line class="fc-line" x1="310" y1="182" x2="310" y2="240" marker-end="url(#do-arrow)"></line>
+            <path class="fc-line" d="M190 310 L105 310 L105 151 L220 151" marker-end="url(#do-arrow)"></path>
+            <text class="fc-label" x="120" y="292">True</text>
+            <path class="fc-line" d="M430 310 L500 310 L500 402" marker-end="url(#do-arrow)"></path>
+            <text class="fc-label" x="465" y="292">False</text>
           </svg>
-          <p class="fc-small"><em>No</em> ripete; <em>Sì</em> esce. È ideale per input che va chiesto almeno una volta.</p>
         </div>
       </div>
-
-      <h3>Esempio guida: validazione input in un range</h3>
-      <p><strong>Specifiche.</strong> Input: estremi <code>a ≤ b</code>; chiedi un intero <code>x</code> finché <code>x∉[a,b]</code>. Output: <code>x</code> valido.</p>
-<pre><code class="language-text">// Pseudocodice (repeat–until)
-leggi a, b
-repeat
-    leggi x
-until (x ≥ a ∧ x ≤ b)
-// stampa x</code></pre>
-      <p class="note-ok">La guardia esprime la condizione di <em>uscita</em> (quando vera, si esce). In <code>while</code> sarebbe il <em>negativo</em>:
-        <code>while (x &lt; a ∨ x &gt; b) do leggi x</code>.</p>
     </div>
 
-    <!-- 5) Confronto -->
     <div class="inner-box">
-      <h2><code>while</code> vs <code>repeat–until</code>: quando scegliere cosa</h2>
-      <ul>
-        <li><strong>while</strong>: 0 o più iterazioni; condizione in testa. Utile quando potresti <em>non dover entrare</em> nel ciclo.</li>
-        <li><strong>repeat–until</strong>: 1 o più iterazioni; condizione in coda. Utile quando <em>devi entrare almeno una volta</em> (es. leggere input).</li>
-        <li>Trasformazione: <code>repeat ... until (E)</code> ⇔ <code>do { ... } while (¬E)</code> (o <code>while (¬E) { ... }</code> con inizializzazione adatta).</li>
-      </ul>
+      <h2>Esempio WHILE: somma da 1 a N</h2>
+      <p>Per <code>N ≥ 0</code>, calcoliamo <code>somma = 1 + 2 + ... + N</code>. Se <code>N=0</code>, il corpo non viene eseguito e il risultato resta 0.</p>
+<pre><code class="language-none">leggi N
+se N &lt; 0 allora
+    scrivi "N non valido"
+altrimenti
+    i ← 1
+    somma ← 0
+    while i ≤ N do
+        somma ← somma + i
+        i ← i + 1
+    end while
+    scrivi somma
+fine se</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Iterazione</th><th>i prima</th><th>somma prima</th><th>somma dopo</th><th>i dopo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>2</td></tr>
+            <tr><td>2</td><td>2</td><td>1</td><td>3</td><td>3</td></tr>
+            <tr><td>3</td><td>3</td><td>3</td><td>6</td><td>4</td></tr>
+            <tr><td>4</td><td>4</td><td>6</td><td>10</td><td>5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ok">Con <code>N=4</code>, dopo quattro iterazioni <code>i=5</code>: la condizione è falsa e il risultato è 10.</p>
     </div>
 
-    <!-- 6) Checklist -->
     <div class="inner-box">
-      <h2>Checklist di correttezza (pratica)</h2>
-      <ul>
-        <li><strong>Inizializza</strong> le variabili del ciclo (contatore, accumulatore, flag).</li>
-        <li><strong>Rendi ben chiara la guardia</strong> con parentesi; scegli l’operatore giusto (<code>≤</code> vs <code>&lt;</code>).</li>
-        <li><strong>Aggiorna</strong> lo stato in ogni iterazione (contatore/lettura) per evitare loop infiniti.</li>
-        <li><strong>Traccia</strong> 2–3 iterazioni con una tabella per smascherare bug logici (<em>off-by-one</em>).</li>
-      </ul>
+      <h2>Esempio DO: validazione di un input</h2>
+      <p>Il valore deve essere letto almeno una volta. Il ciclo continua mentre il dato è esterno a <code>[a,b]</code>.</p>
+<pre><code class="language-none">leggi a, b
+se a &gt; b allora
+    scrivi "estremi non validi"
+altrimenti
+    do
+        leggi x
+    while x &lt; a ∨ x &gt; b
+    scrivi x
+fine se</code></pre>
+      <p class="note">Nella figura <em>Do</em> di Flowgorithm si inserisce la condizione di continuazione <code>x &lt; a ∨ x &gt; b</code>. Con la notazione <code>repeat-until</code> si scriverebbe invece <code>until x ≥ a ∧ x ≤ b</code>.</p>
     </div>
 
-    <!-- 7) Esercizi guidati -->
     <div class="inner-box">
-      <h2>Esercizi guidati (show/hide soluzioni)</h2>
+      <h2>Correttezza e terminazione</h2>
       <ol>
-        <li><strong>E1 – Somma dei primi N</strong>. Dato <code>N≥0</code>, calcola <code>S=1+…+N</code>.<br>
-          <em>Richieste:</em> usa <code>while</code>, mostra una piccola tabella di traccia per <code>N=5</code>.
-          <div class="nav-buttons" style="justify-content:left"><button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra ▼</button></div>
-          <div id="box-e1" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi N
-i ← 1; S ← 0
-while (i ≤ N) do
-    S ← S + i
-    i ← i + 1
-stampa S</code></pre>
-            <table class="trace">
-              <thead><tr><th>iter</th><th>i</th><th>S</th></tr></thead>
-              <tbody>
-                <tr><td>0</td><td>1</td><td>0</td></tr>
-                <tr><td>1</td><td>2</td><td>1</td></tr>
-                <tr><td>2</td><td>3</td><td>3</td></tr>
-                <tr><td>3</td><td>4</td><td>6</td></tr>
-                <tr><td>4</td><td>5</td><td>10</td></tr>
-                <tr><td>5</td><td>6</td><td><strong>15</strong></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </li>
-
-        <li><strong>E2 – Conta cifre</strong>. Dato intero <code>n ≥ 0</code>, stampa quante cifre ha in base 10.
-            <em>Nota:</em> <code>0</code> ha <code>1</code> cifra.
-          <div class="nav-buttons" style="justify-content:left"><button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra ▼</button></div>
-          <div id="box-e2" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi n
-se (n = 0) allora stampa 1 e termina
-c ← 0
-while (n &gt; 0) do
-    n ← n div 10    // divisione intera
-    c ← c + 1
-stampa c</code></pre>
-            <p class="note-ok">Caso speciale gestito prima; ogni iterazione “taglia” una cifra.</p>
-          </div>
-        </li>
-
-        <li><strong>E3 – Validazione nel range</strong>. Dati <code>a≤b</code>, chiedi un intero <code>x</code> finché <code>x∉[a,b]</code>. Alla fine stampa <code>x</code>.
-          <div class="nav-buttons" style="justify-content:left"><button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button></div>
-          <div id="box-e3" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi a, b
-repeat
-    leggi x
-until (x ≥ a ∧ x ≤ b)
-stampa x</code></pre>
-            <p class="note-ok">Si entra sempre nel ciclo almeno una volta (test in coda).</p>
-          </div>
-        </li>
-
-        <li><strong>(Bonus) E4 – Ricerca lineare con flag</strong>. Dati <code>N</code> e una sequenza di <code>N</code> interi, verifica se è presente <code>k</code>.
-          <div class="nav-buttons" style="justify-content:left"><button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra ▼</button></div>
-          <div id="box-e4" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi N, k
-i ← 1; found ← falso
-while (i ≤ N ∧ ¬found) do
-    leggi x
-    se (x = k) allora found ← vero
-    i ← i + 1
-se (found) allora stampa "trovato" altrimenti "assente"</code></pre>
-            <p class="note-ok">La guardia usa short-circuit: se <code>found</code> è vero, non serve leggere altro.</p>
-          </div>
-        </li>
+        <li><strong>Prima del ciclo:</strong> inizializza tutte le variabili lette dalla condizione o dal corpo.</li>
+        <li><strong>Durante il ciclo:</strong> verifica che il corpo mantenga corretto lo stato già costruito.</li>
+        <li><strong>Verso l'uscita:</strong> individua una quantità che cambia a ogni iterazione e raggiunge un limite.</li>
+        <li><strong>Dopo il ciclo:</strong> usa la condizione falsa per capire che cosa è ormai garantito.</li>
       </ol>
+      <p class="warn">Controlla sempre il caso in cui il WHILE esegue zero iterazioni e quello in cui il DO ne esegue esattamente una.</p>
     </div>
 
+    <div class="inner-box exercise">
+      <h2>Esercizio 1 — Somma dei primi N interi</h2>
+      <p>Leggi un intero <code>N ≥ 0</code> e calcola la somma da 1 a N usando WHILE. Rifiuta i valori negativi.</p>
+      <button id="btn-e1" data-label="la soluzione" aria-controls="box-e1" aria-expanded="false" onclick="toggleBox('btn-e1','box-e1')">Mostra la soluzione ▼</button>
+      <div id="box-e1" hidden>
+<pre><code class="language-none">leggi N
+se N &lt; 0 allora
+    scrivi "N non valido"
+altrimenti
+    i ← 1
+    somma ← 0
+    while i ≤ N do
+        somma ← somma + i
+        i ← i + 1
+    end while
+    scrivi somma
+fine se</code></pre>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 2 — Numero di cifre</h2>
+      <p>Leggi un intero <code>n ≥ 0</code> e conta le sue cifre decimali. Ricorda che zero ha una cifra.</p>
+      <button id="btn-e2" data-label="la soluzione" aria-controls="box-e2" aria-expanded="false" onclick="toggleBox('btn-e2','box-e2')">Mostra la soluzione ▼</button>
+      <div id="box-e2" hidden>
+<pre><code class="language-none">leggi n
+se n &lt; 0 allora
+    scrivi "n non valido"
+altrimenti se n = 0 allora
+    scrivi 1
+altrimenti
+    cifre ← 0
+    while n &gt; 0 do
+        n ← Int(n / 10)
+        cifre ← cifre + 1
+    end while
+    scrivi cifre
+fine se</code></pre>
+        <p class="ok">Ogni divisione intera per 10 elimina l'ultima cifra e avvicina <code>n</code> a zero.</p>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 3 — Lettura nell'intervallo</h2>
+      <p>Dati due estremi validi <code>a ≤ b</code>, continua a chiedere un intero finché ne viene inserito uno appartenente a <code>[a,b]</code>. Usa DO.</p>
+      <button id="btn-e3" data-label="la soluzione" aria-controls="box-e3" aria-expanded="false" onclick="toggleBox('btn-e3','box-e3')">Mostra la soluzione ▼</button>
+      <div id="box-e3" hidden>
+<pre><code class="language-none">leggi a, b
+do
+    leggi x
+while x &lt; a ∨ x &gt; b
+scrivi x</code></pre>
+        <p class="note">Il ciclo ripete per i dati non validi e termina appena la condizione diventa falsa.</p>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 4 — Somma fino al valore sentinella</h2>
+      <p>Leggi numeri interi e sommali. Il valore <code>0</code> conclude l'inserimento e non deve essere aggiunto.</p>
+      <button id="btn-e4" data-label="la soluzione" aria-controls="box-e4" aria-expanded="false" onclick="toggleBox('btn-e4','box-e4')">Mostra la soluzione ▼</button>
+      <div id="box-e4" hidden>
+<pre><code class="language-none">somma ← 0
+do
+    leggi x
+    se x ≠ 0 allora
+        somma ← somma + x
+    fine se
+while x ≠ 0
+scrivi somma</code></pre>
+        <p class="ok">Sequenza di prova: <code>5, -2, 4, 0</code> produce <code>7</code>. Il primo valore può essere subito zero.</p>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Checklist</h2>
+      <ul>
+        <li>La condizione esprime chiaramente quando continuare?</li>
+        <li>Tutte le variabili hanno un valore prima del primo utilizzo?</li>
+        <li>Il corpo modifica almeno un valore rilevante per l'uscita?</li>
+        <li>WHILE funziona anche con zero iterazioni?</li>
+        <li>DO funziona anche quando basta una sola iterazione?</li>
+        <li>Hai tracciato a mano almeno le prime due iterazioni e l'uscita?</li>
+      </ul>
+    </div>
   </div>
 
   <div class="nav-buttons">
@@ -325,9 +332,5 @@ se (found) allora stampa "trovato" altrimenti "assente"</code></pre>
     <button onclick="nextSlide()">Avanti &#8594;</button>
   </div>
 </div>
-
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

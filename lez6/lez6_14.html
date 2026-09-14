@@ -13,13 +13,37 @@
   <script>
     function prevSlide(){ window.location.href = "lez6_13.html"; }
     function nextSlide(){ window.location.href = "../programma.html"; }
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-    function toggleBox(btnId, boxId){
-      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
-      const open = box.style.display==='block';
-      box.style.display = open ? 'none':'block';
-      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
     }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      if(!box || !btn) return;
+      const opening = box.style.display !== "block";
+      box.style.display = opening ? "block" : "none";
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      btn.textContent = opening ? "Nascondi ▲" : "Mostra ▼";
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+      const menuBtn = document.querySelector(".menu-toggle");
+      if(menuBtn){
+        menuBtn.setAttribute("aria-controls", "menu");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+      const activeLink = document.querySelector(".sidebar a.active");
+      if(activeLink) activeLink.setAttribute("aria-current", "page");
+      document.querySelectorAll("button[onclick^=\"toggleBox\"]").forEach(function(btn){
+        const match = btn.getAttribute("onclick").match(/toggleBox\('[^']+','([^']+)'\)/);
+        if(match){
+          btn.setAttribute("aria-controls", match[1]);
+          btn.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
   </script>
 
   <style>
@@ -43,14 +67,17 @@
     table { width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem; line-height:1.4 }
     th, td { border-bottom:1px solid #e5e7eb; padding:.5rem .6rem; text-align:left; vertical-align:top; }
     th { background:#f8fafc; font-weight:600 }
+    @media (max-width:720px) {
+      table { display:block; max-width:100%; overflow-x:auto; }
+    }
   </style>
 </head>
 <body>
 
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <h2>Menu Lezione 6</h2>
   <ul>
     <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
     <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
@@ -188,13 +215,13 @@ int main(void) {
     <!-- E2 -->
     <div class="inner-box box">
       <h2>E2 — Statistiche su una classe</h2>
-      <p><b>Testo:</b> Leggi i voti di 10 studenti in un array di interi.  
+      <div><b>Testo:</b> Leggi i voti di 10 studenti in un array di interi.
       Calcola e stampa:
       <ul>
         <li>media;</li>
         <li>voto massimo e minimo;</li>
         <li>quanti voti &lt; 6 (insufficienti).</li>
-      </ul></p>
+      </ul></div>
 
       <p><b>Competenze:</b> scansione array multipla, accumulo di statistiche, analisi di dati.</p>
 
@@ -277,10 +304,10 @@ int main(void) {
     <div class="inner-box box">
       <h2>E3 — Normalizzazione dei valori</h2>
       <p><b>Testo:</b> Leggi 5 numeri interi in un array.  
-      Trova il valore massimo.  
-      Per ogni valore stampa il rapporto <code>valore / massimo</code> come numero in virgola mobile (double, quindi con la parte decimale).</p>
+      Trova minimo e massimo.
+      Per ogni valore calcola la normalizzazione min-max <code>(valore - minimo) / (massimo - minimo)</code>.</p>
 
-      <p><b>Competenze:</b> trovare max, attenzione alla divisione intera vs divisione reale, cast a double.</p>
+      <p><b>Competenze:</b> trovare minimo e massimo, evitare la divisione per zero, ottenere un risultato reale nell’intervallo [0,1].</p>
 
       <div class="nav-buttons" style="justify-content:left">
         <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra ▼</button>
@@ -298,14 +325,19 @@ int main() {
         std::cin &gt;&gt; v[i];
     }
 
+    int minimo = v[0];
     int massimo = v[0];
     for (int i = 1; i &lt; N; i++) {
+        if (v[i] &lt; minimo) minimo = v[i];
         if (v[i] &gt; massimo) massimo = v[i];
     }
 
-    std::cout &lt;&lt; "Valori normalizzati (val/max):\n";
+    double intervallo = (double)massimo - minimo;
+    std::cout &lt;&lt; "Valori normalizzati:\n";
     for (int i = 0; i &lt; N; i++) {
-        double ratio = (double)v[i] / massimo;
+        double ratio = (intervallo == 0.0)
+                     ? 0.0
+                     : (v[i] - minimo) / intervallo;
         std::cout &lt;&lt; v[i] &lt;&lt; " -> " &lt;&lt; ratio &lt;&lt; "\n";
     }
 
@@ -324,14 +356,19 @@ int main(void) {
         scanf("%d", &amp;v[i]);
     }
 
+    int minimo = v[0];
     int massimo = v[0];
     for (i = 1; i &lt; N; i++) {
+        if (v[i] &lt; minimo) minimo = v[i];
         if (v[i] &gt; massimo) massimo = v[i];
     }
 
-    printf("Valori normalizzati (val/max):\n");
+    double intervallo = (double)massimo - minimo;
+    printf("Valori normalizzati:\n");
     for (i = 0; i &lt; N; i++) {
-        double ratio = (double)v[i] / massimo;
+        double ratio = (intervallo == 0.0)
+                     ? 0.0
+                     : (v[i] - minimo) / intervallo;
         printf("%d -> %f\n", v[i], ratio);
     }
 
@@ -339,7 +376,7 @@ int main(void) {
 }</code></pre>
 
         <p class="ok">
-          Questo è fondamentale in analisi dati: riportare i valori tutti nella scala [0,1].
+          Se tutti i valori sono uguali, l’intervallo vale zero: qui scegliamo per convenzione di stampare 0. Negli altri casi minimo e massimo diventano rispettivamente 0 e 1.
         </p>
       </div>
     </div>
@@ -497,12 +534,12 @@ int main(void) {
     <!-- E6 -->
     <div class="inner-box box">
       <h2>E6 — Valore massimo in una matrice 3×3 e sue coordinate</h2>
-      <p><b>Testo:</b> Leggi una matrice 3×3 di interi.  
+      <div><b>Testo:</b> Leggi una matrice 3×3 di interi.
       Trova l’elemento massimo e stampa:
       <ul>
         <li>il valore massimo;</li>
         <li>la sua riga e colonna (indice r,c).</li>
-      </ul></p>
+      </ul></div>
 
       <p><b>Competenze:</b> confronto in doppio ciclo annidato, memorizzazione della posizione “migliore finora”.</p>
 
@@ -585,7 +622,7 @@ int main(void) {
       <h2>E7 — Menù robusto con validazione input</h2>
       <p><b>Testo:</b> Realizza un menù numerato (1..4).  
       Chiedi la scelta all’utente.  
-      Se l’utente inserisce un numero fuori da 1..4, stampa “Scelta non valida” e richiedi di nuovo senza uscire.</p>
+      Se l’utente inserisce un valore non numerico o un numero fuori da 1..4, stampa “Scelta non valida” e richiedi di nuovo senza uscire.</p>
 
       <p><b>Competenze:</b> ciclo <code>do-while</code> o <code>while</code> di validazione, <code>switch</code>, controllo dell’intervallo valido.</p>
 
@@ -596,8 +633,11 @@ int main(void) {
 
 <pre><code class="language-cpp">// C++
 #include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;string&gt;
 int main() {
     int scelta = 0;
+    std::string linea;
 
     do {
         std::cout &lt;&lt; "\nMenu:\n"
@@ -606,10 +646,14 @@ int main() {
                   &lt;&lt; "3) Mostra numero random finto\n"
                   &lt;&lt; "4) Esci\n"
                   &lt;&lt; "Scelta (1-4): ";
-        std::cin &gt;&gt; scelta;
+        std::getline(std::cin, linea);
+        std::istringstream input(linea);
+        char extra;
 
-        if (scelta &lt; 1 || scelta &gt; 4) {
+        if (!(input &gt;&gt; scelta) || (input &gt;&gt; extra) ||
+            scelta &lt; 1 || scelta &gt; 4) {
             std::cout &lt;&lt; "Scelta non valida\n";
+            scelta = 0;
             continue;
         }
 
@@ -636,6 +680,7 @@ int main() {
 #include &lt;stdio.h&gt;
 int main(void) {
     int scelta = 0;
+    char linea[100];
 
     do {
         printf("\nMenu:\n");
@@ -644,10 +689,16 @@ int main(void) {
         printf("3) Mostra numero random finto\n");
         printf("4) Esci\n");
         printf("Scelta (1-4): ");
-        scanf("%d", &amp;scelta);
+        if (fgets(linea, sizeof linea, stdin) == NULL) {
+            return 1;
+        }
 
-        if (scelta &lt; 1 || scelta &gt; 4) {
+        char extra;
+
+        if (sscanf(linea, " %d %c", &amp;scelta, &amp;extra) != 1 ||
+            scelta &lt; 1 || scelta &gt; 4) {
             printf("Scelta non valida\n");
+            scelta = 0;
             continue;
         }
 
@@ -671,8 +722,7 @@ int main(void) {
 }</code></pre>
 
         <p class="ok">
-          Questo esercizio è importante perché mostra come “tenere vivo” un programma finché l’utente non chiede di uscire,
-          e come intercettare scelte non valide senza far crashare tutto.
+          Leggere prima l’intera riga permette di rifiutare anche testo e valori con caratteri extra, senza lasciare il flusso di input in stato di errore.
         </p>
       </div>
     </div>
@@ -680,7 +730,7 @@ int main(void) {
     <!-- E8 -->
     <div class="inner-box box">
       <h2>E8 — Triangolo di asterischi</h2>
-      <p><b>Testo:</b> Chiedi un numero <code>N</code>.  
+      <div><b>Testo:</b> Chiedi un numero <code>N</code>.
       Stampa un triangolo di asterischi:
       <pre>
 *
@@ -688,7 +738,7 @@ int main(void) {
 ***
 ...
       </pre>
-      fino a N righe.</p>
+      fino a N righe.</div>
 
       <p><b>Competenze:</b> cicli annidati con rapporto “riga → quante colonne stampo”.</p>
 
@@ -823,7 +873,7 @@ int main(void) {
     <!-- E10 -->
     <div class="inner-box box">
       <h2>E10 — Mini-bancomat</h2>
-      <p><b>Testo:</b> Simula un piccolo bancomat.  
+      <div><b>Testo:</b> Simula un piccolo bancomat.
       Parti con un saldo iniziale (es. 1000).  
       Mostra un menù:
       <ol>
@@ -837,7 +887,7 @@ int main(void) {
         <li>il prelievo non può portare il saldo sotto 0 (se succede, rifiuta l’operazione);</li>
         <li>versamento aggiunge denaro al saldo;</li>
         <li>il menù si ripete finché l’utente non sceglie “Esci”.</li>
-      </ul></p>
+      </ul></div>
 
       <p><b>Competenze:</b> stato persistente (<code>saldo</code>), <code>switch</code> in un ciclo, controllo degli errori logici.</p>
 
@@ -955,6 +1005,7 @@ int main(void) {
           Mantiene dati tra le scelte dell’utente, controlla la validità delle operazioni,
           e termina solo quando l’utente sceglie “Esci”.
         </p>
+        <p class="warn">Qui <code>double</code> mantiene semplice l’esercizio. Nei programmi che gestiscono denaro reale si evitano gli errori di arrotondamento usando, per esempio, un numero intero di centesimi o un tipo decimale adatto.</p>
       </div>
     </div>
 
@@ -978,8 +1029,5 @@ int main(void) {
   </div>
 </div>
 
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

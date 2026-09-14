@@ -3,23 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benvenuto al Corso di Python</title>
+    <title>Corso di Informatica 3BIA</title>
     <link rel="stylesheet" href="style.css">
+    <script src="menu.js" defer></script>
     <script>
         function nextSlide() {
             window.location.href = "programma.html";
         }
     </script>
-	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class='menu-toggle' onclick='toggleMenu()'>&#9776; Menu</button>
-<div class='sidebar' id='menu'>
-    <h2>Menu Lezioni</h2>
-    <ul>
-        <li><a href='lez1/lez1_1.html'>Lezione 1: Introduzione</a></li>
-    </ul>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezioni</h2>
+  <ul>
+    <li><a href="lez1/lez1_1.html">Lezione 1 — Problemi e algoritmi</a></li>
+    <li><a href="lez2/lez2_1.html">Lezione 2 — Diagrammi e pseudocodice</a></li>
+    <li><a href="lez3/lez3_1.html">Lezione 3 — Selezione</a></li>
+    <li><a href="lez4/lez4_1.html">Lezione 4 — Cicli</a></li>
+    <li><a href="lez5/lez5_1.html">Lezione 5 — Array</a></li>
+    <li><a href="lez6/lez6_1.html">Lezione 6 — C e C++</a></li>
+  </ul>
 </div>
 <!-- END MENU -->
 
@@ -36,11 +41,5 @@
             <button onclick="nextSlide()">Inizia il Corso &#8594;</button>
         </div>
     </div>
-<script>
-function toggleMenu() {
-    const menu = document.getElementById('menu');
-    menu.classList.toggle('open');
-}
-</script>
 </body>
 </html>

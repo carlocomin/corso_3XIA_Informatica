@@ -1,52 +1,123 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3BIA – L3.2 · IF/ELSE: esercizi svolti e varianti (testi completi)</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 3.2 – Esercizi su IF/ELSE</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../default.css">
   <script src="../highlight.js"></script>
   <script>try{hljs.highlightAll();}catch(e){}</script>
   <script>
     function prevSlide(){ window.location.href = "lez3_1.html"; }
-    function nextSlide(){ window.location.href = "../lez4/lez4_1.html"; } // placeholder
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function nextSlide(){ window.location.href = "../lez4/lez4_1.html"; }
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
+    }
     function toggleBox(btnId, boxId){
       const box = document.getElementById(boxId);
       const btn = document.getElementById(btnId);
-      const open = box.style.display === 'block';
-      box.style.display = open ? 'none' : 'block';
-      if(btn) btn.textContent = open ? 'Mostra soluzione ▼' : 'Nascondi soluzione ▲';
+      const opening = box.hidden;
+      box.hidden = !opening;
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      const label = btn.dataset.label || "la soluzione";
+      btn.textContent = opening ? "Nascondi " + label + " ▲" : "Mostra " + label + " ▼";
     }
   </script>
   <style>
-    .trace { width:100%; border-collapse:collapse; margin-top:8px }
-    .trace th, .trace td { border:1px solid #ccc; padding:6px 8px; text-align:center }
-    .trace th { background:#f7f7f7 }
-    .trace td.l { text-align:left }
-    .note-ok { background:#eefbf1; border-left:4px solid #39a36d; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
-    .warn { background:#fff5e6; border-left:4px solid #f0a500; padding:.5rem .75rem; border-radius:6px; margin-top:.5rem }
-    .spec { margin:.25rem 0 .5rem }
-    .spec b { display:inline-block; width:7.5rem }
-    .examples { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: .95em; background: #fafafa; border: 1px dashed #ddd; padding: .5rem .6rem; border-radius: 8px; }
-    .twocol {display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(320px,1fr));}
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 {
+      text-align:left !important;
+    }
+    .inner-box ul, .inner-box ol {
+      margin:.5rem 0 .75rem 1rem;
+      padding-left:1.25rem;
+      list-style-position:outside;
+    }
+    .inner-box li { margin:.25rem 0; }
+    .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; }
+    .ok { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; }
+    .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; }
+    .table-wrap { overflow-x:auto; margin-top:.5rem; }
+    table { width:100%; border-collapse:collapse; min-width:560px; }
+    th, td { border:1px solid #ccd8d6; padding:.5rem .6rem; text-align:center; vertical-align:top; }
+    th { background:#f1f8f7; }
+    td.left, th.left { text-align:left; }
+    .method-grid {
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    .method-step {
+      background:#fff;
+      border:1px solid #d6e2e0;
+      border-radius:10px;
+      padding:10px;
+    }
+    .method-step strong { color:#00695c; }
+    .section-title {
+      margin:22px 0 8px;
+      padding:.65rem .85rem;
+      color:#fff;
+      background:#00695c;
+      border-radius:10px;
+      text-align:left;
+    }
+    .exercise { border-top:4px solid #00695c; }
+    .exercise h2 { margin-bottom:.45rem; }
+    .exercise button { margin:.4rem 0 .75rem; }
+    .spec {
+      display:grid;
+      grid-template-columns:7.5rem minmax(0, 1fr);
+      gap:.3rem .7rem;
+      margin:.45rem 0;
+    }
+    .spec dt { font-weight:bold; color:#374151; }
+    .spec dd { margin:0; }
+    .examples {
+      padding:.55rem .7rem;
+      border-radius:8px;
+      background:#f7f7f7;
+      font-family:Consolas, "Courier New", monospace;
+      white-space:pre-wrap;
+    }
+    .challenge {
+      padding:.55rem .7rem;
+      border:1px dashed #8ca7a3;
+      border-radius:8px;
+      background:#fbfefd;
+    }
+    @media (max-width:850px) {
+      .method-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width:620px) {
+      .method-grid { grid-template-columns:1fr; }
+      .spec { grid-template-columns:1fr; gap:.1rem; }
+      .spec dd { margin-bottom:.35rem; }
+      table { font-size:.9rem; }
+      th, td { padding:.35rem; }
+    }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Menu Lezioni</h2>
+  <h2>Menu Lezione 3</h2>
   <ul>
-    <li><a href="lez3_1.html">Lezione 3.1: IF/ELSE & logica booleana</a></li>
-    <li><a href="lez3_2.html">Lezione 3.2: IF/ELSE – esercizi svolti</a></li>
+    <li><a href="lez3_1.html">3.1 — Decisioni e condizioni booleane</a></li>
+    <li><a href="lez3_2.html">3.2 — Esercizi su IF/ELSE</a></li>
   </ul>
 </div>
 <!-- END MENU -->
 
 <div class="slide">
-  <h1>L3.2 — IF/ELSE: esercizi svolti su varianti e pattern (testi completi)</h1>
+  <h1>Lezione 3.2 — Esercizi su IF/ELSE</h1>
+  <p><strong>Obiettivo:</strong> scegliere lo schema decisionale adatto, gestire i dati non validi e verificare ogni ramo con casi di prova mirati.</p>
 
   <div class="nav-buttons" style="margin-bottom:10px">
     <button onclick="prevSlide()">&#8592; Indietro</button>
@@ -54,260 +125,357 @@
   </div>
 
   <div class="content-box">
-
     <div class="inner-box">
-      <h2>Come useremo gli IF</h2>
-      <ul>
-        <li>Per ogni esercizio: <strong>Input</strong>, <strong>Output</strong>, <strong>Vincoli/Note</strong>, <strong>Esempi</strong>, quindi <strong>Soluzione</strong> a comparsa.</li>
-        <li>Varianti coperte: <em>if</em>, <em>if–else</em>, <em>else–if ladder</em>, <em>if annidati</em> con <em>guardie</em>.</li>
-      </ul>
+      <h2>Metodo di lavoro</h2>
+      <p>Per ogni esercizio costruisci prima il diagramma in Flowgorithm. Apri la soluzione soltanto dopo aver preparato almeno un caso di prova per ogni ramo.</p>
+      <div class="method-grid">
+        <div class="method-step"><strong>1. Specifica</strong><br>Individua input, output, vincoli ed estremi.</div>
+        <div class="method-step"><strong>2. Casi</strong><br>Elenca le situazioni che il programma deve distinguere.</div>
+        <div class="method-step"><strong>3. Struttura</strong><br>Scegli IF semplice, IF-ELSE, catena o annidamento.</div>
+        <div class="method-step"><strong>4. Test</strong><br>Prova dati validi, non validi e valori sui confini.</div>
+      </div>
+      <p class="note"><strong>Pseudocodice del corso:</strong> <code>←</code> indica l'assegnamento; <code>=</code> indica il confronto. Gli operatori <code>∧</code>, <code>∨</code>, <code>¬</code> corrispondono a <em>and</em>, <em>or</em>, <em>not</em> di Flowgorithm.</p>
     </div>
 
-    <!-- E1 -->
-    <div class="inner-box">
-      <h2>E1 — Appartenenza a una unione di intervalli</h2>
-      <div class="spec"><b>Input:</b> un intero <code>x</code>.</div>
-      <div class="spec"><b>Output:</b> la stringa <code>"OK"</code> se <code>x ∈ [-10, -1] ∪ [10, 20]</code>, altrimenti <code>"NO"</code>.</div>
-      <div class="spec"><b>Vincoli/Note:</b> intervalli chiusi agli estremi indicati; usare un’unica condizione logica.</div>
-      <div class="examples">
-        Esempi: x=-10→OK; x=-1→OK; x=0→NO; x=10→OK; x=20→OK; x=21→NO.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e1" onclick="toggleBox('btn-e1','box-e1')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e1" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi x
-cond ← ((x ≥ -10 ∧ x ≤ -1) ∨ (x ≥ 10 ∧ x ≤ 20))
-se cond allora stampa "OK" altrimenti stampa "NO"</code></pre>
-        <p class="note-ok"><strong>Frontiere:</strong> prova x = −10, −1, 10, 20.</p>
-      </div>
-    </div>
+    <h2 class="section-title">A — Condizioni composte</h2>
 
-    <!-- E2 -->
-    <div class="inner-box">
-      <h2>E2 — Classificazione punto nel piano (assi, origine, quadranti)</h2>
-      <div class="spec"><b>Input:</b> due reali <code>x</code>, <code>y</code>.</div>
-      <div class="spec"><b>Output:</b> una delle stringhe: <code>"Origine"</code>, <code>"Asse X"</code>, <code>"Asse Y"</code>, <code>"Q1"</code>, <code>"Q2"</code>, <code>"Q3"</code>, <code>"Q4"</code>.</div>
-      <div class="spec"><b>Vincoli/Note:</b> gestire prima i casi speciali (origine, assi), poi i quadranti.</div>
-      <div class="examples">
-        Esempi: (0,0)→Origine; (5,0)→Asse X; (0,-3)→Asse Y; (2,3)→Q1; (-1,4)→Q2; (-2,-2)→Q3; (3,-7)→Q4.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e2" onclick="toggleBox('btn-e2','box-e2')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e2" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi x, y
-se (x = 0 ∧ y = 0) allora stampa "Origine"
-altrimenti se (y = 0) allora stampa "Asse X"
-altrimenti se (x = 0) allora stampa "Asse Y"
-altrimenti se (x &gt; 0 ∧ y &gt; 0) allora stampa "Q1"
-altrimenti se (x &lt; 0 ∧ y &gt; 0) allora stampa "Q2"
-altrimenti se (x &lt; 0 ∧ y &lt; 0) allora stampa "Q3"
-altrimenti stampa "Q4"</code></pre>
-        <p class="note-ok">Sequenza corretta: prima casi speciali, poi quadranti.</p>
-      </div>
-    </div>
+    <div class="inner-box exercise">
+      <h2>Esercizio 1 — Unione di due intervalli</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Un numero reale <code>x</code>.</dd>
+        <dt>Output</dt><dd>«interno» se <code>x ∈ [-5,-2] ∪ [3,7]</code>, altrimenti «esterno».</dd>
+        <dt>Schema</dt><dd>Una condizione composta con AND e OR.</dd>
+      </dl>
+      <p class="examples">x = -3  → interno
+x = 0   → esterno
+x = 7   → interno</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> scrivi le due condizioni di appartenenza separatamente, poi uniscile.</p>
+      <button id="btn-ex1" data-label="la soluzione" aria-controls="ex1" aria-expanded="false" onclick="toggleBox('btn-ex1','ex1')">Mostra la soluzione ▼</button>
+      <div id="ex1" hidden>
+<pre><code class="language-none">leggi x
+nelPrimo ← x ≥ -5 ∧ x ≤ -2
+nelSecondo ← x ≥ 3 ∧ x ≤ 7
 
-    <!-- E3 -->
-    <div class="inner-box">
-      <h2>E3 — Tariffa progressiva a scaglioni (costo totale)</h2>
-      <div class="spec"><b>Input:</b> intero <code>k</code> (kWh, <code>k ≥ 0</code>).</div>
-      <div class="spec"><b>Output:</b> reale <code>c</code>, costo totale: primi 100 a 0.20, da 101 a 300 a 0.25, da 301 in poi a 0.30.</div>
-      <div class="spec"><b>Vincoli/Note:</b> rifiutare <code>k &lt; 0</code> con messaggio d’errore; somma per scaglioni.</div>
-      <div class="examples">
-        Esempi: k=0→0.00; k=100→20.00; k=150→0.20·100+0.25·50=32.50; k=320→20+50+0.30·20=76.00.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e3" onclick="toggleBox('btn-e3','box-e3')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e3" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi k
-se (k &lt; 0) allora stampa "errore"
+se nelPrimo ∨ nelSecondo allora
+    scrivi "interno"
 altrimenti
-    c ← 0
-    se (k ≤ 100) allora
-        c ← 0.20 * k
-    altrimenti se (k ≤ 300) allora
-        c ← 0.20 * 100 + 0.25 * (k - 100)
+    scrivi "esterno"
+fine se</code></pre>
+        <p class="ok">Prova anche i quattro confini: <code>-5</code>, <code>-2</code>, <code>3</code>, <code>7</code>.</p>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 2 — Posizione di un punto</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Due coordinate reali <code>x</code>, <code>y</code>.</dd>
+        <dt>Output</dt><dd>«origine», «asse X», «asse Y» oppure il quadrante I, II, III, IV.</dd>
+        <dt>Schema</dt><dd>Catena ordinata di casi mutuamente esclusivi.</dd>
+      </dl>
+      <p class="examples">(0, 0)   → origine
+(0, -4)  → asse Y
+(-2, 5)  → quadrante II</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> controlla l'origine e gli assi prima dei quadranti.</p>
+      <button id="btn-ex2" data-label="la soluzione" aria-controls="ex2" aria-expanded="false" onclick="toggleBox('btn-ex2','ex2')">Mostra la soluzione ▼</button>
+      <div id="ex2" hidden>
+<pre><code class="language-none">leggi x, y
+se x = 0 ∧ y = 0 allora
+    scrivi "origine"
+altrimenti se y = 0 allora
+    scrivi "asse X"
+altrimenti se x = 0 allora
+    scrivi "asse Y"
+altrimenti se x &gt; 0 ∧ y &gt; 0 allora
+    scrivi "quadrante I"
+altrimenti se x &lt; 0 ∧ y &gt; 0 allora
+    scrivi "quadrante II"
+altrimenti se x &lt; 0 ∧ y &lt; 0 allora
+    scrivi "quadrante III"
+altrimenti
+    scrivi "quadrante IV"
+fine se</code></pre>
+        <p class="note">Qui <code>x=0</code> e <code>y=0</code> rappresentano coordinate inserite esattamente come zero.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">B — Fasce e valori di confine</h2>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 3 — Tariffa progressiva</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Consumo intero <code>kWh ≥ 0</code>.</dd>
+        <dt>Tariffe</dt><dd>0,20 € per i primi 100 kWh; 0,25 € dal 101° al 300°; 0,30 € oltre 300.</dd>
+        <dt>Output</dt><dd>Costo totale oppure un messaggio di errore se il consumo è negativo.</dd>
+      </dl>
+      <p class="examples">kWh = 80   → 16,00 €
+kWh = 250  → 20,00 + 37,50 = 57,50 €
+kWh = 320  → 20,00 + 50,00 + 6,00 = 76,00 €</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> in ogni fascia calcola soltanto la parte di consumo che vi appartiene.</p>
+      <button id="btn-ex3" data-label="la soluzione" aria-controls="ex3" aria-expanded="false" onclick="toggleBox('btn-ex3','ex3')">Mostra la soluzione ▼</button>
+      <div id="ex3" hidden>
+<pre><code class="language-none">leggi kWh
+se kWh &lt; 0 allora
+    scrivi "consumo non valido"
+altrimenti se kWh ≤ 100 allora
+    costo ← kWh * 0.20
+    scrivi costo
+altrimenti se kWh ≤ 300 allora
+    costo ← 100 * 0.20 + (kWh - 100) * 0.25
+    scrivi costo
+altrimenti
+    costo ← 100 * 0.20 + 200 * 0.25 + (kWh - 300) * 0.30
+    scrivi costo
+fine se</code></pre>
+        <p class="ok">Test minimi: <code>-1</code>, <code>0</code>, <code>100</code>, <code>101</code>, <code>300</code>, <code>301</code>.</p>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 4 — Giorni del mese</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Anno intero positivo <code>a</code> e mese intero <code>m</code> tra 1 e 12.</dd>
+        <dt>Output</dt><dd>Numero di giorni del mese oppure un messaggio per i dati non validi.</dd>
+        <dt>Regola</dt><dd>Febbraio ha 29 giorni negli anni bisestili, 28 negli altri.</dd>
+      </dl>
+      <p class="examples">a = 2024, m = 2  → 29
+a = 2100, m = 2  → 28
+a = 2025, m = 13 → dati non validi</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> determina una sola volta se l'anno è bisestile.</p>
+      <button id="btn-ex4" data-label="la soluzione" aria-controls="ex4" aria-expanded="false" onclick="toggleBox('btn-ex4','ex4')">Mostra la soluzione ▼</button>
+      <div id="ex4" hidden>
+<pre><code class="language-none">leggi a, m
+se a ≤ 0 ∨ m &lt; 1 ∨ m &gt; 12 allora
+    scrivi "dati non validi"
+altrimenti
+    bisestile ← a mod 400 = 0 ∨ (a mod 4 = 0 ∧ a mod 100 ≠ 0)
+
+    se m = 2 allora
+        se bisestile allora
+            giorni ← 29
+        altrimenti
+            giorni ← 28
+        fine se
+    altrimenti se m = 4 ∨ m = 6 ∨ m = 9 ∨ m = 11 allora
+        giorni ← 30
     altrimenti
-        c ← 0.20 * 100 + 0.25 * 200 + 0.30 * (k - 300)
-    stampa c</code></pre>
-        <p class="note-ok"><strong>Frontiere:</strong> k = 100, 101, 300, 301.</p>
+        giorni ← 31
+    fine se
+
+    scrivi giorni
+fine se</code></pre>
       </div>
     </div>
 
-    <!-- E4 -->
-    <div class="inner-box">
-      <h2>E4 — Giorni del mese con bisestile</h2>
-      <div class="spec"><b>Input:</b> intero <code>m</code> (1..12), intero <code>y</code> (anno gregoriano).</div>
-      <div class="spec"><b>Output:</b> intero: giorni del mese; per febbraio: 29 se anno bisestile, altrimenti 28.</div>
-      <div class="spec"><b>Vincoli/Note:</b> bisestile se <code>(y mod 400 = 0) ∨ ((y mod 4 = 0) ∧ (y mod 100 ≠ 0))</code>.</div>
-      <div class="examples">
-        Esempi: (2,2024)→29; (2,2100)→28; (4,2023)→30; (12,2022)→31; (13,2022)→errore.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e4" onclick="toggleBox('btn-e4','box-e4')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e4" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi m, y
-se (m &lt; 1 ∨ m &gt; 12) allora stampa "errore"
-altrimenti se (m = 1 ∨ m = 3 ∨ m = 5 ∨ m = 7 ∨ m = 8 ∨ m = 10 ∨ m = 12) allora stampa 31
-altrimenti se (m = 4 ∨ m = 6 ∨ m = 9 ∨ m = 11) allora stampa 30
+    <div class="inner-box exercise">
+      <h2>Esercizio 5 — Valutazione in centesimi</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Punteggio intero <code>p</code> tra 0 e 100.</dd>
+        <dt>Output</dt><dd>«insufficiente» 0–59, «base» 60–74, «intermedio» 75–89, «avanzato» 90–100.</dd>
+        <dt>Vincolo</dt><dd>I valori esterni a 0–100 devono essere rifiutati.</dd>
+      </dl>
+      <p class="examples">p = 59  → insufficiente
+p = 75  → intermedio
+p = 101 → punteggio non valido</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> ordina le soglie dal valore più basso al più alto.</p>
+      <button id="btn-ex5" data-label="la soluzione" aria-controls="ex5" aria-expanded="false" onclick="toggleBox('btn-ex5','ex5')">Mostra la soluzione ▼</button>
+      <div id="ex5" hidden>
+<pre><code class="language-none">leggi p
+se p &lt; 0 ∨ p &gt; 100 allora
+    scrivi "punteggio non valido"
+altrimenti se p &lt; 60 allora
+    scrivi "insufficiente"
+altrimenti se p &lt; 75 allora
+    scrivi "base"
+altrimenti se p &lt; 90 allora
+    scrivi "intermedio"
 altrimenti
-    bis ← (y mod 400 = 0) ∨ ((y mod 4 = 0) ∧ (y mod 100 ≠ 0))
-    se (bis) allora stampa 29 altrimenti stampa 28</code></pre>
-        <p class="note-ok">Gestione febbraio in ramo dedicato: chiaro e testabile.</p>
+    scrivi "avanzato"
+fine se</code></pre>
+        <p class="note">Il ramo <code>p &lt; 75</code> viene raggiunto dopo aver escluso <code>p &lt; 60</code>: descrive quindi la fascia 60–74.</p>
       </div>
     </div>
 
-    <!-- E5 -->
-    <div class="inner-box">
-      <h2>E5 — Fasce voto (0..100) con ladder ordinata</h2>
-      <div class="spec"><b>Input:</b> intero <code>v</code> (atteso 0..100).</div>
-      <div class="spec"><b>Output:</b> stringa: “insufficiente” (&lt;60), “sufficiente” (60–69), “buono” (70–84), “ottimo” (85–94), “eccellente” (95–100), altrimenti errore.</div>
-      <div class="spec"><b>Vincoli/Note:</b> usare soglie crescenti per evitare sovrapposizioni.</div>
-      <div class="examples">
-        Esempi: 59→insuff.; 60→suff.; 84→buono; 90→ottimo; 100→eccellente; -1→errore; 101→errore.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e5" onclick="toggleBox('btn-e5','box-e5')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e5" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi v
-se (v &lt; 0 ∨ v &gt; 100) allora stampa "errore"
-altrimenti se (v &lt; 60) allora stampa "insufficiente"
-altrimenti se (v &lt; 70) allora stampa "sufficiente"
-altrimenti se (v &lt; 85) allora stampa "buono"
-altrimenti se (v &lt; 95) allora stampa "ottimo"
-altrimenti stampa "eccellente"</code></pre>
-        <p class="note-ok">Ladder in soglie crescenti ⇒ intervalli contigui, nessun buco.</p>
-      </div>
-    </div>
+    <h2 class="section-title">C — Annidamenti, guardie e casi speciali</h2>
 
-    <!-- E6 -->
-    <div class="inner-box">
-      <h2>E6 — Mediana di tre numeri senza ordinare l’intera terna</h2>
-      <div class="spec"><b>Input:</b> tre numeri <code>a</code>, <code>b</code>, <code>c</code> (reali).</div>
-      <div class="spec"><b>Output:</b> la <em>mediana</em> (il valore centrale tra i tre).</div>
-      <div class="spec"><b>Vincoli/Note:</b> risolvere con <strong>if annidati</strong>, evitando un sort generale.</div>
-      <div class="examples">
-        Esempi: (3,1,2)→2; (5,5,7)→5; (−2,10,0)→0.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e6" onclick="toggleBox('btn-e6','box-e6')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e6" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi a, b, c
-se (a ≤ b) allora
-    se (b ≤ c) allora med ← b
-    altrimenti se (a ≤ c) allora med ← c
-    altrimenti med ← a
+    <div class="inner-box exercise">
+      <h2>Esercizio 6 — Mediana di tre valori distinti</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Tre numeri reali distinti <code>a</code>, <code>b</code>, <code>c</code>.</dd>
+        <dt>Output</dt><dd>Il valore che si trova tra gli altri due.</dd>
+        <dt>Vincolo</dt><dd>Non usare ordinamento, array, minimo o massimo predefiniti.</dd>
+      </dl>
+      <p class="examples">(9, 2, 5)   → 5
+(-1, 4, 10) → 4</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> un valore è mediano se è compreso tra gli altri due, in uno dei due ordini possibili.</p>
+      <button id="btn-ex6" data-label="la soluzione" aria-controls="ex6" aria-expanded="false" onclick="toggleBox('btn-ex6','ex6')">Mostra la soluzione ▼</button>
+      <div id="ex6" hidden>
+<pre><code class="language-none">leggi a, b, c
+se a &lt; b allora
+    se b &lt; c allora
+        mediana ← b
+    altrimenti se a &lt; c allora
+        mediana ← c
+    altrimenti
+        mediana ← a
+    fine se
 altrimenti
-    se (a ≤ c) allora med ← a
-    altrimenti se (b ≤ c) allora med ← c
-    altrimenti med ← b
-stampa med</code></pre>
-        <p class="note-ok">Massimo 4 confronti; copre tutte le permutazioni.</p>
+    se a &lt; c allora
+        mediana ← a
+    altrimenti se b &lt; c allora
+        mediana ← c
+    altrimenti
+        mediana ← b
+    fine se
+fine se
+scrivi mediana</code></pre>
+        <p class="ok">Ogni percorso esegue al massimo tre confronti tra valori. Segui a mano, per esempio, il percorso prodotto da <code>a=9</code>, <code>b=2</code>, <code>c=5</code>.</p>
       </div>
     </div>
 
-    <!-- E7 -->
-    <div class="inner-box">
-      <h2>E7 — Conversione di temperatura con controllo unità</h2>
-      <div class="spec"><b>Input:</b> valore reale <code>t</code>, carattere <code>u</code> in {'C','F'}.</div>
-      <div class="spec"><b>Output:</b> valore convertito e unità risultante (F se input in C, C se input in F); errore se <code>u</code> non valido.</div>
-      <div class="spec"><b>Vincoli/Note:</b> usare <strong>if–else</strong> con ramo di errore.</div>
-      <div class="examples">
-        Esempi: (0,'C')→32 F; (212,'F')→100 C; (10,'X')→errore.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e7" onclick="toggleBox('btn-e7','box-e7')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e7" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi t, u
-se (u = 'C') allora
-    f ← t * 9/5 + 32
-    stampa f, 'F'
-altrimenti se (u = 'F') allora
-    c ← (t - 32) * 5/9
-    stampa c, 'C'
+    <div class="inner-box exercise">
+      <h2>Esercizio 7 — Conversione di temperatura</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Temperatura reale <code>t</code> e una <code>String</code> <code>u</code> contenente <code>"C"</code> oppure <code>"F"</code>.</dd>
+        <dt>Output</dt><dd>Temperatura convertita nell'altra scala oppure «unità non valida».</dd>
+        <dt>Formule</dt><dd><code>F = C × 9 / 5 + 32</code>; <code>C = (F − 32) × 5 / 9</code>.</dd>
+      </dl>
+      <p class="examples">t = 0,   u = "C" → 32 °F
+t = 212, u = "F" → 100 °C
+t = 10,  u = "K" → unità non valida</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> confronta una String con doppi apici; Flowgorithm non possiede un tipo Character separato.</p>
+      <button id="btn-ex7" data-label="la soluzione" aria-controls="ex7" aria-expanded="false" onclick="toggleBox('btn-ex7','ex7')">Mostra la soluzione ▼</button>
+      <div id="ex7" hidden>
+<pre><code class="language-none">leggi t, u
+se u = "C" allora
+    risultato ← t * 9 / 5 + 32
+    scrivi risultato, " °F"
+altrimenti se u = "F" allora
+    risultato ← (t - 32) * 5 / 9
+    scrivi risultato, " °C"
 altrimenti
-    stampa "errore unità"</code></pre>
-        <p class="note-ok">Classico <em>if–else-if</em> con ramo “altrimenti” di errore.</p>
+    scrivi "unità non valida"
+fine se</code></pre>
+        <p class="note">In Flowgorithm la divisione <code>/</code> produce un valore reale. Quando tradurremo in C o C++, useremo costanti reali come <code>9.0 / 5.0</code>.</p>
       </div>
     </div>
 
-    <!-- E8 -->
-    <div class="inner-box">
-      <h2>E8 — Validazione di range con De&nbsp;Morgan</h2>
-      <div class="spec"><b>Input:</b> interi <code>a</code>, <code>b</code> con <code>a ≤ b</code>, intero <code>x</code>.</div>
-      <div class="spec"><b>Output:</b> “ok” se <code>x ∈ [a,b]</code>, “fuori range” altrimenti.</div>
-      <div class="spec"><b>Vincoli/Note:</b> evitare NOT esterno riscrivendo <code>¬(x&lt;a ∨ x&gt;b)</code> con De Morgan.</div>
-      <div class="examples">
-        Esempi: a=3, b=7: x=3→ok; x=7→ok; x=2→fuori; x=8→fuori.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e8" onclick="toggleBox('btn-e8','box-e8')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e8" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi a, b, x
-se (x ≥ a ∧ x ≤ b) allora stampa "ok" altrimenti stampa "fuori range"</code></pre>
-        <p class="note-ok">Uso esplicito di De Morgan: ¬(x&lt;a ∨ x&gt;b) ≡ (x≥a) ∧ (x≤b).</p>
-      </div>
-    </div>
-
-    <!-- E9 -->
-    <div class="inner-box">
-      <h2>E9 — Multipli: scelta dal più specifico al generale</h2>
-      <div class="spec"><b>Input:</b> intero <code>n</code>.</div>
-      <div class="spec"><b>Output:</b> “multiplo di 6” se <code>n</code> è multiplo di 6; altrimenti se multiplo di 3; altrimenti se multiplo di 2; altrimenti “nessuno”.</div>
-      <div class="spec"><b>Vincoli/Note:</b> ordinare i test per specificità per evitare rami errati.</div>
-      <div class="examples">
-        Esempi: 12→“multiplo di 6”; 9→“multiplo di 3”; 8→“multiplo di 2”; 25→“nessuno”.
-      </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e9" onclick="toggleBox('btn-e9','box-e9')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e9" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi n
-se (n mod 6 = 0) allora stampa "multiplo di 6"
-altrimenti se (n mod 3 = 0) allora stampa "multiplo di 3"
-altrimenti se (n mod 2 = 0) allora stampa "multiplo di 2"
-altrimenti stampa "nessuno"</code></pre>
-        <p class="note-ok">Prima 6 (più specifico), poi 3, poi 2.</p>
+    <div class="inner-box exercise">
+      <h2>Esercizio 8 — Dentro o fuori con De Morgan</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Tre numeri reali <code>a</code>, <code>b</code>, <code>x</code>.</dd>
+        <dt>Output</dt><dd>«interno» se <code>x ∈ [a,b]</code>, «esterno» altrimenti; errore se <code>a &gt; b</code>.</dd>
+        <dt>Richiesta</dt><dd>Scrivere il controllo dell'esterno e ricavare l'interno per negazione.</dd>
+      </dl>
+      <p class="examples">a = 2, b = 6, x = 2 → interno
+a = 2, b = 6, x = 8 → esterno
+a = 6, b = 2, x = 4 → estremi non validi</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> «esterno» significa sotto <code>a</code> oppure sopra <code>b</code>.</p>
+      <button id="btn-ex8" data-label="la soluzione" aria-controls="ex8" aria-expanded="false" onclick="toggleBox('btn-ex8','ex8')">Mostra la soluzione ▼</button>
+      <div id="ex8" hidden>
+<pre><code class="language-none">leggi a, b, x
+se a &gt; b allora
+    scrivi "estremi non validi"
+altrimenti
+    esterno ← x &lt; a ∨ x &gt; b
+    se ¬esterno allora
+        scrivi "interno"
+    altrimenti
+        scrivi "esterno"
+    fine se
+fine se</code></pre>
+        <p class="ok"><code>¬(x &lt; a ∨ x &gt; b)</code> equivale a <code>x ≥ a ∧ x ≤ b</code>.</p>
       </div>
     </div>
 
-    <!-- E10 -->
-    <div class="inner-box">
-      <h2>E10 — Autorizzazione di accesso con guardie multiple</h2>
-      <div class="spec"><b>Input:</b> booleano <code>utenteAutenticato</code>, stringa <code>ruolo</code> in {“admin”, “docente”, “studente”, …}, intero <code>orario</code> (0..23).</div>
-      <div class="spec"><b>Output:</b> “ACCESSO OK” se <code>utenteAutenticato</code> è vero e (ruolo ∈ {admin, docente} oppure orario ∈ [8,18]); altrimenti “NEGATO”.</div>
-      <div class="spec"><b>Vincoli/Note:</b> controllare prima l’autenticazione (guardia), poi i criteri di ruolo/orario.</div>
-      <div class="examples">
-        Esempi: (true, “studente”, 9)→OK; (true, “admin”, 2)→OK; (false, “admin”, 10)→NEGATO; (true, “studente”, 20)→NEGATO.
+    <div class="inner-box exercise">
+      <h2>Esercizio 9 — Multipli con priorità</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Un numero intero <code>n</code>.</dd>
+        <dt>Output</dt><dd>«multiplo di 6», «multiplo di 3», «multiplo di 2» oppure «nessuno».</dd>
+        <dt>Vincolo</dt><dd>Visualizzare soltanto la categoria più specifica.</dd>
+      </dl>
+      <p class="examples">n = 18 → multiplo di 6
+n = 9  → multiplo di 3
+n = 8  → multiplo di 2
+n = 0  → multiplo di 6</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> il test più specifico deve precedere quelli che lo comprendono.</p>
+      <button id="btn-ex9" data-label="la soluzione" aria-controls="ex9" aria-expanded="false" onclick="toggleBox('btn-ex9','ex9')">Mostra la soluzione ▼</button>
+      <div id="ex9" hidden>
+<pre><code class="language-none">leggi n
+se n mod 6 = 0 allora
+    scrivi "multiplo di 6"
+altrimenti se n mod 3 = 0 allora
+    scrivi "multiplo di 3"
+altrimenti se n mod 2 = 0 allora
+    scrivi "multiplo di 2"
+altrimenti
+    scrivi "nessuno"
+fine se</code></pre>
+        <p class="note">Lo zero è multiplo di ogni intero diverso da zero, perché <code>0 = k × 0</code>. La categoria più specifica richiesta è quindi «multiplo di 6».</p>
       </div>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn-e10" onclick="toggleBox('btn-e10','box-e10')">Mostra soluzione ▼</button>
-      </div>
-      <div id="box-e10" style="display:none;margin-top:8px">
-<pre><code class="language-text">leggi utenteAut, ruolo, orario
-perm ← utenteAut ∧ ( (ruolo = "admin" ∨ ruolo = "docente") ∨ (orario ≥ 8 ∧ orario ≤ 18) )
-se perm allora stampa "ACCESSO OK" altrimenti stampa "NEGATO"</code></pre>
-        <p class="warn"><strong>Frontiere:</strong> orario=8 e 18 inclusi; utente non autenticato nega sempre.</p>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 10 — Controllo di accesso</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Boolean <code>autenticato</code>, String <code>ruolo</code>, intero <code>ora</code>.</dd>
+        <dt>Regole</dt><dd>L'ora deve essere 0–23 e l'utente deve essere autenticato. Dopo l'autenticazione, l'accesso è consentito a <code>"admin"</code> e <code>"docente"</code> a ogni ora, agli altri ruoli soltanto tra le 8 e le 18 comprese.</dd>
+        <dt>Output</dt><dd>«accesso consentito», «accesso negato» oppure «ora non valida».</dd>
+      </dl>
+      <p class="examples">True,  "admin",   22 → accesso consentito
+True,  "studente", 10 → accesso consentito
+False, "docente",  10 → accesso negato
+True,  "studente", 24 → ora non valida</p>
+      <p class="challenge"><strong>Prima di aprire:</strong> valida l'ora, poi usa l'autenticazione come guardia prima di controllare i permessi.</p>
+      <button id="btn-ex10" data-label="la soluzione" aria-controls="ex10" aria-expanded="false" onclick="toggleBox('btn-ex10','ex10')">Mostra la soluzione ▼</button>
+      <div id="ex10" hidden>
+<pre><code class="language-none">leggi autenticato, ruolo, ora
+se ora &lt; 0 ∨ ora &gt; 23 allora
+    scrivi "ora non valida"
+altrimenti se ¬autenticato allora
+    scrivi "accesso negato"
+altrimenti
+    ruoloAbilitato ← ruolo = "admin" ∨ ruolo = "docente"
+    fasciaOraria ← ora ≥ 8 ∧ ora ≤ 18
+
+    se ruoloAbilitato ∨ fasciaOraria allora
+        scrivi "accesso consentito"
+    altrimenti
+        scrivi "accesso negato"
+    fine se
+fine se</code></pre>
+        <p class="ok">L'annidamento rende esplicito che i permessi vengono considerati soltanto per un utente autenticato.</p>
       </div>
     </div>
 
     <div class="inner-box">
-      <h2>Checklist finale</h2>
+      <h2>Piano minimo di verifica</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th class="left">Tipo di prova</th><th class="left">Che cosa controlla</th><th class="left">Esempio</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="left">Un caso per ramo</td><td class="left">Che ogni percorso sia raggiungibile e produca l'output previsto.</td><td class="left">Un punto per ciascun asse e quadrante.</td></tr>
+            <tr><td class="left">Valori di confine</td><td class="left">Che <code>&lt;</code>, <code>≤</code>, <code>&gt;</code>, <code>≥</code> siano corretti.</td><td class="left"><code>59</code>, <code>60</code>, <code>74</code>, <code>75</code> per le fasce.</td></tr>
+            <tr><td class="left">Dato non valido</td><td class="left">Che la guardia blocchi i calcoli successivi.</td><td class="left">Mese <code>13</code> oppure ora <code>24</code>.</td></tr>
+            <tr><td class="left">Caso sovrapposto</td><td class="left">Che l'ordine scelga la categoria più specifica.</td><td class="left"><code>18</code>, multiplo di 6, 3 e 2.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Checklist prima della consegna</h2>
       <ul>
-        <li><strong>Guardie</strong> in testa per evitare stati illegali (divisioni, range, unità).</li>
-        <li><strong>Parentesi</strong> per chiarire la precedenza negli OR/AND.</li>
-        <li><strong>Ladder ordinate</strong> per intervalli contigui; dal caso più specifico al più generale.</li>
-        <li><strong>Frontiere</strong> sempre testate (estremi inclusi/esclusi).</li>
+        <li>Ho dichiarato variabili con tipi coerenti con i dati?</li>
+        <li>Ho distinto l'assegnamento dal confronto?</li>
+        <li>Ho usato parentesi nelle condizioni composte?</li>
+        <li>Ho validato gli input quando la consegna impone un intervallo?</li>
+        <li>Le fasce sono complete, senza buchi o sovrapposizioni involontarie?</li>
+        <li>Ho eseguito il diagramma con almeno un dato per ciascun ramo?</li>
       </ul>
     </div>
-
   </div>
 
   <div class="nav-buttons">
@@ -315,9 +483,5 @@ se perm allora stampa "ACCESSO OK" altrimenti stampa "NEGATO"</code></pre>
     <button onclick="nextSlide()">Avanti &#8594;</button>
   </div>
 </div>
-
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

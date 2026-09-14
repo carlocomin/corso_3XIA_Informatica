@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3BIA – Lez4_3 · Cicli annidati: Tabella pitagorica</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 4.3 – Cicli annidati</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../default.css">
   <script src="../highlight.js"></script>
@@ -11,52 +11,111 @@
   <script>
     function prevSlide(){ window.location.href = "lez4_2.html"; }
     function nextSlide(){ window.location.href = "../lez5/lez5_1.html"; }
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
+    }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      const opening = box.hidden;
+      box.hidden = !opening;
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      const label = btn.dataset.label || "la soluzione";
+      btn.textContent = opening ? "Nascondi " + label + " ▲" : "Mostra " + label + " ▼";
+    }
   </script>
   <style>
-    /* Stili flowchart coerenti con lezioni precedenti */
-    .fc-wrap {display:grid; gap:16px; grid-template-columns: 1fr; margin-top:8px}
-    .fc-card {background:var(--panel,#fff); border-radius:12px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,.08)}
-    .fc-title{font-weight:600; margin:4px 0 8px}
-    .fc-svg{width:100%; height:auto}
-    .fc-shape{fill:#fff; stroke:#222; stroke-width:2}
-    .fc-text{font:12px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; fill:#111}
-    .fc-small{font-size:11px; color:#333}
-    .fc-yes{font-weight:600; fill:#0b6}
-    .fc-no{font-weight:600; fill:#c33}
-    .fc-marker path{fill:#222}
-
-    /* Tabella traccia */
-    .trace { width:100%; border-collapse:collapse; margin-top:8px }
-    .trace th, .trace td { border:1px solid #d1d5db; padding:.45rem .55rem; text-align:center }
-    .trace th { background:#f8fafc }
-
-    /* Box e note */
+    .inner-box, .inner-box p, .inner-box ul, .inner-box ol, .inner-box li,
+    .inner-box pre, .inner-box code, .inner-box h2, .inner-box h3 {
+      text-align:left !important;
+    }
+    .inner-box ul, .inner-box ol {
+      margin:.5rem 0 .75rem 1rem;
+      padding-left:1.25rem;
+      list-style-position:outside;
+    }
+    .inner-box li { margin:.25rem 0; }
     .note { background:#f7faff; border-left:4px solid #3b82f6; padding:.6rem .8rem; border-radius:8px; }
-    .ok   { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; }
+    .ok { background:#eefbf1; border-left:4px solid #22c55e; padding:.6rem .8rem; border-radius:8px; }
     .warn { background:#fff7ed; border-left:4px solid #f59e0b; padding:.6rem .8rem; border-radius:8px; }
-    .box  { background:var(--panel,#fff); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); margin-bottom:14px }
-
-    /* Pseudocodice allineato a sinistra */
-    .inner-box pre, .inner-box pre code, .box pre, .box pre code, pre, pre code { text-align:left !important; }
-    pre { white-space: pre; tab-size: 4; margin: 0 0 1rem 0; padding: .5rem .75rem; }
+    .table-wrap { overflow-x:auto; margin-top:.5rem; }
+    table { width:100%; border-collapse:collapse; min-width:560px; }
+    th, td { border:1px solid #ccd8d6; padding:.5rem .6rem; text-align:center; vertical-align:top; }
+    th { background:#f1f8f7; }
+    td.left, th.left { text-align:left; }
+    .pattern-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+    .pattern-card {
+      background:#fff;
+      border:1px solid #d6e2e0;
+      border-radius:12px;
+      padding:12px;
+    }
+    .pattern-card h3 { margin-top:0; color:#00695c; }
+    .fc-card {
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+      margin-top:10px;
+    }
+    .fc-svg { width:100%; height:auto; }
+    .fc-shape { fill:#fff; stroke:#00695c; stroke-width:2.5; }
+    .fc-text { font-family:Arial, sans-serif; font-size:18px; fill:#123; }
+    .fc-label { font-family:Arial, sans-serif; font-size:17px; font-weight:bold; fill:#00695c; }
+    .fc-line { fill:none; stroke:#263238; stroke-width:2.5; }
+    .fc-arrow path { fill:#263238; }
+    .output-grid {
+      width:auto;
+      min-width:0;
+      margin:.75rem auto;
+      font-family:Consolas, "Courier New", monospace;
+      font-size:1.05rem;
+    }
+    .output-grid td { min-width:3rem; background:#fff; }
+    .exercise { border-top:4px solid #00695c; }
+    .exercise button { margin:.35rem 0 .75rem; }
+    .spec {
+      display:grid;
+      grid-template-columns:7.5rem minmax(0, 1fr);
+      gap:.3rem .7rem;
+      margin:.45rem 0;
+    }
+    .spec dt { font-weight:bold; color:#374151; }
+    .spec dd { margin:0; }
+    @media (max-width:720px) {
+      .pattern-grid { grid-template-columns:1fr; }
+      .spec { grid-template-columns:1fr; gap:.1rem; }
+      .spec dd { margin-bottom:.35rem; }
+      table { font-size:.9rem; }
+      th, td { padding:.35rem; }
+      .fc-text { font-size:20px; }
+    }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Lezione 4 — Iterazione</h2>
+  <h2>Menu Lezione 4</h2>
   <ul>
-    <li><a href="lez4_1.html">Lez4_1: Iterazione I (while, repeat–until)</a></li>
-    <li><a href="lez4_2.html">Lez4_2: Cicli a contatore – for</a></li>
-    <li><a href="lez4_3.html">Lez4_3: Cicli annidati (Tabella pitagorica)</a></li>
+    <li><a href="lez4_1.html">4.1 — Cicli WHILE e DO</a></li>
+    <li><a href="lez4_2.html">4.2 — Cicli FOR</a></li>
+    <li><a href="lez4_3.html">4.3 — Cicli annidati</a></li>
   </ul>
 </div>
 <!-- END MENU -->
 
 <div class="slide">
-  <h1>Lez4_3 — Cicli <em>annidati</em> con la Tabella pitagorica</h1>
+  <h1>Lezione 4.3 — Cicli annidati</h1>
+  <p><strong>Obiettivo:</strong> usare un ciclo interno per completare tutte le colonne di ciascuna iterazione del ciclo esterno.</p>
 
   <div class="nav-buttons" style="margin-bottom:10px">
     <button onclick="prevSlide()">&#8592; Indietro</button>
@@ -64,179 +123,271 @@
   </div>
 
   <div class="content-box">
-
     <div class="inner-box">
-      <h2>Obiettivo</h2>
-      <p>
-        Comprendere l’<strong>annidamento di cicli</strong>: un ciclo esterno sulle <em>righe</em> (<code>i</code>)
-        e un ciclo interno sulle <em>colonne</em> (<code>j</code>) per generare la <strong>tabella pitagorica</strong> 1..N.
-      </p>
+      <h2>Un ciclo dentro un altro</h2>
+      <p>In un annidamento, ogni iterazione del ciclo esterno esegue per intero il ciclo interno.</p>
       <ul>
-        <li>Diagrammi di flusso + <strong>pseudocodice</strong> per <em>while</em>, <em>do–while</em>, <em>for</em></li>
-        <li><strong>Tabella di traccia</strong> (N=3) per seguire l’evoluzione di <code>i</code>, <code>j</code> e <code>i·j</code></li>
+        <li>Il ciclo esterno sceglie la <strong>riga</strong>.</li>
+        <li>Il ciclo interno percorre tutte le <strong>colonne</strong> di quella riga.</li>
+        <li>Terminato il ciclo interno, si conclude la riga e il ciclo esterno avanza.</li>
+        <li>Il contatore interno deve ripartire dal valore iniziale per ogni nuova riga.</li>
       </ul>
-      <p class="note"><strong>Schema mentale:</strong> per ogni riga <code>i</code>, esegui tutte le colonne <code>j</code>. Finito l’anello interno → newline → incrementa <code>i</code>.</p>
+      <p class="note">Se il ciclo esterno compie <code>p</code> iterazioni e quello interno ne compie sempre <code>q</code>, il corpo più interno viene eseguito <code>p × q</code> volte.</p>
     </div>
 
-    <!-- WHILE ANNIDATI -->
-    <div class="box">
-      <h2>1) While annidati — tabelline 1..N</h2>
+    <div class="inner-box">
+      <h2>Esempio guida: tabella pitagorica</h2>
+      <p>Leggiamo <code>N</code> tra 1 e 10 e stampiamo una tabella <code>N × N</code>. La figura Output del prodotto va configurata senza ritorno a capo; al termine del ciclo interno si produce invece un ritorno a capo.</p>
+<pre><code class="language-none">leggi N
+se N &lt; 1 ∨ N &gt; 10 allora
+    scrivi "N non valido"
+altrimenti
+    per riga da 1 a N, crescente, passo 1
+        per colonna da 1 a N, crescente, passo 1
+            scrivi riga * colonna senza andare a capo
+        fine per
+        vai a capo
+    fine per
+fine se</code></pre>
+      <p>Con <code>N=3</code> l'output è:</p>
+      <div class="table-wrap">
+        <table class="output-grid" aria-label="Tabella pitagorica tre per tre">
+          <tbody>
+            <tr><td>1</td><td>2</td><td>3</td></tr>
+            <tr><td>2</td><td>4</td><td>6</td></tr>
+            <tr><td>3</td><td>6</td><td>9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-      <div class="fc-wrap">
-        <div class="fc-card">
-          <div class="fc-title">Flowchart — while esterno + while interno</div>
-          <svg class="fc-svg" viewBox="0 0 760 520" role="img" aria-label="While annidati">
-            <defs>
-              <marker id="arrW" class="fc-marker" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
-                <path d="M0 0 L10 5 L0 10 Z"></path>
-              </marker>
-            </defs>
+    <div class="inner-box">
+      <h2>Modello operativo dell'annidamento</h2>
+      <div class="fc-card">
+        <svg class="fc-svg" viewBox="0 0 1000 760" role="img" aria-label="Diagramma operativo di due cicli annidati per righe e colonne">
+          <defs>
+            <marker id="nested-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z"></path>
+            </marker>
+          </defs>
+          <ellipse class="fc-shape" cx="360" cy="38" rx="78" ry="28"></ellipse>
+          <text class="fc-text" x="360" y="45" text-anchor="middle">Inizio</text>
+          <rect class="fc-shape" x="255" y="100" width="210" height="58" rx="6"></rect>
+          <text class="fc-text" x="360" y="135" text-anchor="middle">riga ← 1</text>
+          <polygon class="fc-shape" points="360,205 485,270 360,335 235,270"></polygon>
+          <text class="fc-text" x="360" y="276" text-anchor="middle">riga ≤ N?</text>
 
-            <!-- Start -->
-            <ellipse class="fc-shape" cx="120" cy="30" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="120" y="34" text-anchor="middle">Start</text>
+          <rect class="fc-shape" x="255" y="375" width="210" height="58" rx="6"></rect>
+          <text class="fc-text" x="360" y="410" text-anchor="middle">colonna ← 1</text>
+          <polygon class="fc-shape" points="360,475 485,540 360,605 235,540"></polygon>
+          <text class="fc-text" x="360" y="546" text-anchor="middle">colonna ≤ N?</text>
 
-            <!-- Init N, i -->
-            <rect class="fc-shape" x="60" y="80" width="120" height="36" rx="6"></rect>
-            <text class="fc-text" x="120" y="102" text-anchor="middle">leggi N; i←1</text>
+          <rect class="fc-shape" x="620" y="475" width="260" height="58" rx="6"></rect>
+          <text class="fc-text" x="750" y="510" text-anchor="middle">scrivi prodotto</text>
+          <rect class="fc-shape" x="620" y="590" width="260" height="58" rx="6"></rect>
+          <text class="fc-text" x="750" y="625" text-anchor="middle">colonna ← colonna + 1</text>
 
-            <!-- Test esterno -->
-            <polygon class="fc-shape" points="200,150 260,190 200,230 140,190"></polygon>
-            <text class="fc-text" x="200" y="194" text-anchor="middle">i ≤ N ?</text>
-            <text class="fc-text fc-yes" x="262" y="184">Sì</text>
-            <text class="fc-text fc-no"  x="138" y="184" text-anchor="end">No</text>
+          <rect class="fc-shape" x="65" y="625" width="250" height="58" rx="6"></rect>
+          <text class="fc-text" x="190" y="660" text-anchor="middle">a capo; riga ← riga + 1</text>
 
-            <!-- j init -->
-            <rect class="fc-shape" x="360" y="150" width="120" height="36" rx="6"></rect>
-            <text class="fc-text" x="420" y="172" text-anchor="middle">j←1</text>
+          <ellipse class="fc-shape" cx="750" cy="270" rx="78" ry="28"></ellipse>
+          <text class="fc-text" x="750" y="277" text-anchor="middle">Fine</text>
 
-            <!-- Test interno -->
-            <polygon class="fc-shape" points="540,220 600,260 540,300 480,260"></polygon>
-            <text class="fc-text" x="540" y="264" text-anchor="middle">j ≤ N ?</text>
-            <text class="fc-text fc-yes" x="602" y="254">Sì</text>
-            <text class="fc-text fc-no"  x="478" y="254" text-anchor="end">No</text>
+          <line class="fc-line" x1="360" y1="66" x2="360" y2="100" marker-end="url(#nested-arrow)"></line>
+          <line class="fc-line" x1="360" y1="158" x2="360" y2="205" marker-end="url(#nested-arrow)"></line>
+          <line class="fc-line" x1="360" y1="335" x2="360" y2="375" marker-end="url(#nested-arrow)"></line>
+          <text class="fc-label" x="385" y="358">True</text>
+          <path class="fc-line" d="M485 270 L672 270" marker-end="url(#nested-arrow)"></path>
+          <text class="fc-label" x="575" y="252">False</text>
+          <line class="fc-line" x1="360" y1="433" x2="360" y2="475" marker-end="url(#nested-arrow)"></line>
+          <path class="fc-line" d="M485 540 L620 510" marker-end="url(#nested-arrow)"></path>
+          <text class="fc-label" x="545" y="505">True</text>
+          <line class="fc-line" x1="750" y1="533" x2="750" y2="590" marker-end="url(#nested-arrow)"></line>
+          <path class="fc-line" d="M620 619 L540 619 L540 700 L500 700 L500 540 L485 540" marker-end="url(#nested-arrow)"></path>
+          <path class="fc-line" d="M235 540 L190 540 L190 625" marker-end="url(#nested-arrow)"></path>
+          <text class="fc-label" x="205" y="522">False</text>
+          <path class="fc-line" d="M190 683 L30 683 L30 270 L235 270" marker-end="url(#nested-arrow)"></path>
+        </svg>
+      </div>
+      <p class="ok">Il ramo falso del ciclo interno conclude la riga; il ramo falso del ciclo esterno conclude l'intera tabella.</p>
+    </div>
 
-            <!-- Corpo interno -->
-            <rect class="fc-shape" x="640" y="330" width="110" height="36" rx="6"></rect>
-            <text class="fc-text" x="695" y="352" text-anchor="middle">stampa i·j</text>
+    <div class="inner-box">
+      <h2>Traccia per N = 3</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Passo</th><th>riga</th><th>colonna</th><th>Prodotto</th><th class="left">Dopo l'output</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>1</td><td>1</td><td>1</td><td class="left">colonna diventa 2</td></tr>
+            <tr><td>2</td><td>1</td><td>2</td><td>2</td><td class="left">colonna diventa 3</td></tr>
+            <tr><td>3</td><td>1</td><td>3</td><td>3</td><td class="left">fine riga; riga diventa 2</td></tr>
+            <tr><td>4</td><td>2</td><td>1</td><td>2</td><td class="left">colonna riparte da 1</td></tr>
+            <tr><td>5</td><td>2</td><td>2</td><td>4</td><td class="left">colonna diventa 3</td></tr>
+            <tr><td>6</td><td>2</td><td>3</td><td>6</td><td class="left">fine riga; riga diventa 3</td></tr>
+            <tr><td>7</td><td>3</td><td>1</td><td>3</td><td class="left">colonna riparte da 1</td></tr>
+            <tr><td>8</td><td>3</td><td>2</td><td>6</td><td class="left">colonna diventa 3</td></tr>
+            <tr><td>9</td><td>3</td><td>3</td><td>9</td><td class="left">fine della tabella</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Il prodotto viene calcolato nove volte: <code>3 × 3</code>. Il cambio di riga avviene tre volte, una dopo ogni completamento del ciclo interno.</p>
+    </div>
 
-            <!-- j++ -->
-            <rect class="fc-shape" x="640" y="390" width="110" height="36" rx="6"></rect>
-            <text class="fc-text" x="695" y="412" text-anchor="middle">j ← j+1</text>
-
-            <!-- newline + i++ -->
-            <rect class="fc-shape" x="260" y="320" width="160" height="36" rx="6"></rect>
-            <text class="fc-text" x="340" y="342" text-anchor="middle">newline; i ← i+1</text>
-
-            <!-- End -->
-            <ellipse class="fc-shape" cx="80" cy="260" rx="60" ry="16"></ellipse>
-            <text class="fc-text" x="80" y="264" text-anchor="middle">End</text>
-
-            <!-- Frecce -->
-            <line x1="120" y1="46" x2="120" y2="80" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <polyline points="180,98 200,98 200,150" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- Sì esterno -> j init -->
-            <polyline points="260,190 360,190 360,186" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- j init -> test interno -->
-            <polyline points="480,168 540,168 540,220" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- Sì interno -> corpo -->
-            <polyline points="600,260 640,260 640,330" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- corpo -> j++ -->
-            <line x1="695" y1="366" x2="695" y2="390" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- back-edge interno (sinistra, evita incroci) -->
-            <polyline points="640,408 540,408 540,300" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- No interno -> newline+i++ -->
-            <polyline points="480,260 420,260 420,320" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- newline+i++ -> test esterno (sinistra, evita incroci) -->
-            <polyline points="260,338 200,338 200,230" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-            <!-- No esterno -> End -->
-            <polyline points="140,190 100,190 100,244" fill="none" stroke="#222" stroke-width="2" marker-end="url(#arrW)"/>
-          </svg>
+    <div class="inner-box">
+      <h2>La stessa logica con WHILE e DO</h2>
+      <div class="pattern-grid">
+        <div class="pattern-card">
+          <h3>WHILE annidati</h3>
+<pre><code class="language-none">riga ← 1
+while riga ≤ N do
+    colonna ← 1
+    while colonna ≤ N do
+        scrivi riga * colonna
+        colonna ← colonna + 1
+    end while
+    vai a capo
+    riga ← riga + 1
+end while</code></pre>
+          <p>L'inizializzazione di <code>colonna</code> è dentro il ciclo esterno.</p>
+        </div>
+        <div class="pattern-card">
+          <h3>DO annidati</h3>
+<pre><code class="language-none">riga ← 1
+do
+    colonna ← 1
+    do
+        scrivi riga * colonna
+        colonna ← colonna + 1
+    while colonna ≤ N
+    vai a capo
+    riga ← riga + 1
+while riga ≤ N</code></pre>
+          <p>Questa variante richiede che <code>N ≥ 1</code>, perché ciascun DO esegue il corpo almeno una volta.</p>
         </div>
       </div>
-
-      <h3>Pseudocodice (while/while)</h3>
-<pre><code>Input N
-i ← 1
-while i ≤ N do
-    j ← 1
-    while j ≤ N do
-        stampa(i·j)      // prodotto in riga
-        j ← j + 1
-    fine while
-    stampa(newline)      // fine riga
-    i ← i + 1
-fine while
-</code></pre>
     </div>
 
-    <!-- DO–WHILE ANNIDATI -->
-    <div class="box">
-      <h2>2) Do–while annidati — tabelline 1..N</h2>
-
-      <h3>Pseudocodice (do–while/do–while)</h3>
-<pre><code>Input N
-i ← 1
-ripeti
-    j ← 1
-    ripeti
-        stampa(i·j)
-        j ← j + 1
-    finché j ≤ N
-    stampa(newline)
-    i ← i + 1
-finché i ≤ N
-</code></pre>
-      <p class="note"><strong>do–while / repeat–until</strong> esegue il corpo almeno una volta; la condizione è verificata alla fine.</p>
-    </div>
-
-    <!-- FOR ANNIDATI -->
-      <h3>Pseudocodice (for/for)</h3>
-<pre><code>Input N
-per i da 1 a N fai
-    per j da 1 a N fai
-        stampa(i·j)
-    fine per
-    stampa(newline)
-fine per
-</code></pre>
-      <p class="ok"><strong>Invariante (intuizione)</strong>: all’inizio dell’iterazione con valore <code>j</code>, in quella riga sono stati stampati i prodotti <code>i·1, i·2, …, i·(j−1)</code>.</p>
-    </div>
-
-    <!-- TRACCIA ESECUZIONE -->
     <div class="inner-box">
-      <h2>Traccia dell’esecuzione (esempio N = 3)</h2>
-      <p>Per fissare le idee: ad ogni <code>i</code> fisso, il ciclo interno <code>j</code> scorre 1..N e stampa <code>i·j</code>. Alla fine della riga, newline e incremento di <code>i</code>.</p>
-      <table class="trace">
-        <thead>
-          <tr>
-            <th>Passo</th><th>i</th><th>j</th><th>stampato (i·j)</th><th>fine riga?</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>No</td></tr>
-          <tr><td>2</td><td>1</td><td>2</td><td>2</td><td>No</td></tr>
-          <tr><td>3</td><td>1</td><td>3</td><td>3</td><td><strong>Sì</strong> → newline, i=2</td></tr>
-          <tr><td>4</td><td>2</td><td>1</td><td>2</td><td>No</td></tr>
-          <tr><td>5</td><td>2</td><td>2</td><td>4</td><td>No</td></tr>
-          <tr><td>6</td><td>2</td><td>3</td><td>6</td><td><strong>Sì</strong> → newline, i=3</td></tr>
-          <tr><td>7</td><td>3</td><td>1</td><td>3</td><td>No</td></tr>
-          <tr><td>8</td><td>3</td><td>2</td><td>6</td><td>No</td></tr>
-          <tr><td>9</td><td>3</td><td>3</td><td>9</td><td><strong>Sì</strong> → newline, fine</td></tr>
-        </tbody>
-      </table>
+      <h2>Intervalli che dipendono dalla riga</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th class="left">Figura</th><th>Intervallo interno</th><th>Numero di celle con N righe</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="left">Rettangolo N × M</td><td><code>colonna = 1 ... M</code></td><td><code>N × M</code></td></tr>
+            <tr><td class="left">Triangolo inferiore</td><td><code>colonna = 1 ... riga</code></td><td><code>N × (N + 1) / 2</code></td></tr>
+            <tr><td class="left">Triangolo superiore</td><td><code>colonna = riga ... N</code></td><td><code>N × (N + 1) / 2</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="warn">Quando l'estremo del ciclo interno dipende da <code>riga</code>, il numero di iterazioni interne non è più costante.</p>
     </div>
 
-    <!-- VARIANTI / ESTENSIONI -->
-    <div class="box">
-      <h2>Varianti didattiche (facoltative)</h2>
+    <div class="inner-box exercise">
+      <h2>Esercizio 1 — Coordinate di una griglia</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Interi <code>righe ≥ 1</code> e <code>colonne ≥ 1</code>.</dd>
+        <dt>Output</dt><dd>Le coppie <code>(r,c)</code>, organizzate in righe.</dd>
+      </dl>
+      <button id="btn-e1" data-label="la soluzione" aria-controls="box-e1" aria-expanded="false" onclick="toggleBox('btn-e1','box-e1')">Mostra la soluzione ▼</button>
+      <div id="box-e1" hidden>
+<pre><code class="language-none">leggi righe, colonne
+se righe &lt; 1 ∨ colonne &lt; 1 allora
+    scrivi "dimensioni non valide"
+altrimenti
+    per r da 1 a righe, crescente, passo 1
+        per c da 1 a colonne, crescente, passo 1
+            scrivi "(" &amp; r &amp; "," &amp; c &amp; ")" senza andare a capo
+        fine per
+        vai a capo
+    fine per
+fine se</code></pre>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 2 — Rettangolo di asterischi</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Interi <code>righe ≥ 1</code> e <code>colonne ≥ 1</code>.</dd>
+        <dt>Output</dt><dd>Un rettangolo con il numero richiesto di righe e colonne.</dd>
+      </dl>
+      <button id="btn-e2" data-label="la soluzione" aria-controls="box-e2" aria-expanded="false" onclick="toggleBox('btn-e2','box-e2')">Mostra la soluzione ▼</button>
+      <div id="box-e2" hidden>
+<pre><code class="language-none">leggi righe, colonne
+se righe &lt; 1 ∨ colonne &lt; 1 allora
+    scrivi "dimensioni non valide"
+altrimenti
+    per r da 1 a righe, crescente, passo 1
+        per c da 1 a colonne, crescente, passo 1
+            scrivi "*" senza andare a capo
+        fine per
+        vai a capo
+    fine per
+fine se</code></pre>
+        <p class="ok">Con 2 righe e 4 colonne, l'istruzione che scrive l'asterisco viene eseguita <code>2 × 4 = 8</code> volte.</p>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 3 — Triangolo inferiore</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Intero <code>N ≥ 1</code>.</dd>
+        <dt>Output</dt><dd>Una figura con 1 asterisco nella prima riga, 2 nella seconda, fino a N.</dd>
+      </dl>
+      <button id="btn-e3" data-label="la soluzione" aria-controls="box-e3" aria-expanded="false" onclick="toggleBox('btn-e3','box-e3')">Mostra la soluzione ▼</button>
+      <div id="box-e3" hidden>
+<pre><code class="language-none">leggi N
+se N &lt; 1 allora
+    scrivi "N non valido"
+altrimenti
+    per riga da 1 a N, crescente, passo 1
+        per colonna da 1 a riga, crescente, passo 1
+            scrivi "*" senza andare a capo
+        fine per
+        vai a capo
+    fine per
+fine se</code></pre>
+        <p class="note">Con <code>N=4</code> vengono stampati <code>1 + 2 + 3 + 4 = 10</code> asterischi.</p>
+      </div>
+    </div>
+
+    <div class="inner-box exercise">
+      <h2>Esercizio 4 — Coppie ordinate con somma pari</h2>
+      <dl class="spec">
+        <dt>Input</dt><dd>Intero <code>N ≥ 1</code>.</dd>
+        <dt>Output</dt><dd>Tutte le coppie <code>(i,j)</code> con <code>1 ≤ i,j ≤ N</code> per cui <code>i+j</code> è pari.</dd>
+      </dl>
+      <button id="btn-e4" data-label="la soluzione" aria-controls="box-e4" aria-expanded="false" onclick="toggleBox('btn-e4','box-e4')">Mostra la soluzione ▼</button>
+      <div id="box-e4" hidden>
+<pre><code class="language-none">leggi N
+se N &lt; 1 allora
+    scrivi "N non valido"
+altrimenti
+    per i da 1 a N, crescente, passo 1
+        per j da 1 a N, crescente, passo 1
+            se (i + j) mod 2 = 0 allora
+                scrivi "(" &amp; i &amp; "," &amp; j &amp; ")"
+            fine se
+        fine per
+    fine per
+fine se</code></pre>
+        <p class="ok">I cicli visitano comunque tutte le <code>N²</code> coppie; l'IF decide quali visualizzare.</p>
+      </div>
+    </div>
+
+    <div class="inner-box">
+      <h2>Checklist</h2>
       <ul>
-        <li><strong>Triangolare superiore</strong>: nel ciclo interno termina a <code>j ≤ i</code> (stampi metà tabella).</li>
-        <li><strong>Solo pari</strong>: stampa solo se <code>(i·j) mod 2 = 0</code>.</li>
-        <li><strong>Formattazione</strong>: colonne a larghezza fissa per allineare visivamente i prodotti.</li>
+        <li>Il contatore interno riparte per ogni iterazione esterna?</li>
+        <li>Il ritorno a capo è dopo il ciclo interno?</li>
+        <li>Gli estremi del ciclo interno sono costanti oppure dipendono dalla riga?</li>
+        <li>Sai calcolare quante volte viene eseguito il corpo più interno?</li>
+        <li>Hai provato almeno <code>N=1</code> e un caso piccolo come <code>N=3</code>?</li>
       </ul>
     </div>
-
   </div>
 
   <div class="nav-buttons">
@@ -244,9 +395,5 @@ fine per
     <button onclick="nextSlide()">Avanti &#8594;</button>
   </div>
 </div>
-
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

@@ -13,13 +13,37 @@
   <script>
     function prevSlide(){ window.location.href = "lez6_2.html"; }
     function nextSlide(){ window.location.href = "lez6_4.html"; }
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-    function toggleBox(btnId, boxId){
-      const box=document.getElementById(boxId), btn=document.getElementById(btnId);
-      const open = box.style.display==='block';
-      box.style.display = open ? 'none':'block';
-      if(btn) btn.textContent = open ? 'Mostra ▼' : 'Nascondi ▲';
+    function toggleMenu(){
+      const menu = document.getElementById("menu");
+      const opening = menu.classList.toggle("open");
+      const btn = document.querySelector(".menu-toggle");
+      if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
     }
+    function toggleBox(btnId, boxId){
+      const box = document.getElementById(boxId);
+      const btn = document.getElementById(btnId);
+      if(!box || !btn) return;
+      const opening = box.style.display !== "block";
+      box.style.display = opening ? "block" : "none";
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      btn.textContent = opening ? "Nascondi ▲" : "Mostra ▼";
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+      const menuBtn = document.querySelector(".menu-toggle");
+      if(menuBtn){
+        menuBtn.setAttribute("aria-controls", "menu");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+      const activeLink = document.querySelector(".sidebar a.active");
+      if(activeLink) activeLink.setAttribute("aria-current", "page");
+      document.querySelectorAll("button[onclick^=\"toggleBox\"]").forEach(function(btn){
+        const match = btn.getAttribute("onclick").match(/toggleBox\('[^']+','([^']+)'\)/);
+        if(match){
+          btn.setAttribute("aria-controls", match[1]);
+          btn.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
   </script>
 
   <style>
@@ -41,13 +65,16 @@
     th, td { border-bottom:1px solid #e5e7eb; padding:.45rem .5rem; text-align:left; vertical-align:top }
     th { background:#f8fafc }
     td code { white-space:pre-wrap }
+    @media (max-width:720px) {
+      table { display:block; max-width:100%; overflow-x:auto; }
+    }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Lezione 6 — Introduzione a C/C++</h2>
+  <h2>Menu Lezione 6</h2>
   <ul>
     <li><a href="lez6_1.html">Lez6_1: Interpretati vs Compilati</a></li>
     <li><a href="lez6_2.html">Lez6_2: Hello, World</a></li>
@@ -59,6 +86,10 @@
     <li><a href="lez6_8.html">Lez6_8: switch</a></li>
     <li><a href="lez6_9.html">Lez6_9: while &amp; do-while</a></li>
     <li><a href="lez6_10.html">Lez6_10: for</a></li>
+    <li><a href="lez6_11.html">Lez6_11: Array (1D)</a></li>
+    <li><a href="lez6_12.html">Lez6_12: Esercizi base</a></li>
+    <li><a href="lez6_13.html">Lez6_13: Esercizi intermedi</a></li>
+    <li><a href="lez6_14.html">Lez6_14: Esercizi avanzati</a></li>
   </ul>
 </div>
 <!-- END MENU -->
@@ -82,7 +113,7 @@
         <li>Capire cosa fa il tipo dedotto <strong><code>auto</code></strong> in C++ (e perché NON è “dinamico”).</li>
         <li>Sapere quando usare i <strong>tipi a larghezza fissa</strong> (<code>&lt;cstdint&gt;</code>/<code>stdint.h</code>) per portabilità reale.</li>
       </ul>
-      <p class="ok"><b>Idea chiave:</b> in C e C++ il tipo non è un optional: ogni variabile occupa una certa quantità di byte e interpreta quei byte in un certo modo. Capire il tipo = capire come i bit diventano un numero, un carattere, un booleano, ecc.</p>
+      <p class="ok"><b>Idea chiave:</b> in C e C++ ogni variabile ha un tipo stabilito in compilazione. Il tipo determina quali valori e operazioni sono ammessi e come il dato viene rappresentato.</p>
     </div>
 
     <!-- C++ tipi primitivi -->
@@ -126,7 +157,7 @@ int main(){
 
       <p>
         In C++ possiamo scrivere <code>auto</code> al posto del tipo esplicito. Questo NON significa “tipo variabile che cambia”.
-        Significa: <strong>lascia che il compilatore indovini il tipo esatto a partire dal valore con cui inizializzo la variabile</strong>.
+        Significa: <strong>lascia che il compilatore deduca il tipo a partire dall’inizializzatore</strong>.
       </p>
 
 <pre><code class="language-cpp">auto a = 5;        // a diventa int
@@ -200,8 +231,8 @@ int main(void){
       </p>
 
       <p class="warn">
-        Variabili locali in C non inizializzate contengono spazzatura di memoria. Usarle prima di assegnare un valore definito
-        porta a comportamenti imprevedibili. Inizializza sempre.
+        Una variabile locale non inizializzata non contiene un valore utilizzabile dal programma. Leggerla prima di assegnarle
+        un valore può produrre comportamento indefinito. Inizializza sempre.
       </p>
     </div>
 
@@ -211,7 +242,7 @@ int main(void){
       <ul>
         <li><b>C++</b>: <code>#include &lt;cstdint&gt;</code> → <code>std::int8_t</code>, <code>std::uint32_t</code>, <code>std::int64_t</code>, …</li>
         <li><b>C</b>: <code>#include &lt;stdint.h&gt;</code> → <code>int8_t</code>, <code>uint32_t</code>, <code>int64_t</code>, …</li>
-        <li><b>Perché sono utili?</b> Perché garantiscono il numero di bit (8,16,32,64). Questo è fondamentale se salvi su file binari o mandi dati sulla rete e vuoi che il formato resti lo stesso su tutte le macchine.</li>
+        <li><b>Perché sono utili?</b> Quando il tipo esatto è disponibile, indicano esplicitamente il numero di bit. Sono utili per formati binari e protocolli; per la portabilità completa vanno comunque definiti anche ordine dei byte e codifica.</li>
         <li><b>Altri tipi standardizzati</b>: <code>size_t</code> (“taglia”, usato per lunghezze e indici di array/vettori), <code>ptrdiff_t</code> (differenza tra due puntatori).</li>
       </ul>
 
@@ -328,7 +359,7 @@ printf("Virgolette: \"test\" e backslash: \\\n");
       <ul>
         <li><b>Integer promotions</b>: tipi interi piccoli (<code>char</code>, <code>short</code>) vengono “promossi” almeno a <code>int</code> prima del calcolo. Quindi l’operazione aritmetica spesso avviene come se tutto fosse <code>int</code> o più grande.</li>
 
-        <li><b>Usual arithmetic conversions</b>: se mescoli tipi diversi (es. <code>unsigned int</code> e <code>int</code>, oppure <code>int</code> e <code>double</code>), il compilatore converte entrambi verso un tipo “più capiente” o “più generale”. Questo può cambiare il risultato se non stai attento, specialmente con <code>unsigned</code>.</li>
+        <li><b>Usual arithmetic conversions</b>: se mescoli tipi diversi (es. <code>unsigned int</code> e <code>int</code>, oppure <code>int</code> e <code>double</code>), regole precise scelgono un tipo comune. Non è sempre il tipo che sembra intuitivamente “più grande”; con <code>unsigned</code> il risultato può sorprendere.</li>
 
         <li><b>Narrowing</b> (C++): quando provi a infilare un valore “grande/preciso” in un tipo “più piccolo/meno preciso”, rischi di perdere informazione. Esempi:
           <ul>
@@ -342,7 +373,7 @@ printf("Virgolette: \"test\" e backslash: \\\n");
         <li><b>Overflow</b>: se superi l’intervallo del tipo:
           <ul>
             <li>per gli interi <em>unsigned</em> l’overflow “torna a zero” modulo 2<sup>N</sup> (comportamento definito);</li>
-            <li>per gli interi <em>signed</em> l’overflow è comportamento <strong>non definito</strong>: il programma può fare qualunque cosa, anche sbagliata in modo imprevedibile.</li>
+            <li>per gli interi <em>signed</em> l’overflow è comportamento <strong>non definito</strong>: non puoi prevederne il risultato né supporre che il valore riparta dal minimo.</li>
           </ul>
         </li>
       </ul>
@@ -420,7 +451,7 @@ int main(void){
         <li><strong>Signed vs unsigned</strong> nei confronti</li>
         <ul>
           <li>Mischiare <code>int</code> negativi e <code>unsigned int</code> può produrre risultati “a sorpresa”.</li>
-          <li><span class="ok">Tieni i contatori tutti <code>unsigned</code> se contano cose che non possono essere negative, oppure tutti <code>int</code> se fai calcoli con valori negativi.</span></li>
+          <li><span class="ok">Negli esercizi iniziali usa contatori <code>int</code> e mantieni coerenti i tipi nella stessa espressione. Usa tipi senza segno quando servono davvero e controlla con attenzione conversioni e cicli in discesa.</span></li>
         </ul>
 
         <li><strong>Assumere che <code>int</code> o <code>long</code> abbiano sempre la stessa dimensione</strong> su tutte le piattaforme.<br/><br/><span class="ok">Quando il formato di memorizzazione deve essere identico (file binari, rete), usa i tipi a larghezza fissa da <code>stdint.h</code>/<code>cstdint</code> (<code>uint32_t</code>, <code>int64_t</code>, ...).</span></li>
@@ -429,7 +460,7 @@ int main(void){
 
         <li><strong>Overflow degli interi</strong> (soprattutto signed)</li>
         <ul>
-          <li>Se superi il massimo di un <code>int</code> firmato, il comportamento del programma è non definito (può fare qualunque cosa).</li>
+          <li>Se superi il massimo di un <code>int</code> firmato, lo standard non definisce il risultato: non fare affidamento su un ritorno al valore minimo.</li>
           <li><span class="ok">Usa tipi più grandi (<code>long long</code>, <code>uint64_t</code>) se ti serve contare cose molto grandi.</span></li>
         </ul>
       </ul>
@@ -536,8 +567,5 @@ auto it = v.begin();  // tipo dell'iteratore dedotto dal compilatore
   </div>
 </div>
 
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

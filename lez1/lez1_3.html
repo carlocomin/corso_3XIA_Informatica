@@ -3,138 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lezione 1 – Il problema della bilancia (moneta più leggera)</title>
+    <title>Lezione 1.3 – Il problema della bilancia</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../default.css">
     <script src="../highlight.js"></script>
     <script>try{hljs.highlightAll();}catch(e){}</script>
     <script>
         function prevSlide(){ window.location.href = "lez1_2.html"; }
-        function nextSlide(){ window.location.href = "lez1_4.html"; } // placeholder prossima slide
-        function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-
-        function toggleAnswer(btnId, boxId){
+        function nextSlide(){ window.location.href = "lez1_4.html"; }
+        function toggleMenu(){
+            const menu = document.getElementById("menu");
+            const opening = menu.classList.toggle("open");
+            const btn = document.querySelector(".menu-toggle");
+            if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
+        }
+        function toggleBox(btnId, boxId){
             const box = document.getElementById(boxId);
             const btn = document.getElementById(btnId);
-            const isHidden = box.style.display === 'none' || box.style.display === '';
-            box.style.display = isHidden ? 'block' : 'none';
-            btn.textContent = isHidden ? 'Nascondi la risposta ▲' : 'Mostra la risposta ▼';
+            const opening = box.hidden;
+            box.hidden = !opening;
+            btn.setAttribute("aria-expanded", opening ? "true" : "false");
+            const label = btn.dataset.label || "la risposta";
+            btn.textContent = opening ? "Nascondi " + label + " ▲" : "Mostra " + label + " ▼";
         }
     </script>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-    <h2>Menu Lezioni</h2>
+    <h2>Menu Lezione 1</h2>
     <ul>
-        <li><a href="lez1.html">Lezione 1: Il concetto di problema</a></li>
-        <li><a href="lez1_2.html">Lezione 1c: Il problema del contadino</a></li>
-        <li><a href="lez1_3.html">Lezione 1d: Il problema della bilancia</a></li>
+        <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+        <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+        <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+        <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+        <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
     </ul>
 </div>
 <!-- END MENU -->
 
 <div class="slide">
-    <h1>Il problema della bilancia <small>(moneta falsa più leggera)</small></h1>
+    <h1>Lezione 1.3 — Il problema della bilancia <small>(moneta falsa più leggera)</small></h1>
+    <p><strong>Obiettivo:</strong> progettare una strategia che riduca sistematicamente l'insieme dei casi ancora possibili.</p>
+
     <div class="nav-buttons" style="margin-bottom:10px">
         <button onclick="prevSlide()">&#8592; Indietro</button>
         <button onclick="nextSlide()">Avanti &#8594;</button>
     </div>
 
     <div class="content-box">
-
-        <!-- ENUNCIATO -->
         <div class="inner-box">
             <h2>Il problema</h2>
-            <p>
-                Un orafo deve produrre <strong>18 monete</strong> d’oro uguali. Ne produce 17 corrette e <strong>1 più leggera</strong>.
-                Disponiamo solo di una <strong>bilancia a due piatti</strong> che può dire: «sinistra più pesante», «destra più pesante», «equilibrio».
-                <br/>Come individuare la moneta falsa in <strong>sole 3 pesate</strong>?
-            </p>
-        </div>
-		
-		<!-- FIGURE E RAPPRESENTAZIONI -->
-        <div class="inner-box" style="text-align:center">
-            <h2>Problema della bilancia</h2>
-            <p>Situazione iniziale nel problema della bilancia:</p>
-            <img src="img/bilancia_prob.png" alt="Situazione iniziale nel problema della bilancia" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+            <p>Un orafo deve produrre <strong>18 monete</strong> d'oro uguali. Diciassette hanno il peso corretto e una è <strong>più leggera</strong>. Disponiamo soltanto di una bilancia a due piatti, che può indicare:</p>
+            <ul>
+                <li>il piatto sinistro è più pesante;</li>
+                <li>il piatto destro è più pesante;</li>
+                <li>i due piatti sono in equilibrio.</li>
+            </ul>
+            <p>Come possiamo individuare la moneta falsa in non più di <strong>3 pesate</strong>?</p>
         </div>
 
-        <!-- ANALISI -->
+        <div class="inner-box" style="text-align:center">
+            <h2>Situazione iniziale</h2>
+            <img src="img/bilancia_prob.png" alt="Diciotto monete e una bilancia a due piatti; l'obiettivo è trovare la moneta più leggera" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+        </div>
+
         <div class="inner-box">
             <h2>Analisi della situazione</h2>
             <ul>
-                <li><strong>Stato</strong>: partizione dell’insieme delle monete in gruppi e loro esito alle pesate.</li>
-                <li><strong>Mossa lecita</strong>: posizionare due sottoinsiemi di monete sui piatti ed osservare l’esito.</li>
-                <li><strong>Vincolo</strong>: la moneta falsa è <em>più leggera</em> (una sola moneta è falsa).</li>
-                <li><strong>Obiettivo</strong>: identificare la moneta falsa con al più 3 pesate.</li>
+                <li><strong>Informazione nota:</strong> esiste esattamente una moneta falsa ed è più leggera.</li>
+                <li><strong>Pesata utile:</strong> collocare lo stesso numero di monete sui due piatti e osservare l'esito.</li>
+                <li><strong>Casi ancora possibili:</strong> dopo ogni pesata rimane un gruppo di monete sospette.</li>
+                <li><strong>Obiettivo:</strong> ridurre il gruppo delle sospette a una sola moneta entro tre pesate.</li>
             </ul>
         </div>
 
-        <!-- RAPPRESENTAZIONE FORMALE I,O,R -->
         <div class="inner-box">
-            <h2>Rappresentazione formale</h2>
-            <p>Modelliamo come tripla <strong>(I, O, R)</strong>:</p>
+            <h2>Specificazione e modello delle decisioni</h2>
             <ul>
-                <li><strong>I</strong> = insiemi di istanze con 18 monete di cui esattamente una è più leggera.</li>
-                <li><strong>O</strong> = indice/identità della moneta falsa.</li>
-                <li><strong>R</strong> = relazione che collega sequenze di pesate ammissibili (e relativi esiti) alla deduzione della moneta falsa.</li>
+                <li><strong>Input:</strong> un insieme di 18 monete apparentemente uguali, una delle quali è più leggera.</li>
+                <li><strong>Output:</strong> l'identità della moneta falsa.</li>
+                <li><strong>Relazione di correttezza:</strong> l'output è corretto se indica proprio l'unica moneta più leggera dell'istanza.</li>
             </ul>
-            <p>Risolvere il problema significa: per ogni istanza <code>i ∈ I</code> esiste una sequenza di al più 3 pesate
-               i cui esiti determinano univocamente <code>o ∈ O</code>.</p>
+            <p>Per progettare la soluzione usiamo un <strong>albero delle decisioni</strong>: ogni nodo rappresenta le monete ancora sospette e ogni ramo rappresenta uno dei tre possibili esiti di una pesata.</p>
         </div>
 
-        <!-- STRATEGIA -->
         <div class="inner-box">
-            <h2>Strategia risolutiva in 3 pesate (18 → 9 → 3 → 1)</h2>
-            <ol>
-                <li><strong>1ª pesata:</strong> pesa <code>9</code> vs <code>9</code>.
-                    <ul>
-                        <li>Il piatto <em>più alto</em> contiene le <strong>9 sospette</strong> (c’è certamente una moneta più leggera).</li>
-                    </ul>
-                </li>
-                <li><strong>2ª pesata:</strong> prendi 6 delle 9 sospette e dividi in <code>3</code> vs <code>3</code>.
-                    <ul>
-                        <li>Se sbilancia: il piatto più alto individua <strong>3 sospette</strong>.</li>
-                        <li>Se è in equilibrio: le <strong>3 rimanenti non pesate</strong> sono le sospette.</li>
-                    </ul>
-                </li>
-                <li><strong>3ª pesata:</strong> pesa <code>1</code> vs <code>1</code> tra le 3 sospette.
-                    <ul>
-                        <li>Se sbilancia: la più alta è la <strong>falsa</strong>.</li>
-                        <li>Se è in equilibrio: la <strong>terza</strong> (non pesata) è la falsa.</li>
-                    </ul>
-                </li>
-            </ol>
-            <p style="margin-top:8px"><em>Idea chiave:</em> usare la <strong>tripartizione</strong> e sfruttare i tre esiti possibili della bilancia.</p>
-        </div>
-
-        <!-- QUESITO con risposta a comparsa -->
-        <div class="inner-box">
-            <h2>Quesito</h2>
-            <p>
-                Sapendo a priori che la moneta difettosa è <em>più leggera</em>, qual è il <strong>numero massimo</strong> di monete
-                che puoi distinguere con <code>w</code> pesate? E cosa ottieni per <code>w = 3</code>?
-            </p>
+            <h2>Prova a progettare le tre pesate</h2>
+            <p>Una pesata fornisce tre esiti. Come puoi dividere le 18 monete affinché ogni esito lasci lo stesso numero di sospette?</p>
             <div class="nav-buttons" style="justify-content:left">
-                <button id="btn-ans" onclick="toggleAnswer('btn-ans','box-ans')">Mostra la risposta ▼</button>
+                <button id="btn-strategia" data-label="la strategia" aria-controls="box-strategia" aria-expanded="false" onclick="toggleBox('btn-strategia','box-strategia')">Mostra la strategia ▼</button>
             </div>
-            <div id="box-ans" style="display:none; margin-top:10px">
-                <p><strong>Risposta.</strong> Ogni pesata ha <strong>3</strong> esiti possibili (sx più pesante, dx più pesante, equilibrio).
-                   In <code>w</code> pesate distingui al più <strong>3<sup>w</sup></strong> casi distinti.
-                </p>
-                <ul>
-                    <li>Per <code>w = 3</code> ⇒ fino a <strong>27</strong> monete.</li>
-                    <li>Il caso <strong>18</strong> rientra dunque ampiamente nel limite.</li>
-                    <li>Per <code>w = 4</code> ⇒ fino a <strong>81</strong> monete, ecc.</li>
-                </ul>
-<pre><code># Regola generale (moneta più leggera nota a priori)
-monete_massime(w) = 3^w
-</code></pre>
+
+            <div id="box-strategia" hidden>
+                <h3>Strategia: 18 → 6 → 2 → 1</h3>
+                <ol>
+                    <li><strong>Prima pesata:</strong> dividi le monete in tre gruppi da 6 e pesa il primo gruppo contro il secondo.
+                        <ul>
+                            <li>Se i piatti sono in equilibrio, la falsa si trova nel gruppo non pesato.</li>
+                            <li>Se i piatti non sono in equilibrio, la falsa si trova sul piatto più alto.</li>
+                        </ul>
+                        In entrambi i casi rimangono <strong>6 sospette</strong>.
+                    </li>
+                    <li><strong>Seconda pesata:</strong> dividi le 6 sospette in tre gruppi da 2 e pesa il primo gruppo contro il secondo. Con lo stesso ragionamento rimangono <strong>2 sospette</strong>.</li>
+                    <li><strong>Terza pesata:</strong> pesa una sospetta contro l'altra. Il piatto più alto contiene la moneta falsa.</li>
+                </ol>
+                <p><strong>Idea chiave:</strong> a ogni passo suddividiamo i casi possibili in tre gruppi equilibrati e usiamo tutti e tre gli esiti della bilancia.</p>
             </div>
         </div>
 
+        <div class="inner-box">
+            <h2>Quante monete possiamo distinguere?</h2>
+            <p>Sapendo a priori che esiste una sola moneta difettosa e che è più leggera, qual è il numero massimo di monete distinguibili con <code>w</code> pesate?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn-risposta" data-label="la risposta" aria-controls="box-risposta" aria-expanded="false" onclick="toggleBox('btn-risposta','box-risposta')">Mostra la risposta ▼</button>
+            </div>
+
+            <div id="box-risposta" hidden>
+                <p>Ogni pesata ha tre esiti. Un albero di decisione profondo <code>w</code> può quindi avere al massimo <code>3<sup>w</sup></code> foglie, una per ciascun caso distinguibile.</p>
+                <ul>
+                    <li>Con <code>w = 1</code>: fino a <strong>3</strong> monete.</li>
+                    <li>Con <code>w = 2</code>: fino a <strong>9</strong> monete.</li>
+                    <li>Con <code>w = 3</code>: fino a <strong>27</strong> monete.</li>
+                </ul>
+<pre><code class="language-none">monete_massime(w) = 3^w</code></pre>
+                <p>Le 18 monete rientrano nel limite. La divisione <code>6 + 6 + 6</code> permette di applicare la strategia ternaria fin dalla prima pesata.</p>
+            </div>
+        </div>
     </div>
 
     <div class="nav-buttons">
@@ -142,9 +138,5 @@ monete_massime(w) = 3^w
         <button onclick="nextSlide()">Avanti &#8594;</button>
     </div>
 </div>
-
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

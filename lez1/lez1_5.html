@@ -1,165 +1,206 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lezione 1 – Verifica competenze</title>
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="../default.css">
-  <script src="../highlight.js"></script>
-  <script>try{hljs.highlightAll();}catch(e){}</script>
-  <script>
-    function prevSlide(){ window.location.href = "lez1_4.html"; }
-    function nextSlide(){ window.location.href = "../lez2/lez2_1.html"; } // placeholder
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-    function toggleBox(btnId, boxId){
-      const box = document.getElementById(boxId);
-      const btn = document.getElementById(btnId);
-      const open = box.style.display === 'block';
-      box.style.display = open ? 'none' : 'block';
-      btn.textContent = open ? 'Mostra la soluzione ▼' : 'Nascondi la soluzione ▲';
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 1.5 – Verifica delle competenze</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../default.css">
+    <script src="../highlight.js"></script>
+    <script>try{hljs.highlightAll();}catch(e){}</script>
+    <script>
+        function prevSlide(){ window.location.href = "lez1_4.html"; }
+        function nextSlide(){ window.location.href = "../lez2/lez2_1.html"; }
+        function toggleMenu(){
+            const menu = document.getElementById("menu");
+            const opening = menu.classList.toggle("open");
+            const btn = document.querySelector(".menu-toggle");
+            if(btn) btn.setAttribute("aria-expanded", opening ? "true" : "false");
+        }
+        function toggleBox(btnId, boxId){
+            const box = document.getElementById(boxId);
+            const btn = document.getElementById(btnId);
+            const opening = box.hidden;
+            box.hidden = !opening;
+            btn.setAttribute("aria-expanded", opening ? "true" : "false");
+            const label = btn.dataset.label || "la soluzione";
+            btn.textContent = opening ? "Nascondi " + label + " ▲" : "Mostra " + label + " ▼";
+        }
+    </script>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
-  <h2>Menu Lezioni</h2>
-  <ul>
-    <li><a href="lez1.html">Lezione 1: Il concetto di problema</a></li>
-    <li><a href="lez1_2.html">Lezione 1c: Il problema del contadino</a></li>
-    <li><a href="lez1_3.html">Lezione 1d: Il problema della bilancia</a></li>
-    <li><a href="lez1_4.html">Lezione 1e: Il concetto di algoritmo</a></li>
-    <li><a href="lez1_5.html">Lezione 1f: Verifica... le competenze</a></li>
-  </ul>
+    <h2>Menu Lezione 1</h2>
+    <ul>
+        <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+        <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+        <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+        <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+        <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    </ul>
 </div>
 <!-- END MENU -->
 
 <div class="slide">
-  <h1>Verifica… le competenze</h1>
-  <div class="nav-buttons" style="margin-bottom:10px">
-    <button onclick="prevSlide()">&#8592; Indietro</button>
-    <button onclick="nextSlide()">Avanti &#8594;</button>
-  </div>
+    <h1>Lezione 1.5 — Verifica delle competenze</h1>
+    <p><strong>Metodo:</strong> per ogni problema individua dati, obiettivo e vincoli; progetta una sequenza di passi e controlla tutti gli stati intermedi prima di mostrare la soluzione.</p>
 
-  <div class="content-box">
-    <div class="inner-box" style="text-align:center">
-      <img src="img/eser_lez1_1.png" alt="Pagina di esercizi - verifica competenze L1"
-           style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+    <div class="nav-buttons" style="margin-bottom:10px">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
     </div>
 
-    <!-- ESERCIZIO 1 -->
-    <div class="inner-box">
-      <h2>1) I secchi d’acqua (4 L e 3 L) → ottenere 2 L</h2>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn1" onclick="toggleBox('btn1','sol1')">Mostra la soluzione ▼</button>
-      </div>
-      <div id="sol1" style="display:none;margin-top:10px">
-        <ol>
-          <li>Riempi il <strong>3 L</strong> e travasa nel <strong>4 L</strong>.</li>
-          <li>Riempi di nuovo il <strong>3 L</strong> e travasa nel <strong>4 L</strong> finché è pieno: nel 3 L restano <strong>2 L</strong>.</li>
-          <li>Usa quei <strong>2 L</strong> come misura (o versali nel contenitore richiesto).</li>
-        </ol>
-        <p><em>Idea:</em> sfrutto il “colmare” del 4 L per lasciare esattamente 2 L nel 3 L.</p>
-      </div>
-    </div>
+    <div class="content-box">
+        <div class="inner-box">
+            <h2>1) I secchi d'acqua</h2>
+            <p>Devi sciogliere un diserbante in esattamente <strong>2 litri d'acqua</strong>. Hai a disposizione soltanto un secchio da 4 litri e uno da 3 litri, privi di tacche intermedie. Come puoi misurare i 2 litri?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn1" data-label="la soluzione" aria-controls="sol1" aria-expanded="false" onclick="toggleBox('btn1','sol1')">Mostra la soluzione ▼</button>
+            </div>
+            <div id="sol1" hidden>
+                <ol>
+                    <li>Riempi il secchio da <strong>3 L</strong> e travasa l'acqua in quello da <strong>4 L</strong>.</li>
+                    <li>Riempi nuovamente il secchio da <strong>3 L</strong>.</li>
+                    <li>Versa nel secchio da 4 L finché questo è pieno: nel secchio da 3 L rimangono esattamente <strong>2 L</strong>.</li>
+                </ol>
+                <p><strong>Idea:</strong> usiamo la capacità libera di 1 litro nel secchio più grande per separare 1 litro dai 3 appena prelevati.</p>
+            </div>
+        </div>
 
-    <!-- ESERCIZIO 2 -->
-    <div class="inner-box">
-      <h2>2) Leopardo, capra, topo e mais (barca un posto)</h2>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn2" onclick="toggleBox('btn2','sol2')">Mostra la soluzione ▼</button>
-      </div>
-      <div id="sol2" style="display:none;margin-top:10px">
-        <p><strong>Con barca da 1 posto:</strong> il problema è <strong>impossibile</strong>. Qualunque primo viaggio
-           lascia sulla riva di partenza <strong>tre</strong> elementi, e ogni terna contiene almeno una coppia vietata
-           (L–G, L–T, G–M, T–M), quindi si viola il vincolo in assenza del pastore.</p>
-        <p><strong>Variante risolvibile (barca da 2 posti):</strong></p>
-        <ol>
-          <li>G + T →</li>
-          <li>T ←</li>
-          <li>L + M →</li>
-          <li>G ←</li>
-          <li>G + T →</li>
-        </ol>
-      </div>
-    </div>
+        <div class="inner-box">
+            <h2>2) Il leopardo, la capra, il topo e il mais</h2>
+            <p>Un pastore deve attraversare un fiume portando un leopardo, una capra, un topo e un sacco di mais. La barca può trasportare, oltre al pastore, un solo animale oppure il sacco. Il pastore non può lasciare senza sorveglianza:</p>
+            <ul>
+                <li>leopardo e capra, perché il leopardo mangerebbe la capra;</li>
+                <li>leopardo e topo, perché il leopardo mangerebbe il topo;</li>
+                <li>topo e mais, perché il topo mangerebbe il mais;</li>
+                <li>capra e mais, perché la capra mangerebbe il mais.</li>
+            </ul>
+            <p>Quanti viaggi deve compiere per portarli tutti sull'altra riva?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn2" data-label="la soluzione" aria-controls="sol2" aria-expanded="false" onclick="toggleBox('btn2','sol2')">Mostra la soluzione ▼</button>
+            </div>
+            <div id="sol2" hidden>
+                <p>Con questa capacità della barca il problema è <strong>impossibile</strong>.</p>
+                <p>Al primo viaggio il pastore può portare con sé un solo elemento e deve lasciarne tre sulla riva di partenza. Qualunque elemento scelga, tra i tre rimasti compare almeno una coppia vietata:</p>
+                <ul>
+                    <li>porta il leopardo → rimangono capra, topo e mais;</li>
+                    <li>porta la capra → rimangono leopardo, topo e mais;</li>
+                    <li>porta il topo → rimangono leopardo, capra e mais;</li>
+                    <li>porta il mais → rimangono leopardo, capra e topo.</li>
+                </ul>
+                <p>Poiché non esiste una prima mossa lecita, non può esistere una sequenza risolutiva.</p>
+            </div>
+        </div>
 
-    <!-- ESERCIZIO 3 -->
-    <div class="inner-box">
-      <h2>3) I tre mariti gelosi (barca 2 posti)</h2>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn3" onclick="toggleBox('btn3','sol3')">Mostra la soluzione ▼</button>
-      </div>
-      <div id="sol3" style="display:none;margin-top:10px">
-        <p><strong>Modellazione:</strong> stati leciti = distribuzioni delle sei persone sulle rive con il vincolo:
-           nessuna moglie può restare con altri uomini senza il marito.</p>
-        <p><strong>Risultato:</strong> una <code>BFS</code> sul grafo degli stati leciti trova una soluzione <strong>minima</strong> di
-           <strong>11 traversate</strong>.</p>
+        <div class="inner-box">
+            <h2>3) I tre mariti gelosi</h2>
+            <p>Tre coppie devono attraversare un fiume con una barca che può trasportare al massimo due persone. Nessuna moglie può trovarsi con un altro uomo se il proprio marito non è presente. Come possono attraversare tutti?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn3" data-label="la soluzione" aria-controls="sol3" aria-expanded="false" onclick="toggleBox('btn3','sol3')">Mostra la soluzione ▼</button>
+            </div>
+            <div id="sol3" hidden>
+                <p>Numeriamo le coppie da 1 a 3. La freccia indica il verso dell'attraversamento.</p>
+                <ol>
+                    <li>marito 1 + moglie 1 →</li>
+                    <li>marito 1 ←</li>
+                    <li>moglie 2 + moglie 3 →</li>
+                    <li>moglie 1 ←</li>
+                    <li>marito 2 + marito 3 →</li>
+                    <li>marito 2 + moglie 2 ←</li>
+                    <li>marito 1 + marito 2 →</li>
+                    <li>moglie 3 ←</li>
+                    <li>moglie 1 + moglie 2 →</li>
+                    <li>marito 3 ←</li>
+                    <li>marito 3 + moglie 3 →</li>
+                </ol>
+                <p>La sequenza contiene <strong>11 attraversamenti</strong>. Per verificarla, controlla dopo ciascun passo che ogni moglie eventualmente presente con altri uomini sia accompagnata dal proprio marito.</p>
+            </div>
+        </div>
+
+        <div class="inner-box">
+            <h2>4) Fuga da Alcatraz</h2>
+            <p>Tre detenuti pesano rispettivamente <strong>195 kg</strong>, <strong>105 kg</strong> e <strong>90 kg</strong>. Devono scendere usando due ceste collegate da una carrucola. Dispongono anche di un blocco di cemento da <strong>75 kg</strong>. In ciascuna cesta può stare <strong>un uomo oppure il blocco</strong>; la differenza tra i pesi nelle due ceste non può superare 15 kg. Possono scendere tutti?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn4" data-label="la soluzione" aria-controls="sol4" aria-expanded="false" onclick="toggleBox('btn4','sol4')">Mostra la soluzione ▼</button>
+            </div>
+            <div id="sol4" hidden>
+                <p>Con i vincoli indicati il problema è <strong>impossibile</strong>.</p>
+                <p>Per far scendere il detenuto da 195 kg, nell'altra cesta dovrebbe salire un singolo carico compreso tra 180 kg e 210 kg. I soli carichi disponibili sono 105 kg, 90 kg e 75 kg: nessuno rispetta il limite di 15 kg.</p>
+                <p>Combinare il detenuto da 105 kg e il blocco da 75 kg produrrebbe 180 kg, ma violerebbe la regola secondo la quale in una cesta può stare un uomo <em>oppure</em> il blocco. Il detenuto da 195 kg non può quindi compiere alcuna mossa lecita.</p>
+            </div>
+        </div>
+
+        <div class="inner-box">
+            <h2>5) Due aerei uno contro l'altro</h2>
+            <p>Un aereo parte da Londra verso Pechino a 700 km/h. Contemporaneamente un secondo aereo parte da Pechino verso Londra a 800 km/h. Le città distano 10&nbsp;000 km e hanno 8 ore di fuso orario. Qual è la distanza tra i due aerei un'ora prima che si incrocino?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn5" data-label="la soluzione" aria-controls="sol5" aria-expanded="false" onclick="toggleBox('btn5','sol5')">Mostra la soluzione ▼</button>
+            </div>
+            <div id="sol5" hidden>
+                <p>La velocità di avvicinamento è <strong>700 + 800 = 1500 km/h</strong>. Un'ora prima dell'incrocio, la distanza è quindi <strong>1500 km</strong>.</p>
+                <p>La distanza iniziale e il fuso orario non servono: gli aerei partono contemporaneamente e la domanda riguarda l'ultima ora prima dell'incontro.</p>
+            </div>
+        </div>
+
+        <div class="inner-box">
+            <h2>6) L'innaffiatoio</h2>
+            <p>Un agricoltore deve diluire del fertilizzante in <strong>20 litri d'acqua</strong>. Ha un innaffiatoio con capacità di 25 litri che contiene già 16 litri d'acqua e due recipienti non graduati da 5 e 3 litri. Come può portare l'acqua nell'innaffiatoio a esattamente 20 litri?</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn6" data-label="la soluzione" aria-controls="sol6" aria-expanded="false" onclick="toggleBox('btn6','sol6')">Mostra la soluzione ▼</button>
+            </div>
+            <div id="sol6" hidden>
+                <p>Occorre misurare <strong>4 L</strong> e aggiungerli ai 16 L già presenti.</p>
+                <ol>
+                    <li>Riempi il recipiente da 5 L e travasa nel recipiente da 3 L: in quello da 5 L rimangono 2 L.</li>
+                    <li>Svuota il recipiente da 3 L e trasferisci al suo interno i 2 L rimasti.</li>
+                    <li>Riempi nuovamente il recipiente da 5 L e versa nel recipiente da 3 L finché questo è pieno. Può ricevere soltanto 1 L, quindi nel recipiente da 5 L rimangono <strong>4 L</strong>.</li>
+                    <li>Versa i 4 L nell'innaffiatoio: <code>16 + 4 = 20</code>.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="inner-box">
+            <h2>Controllo dei concetti</h2>
+            <ol>
+                <li>Qual è la differenza tra un problema e una sua istanza?</li>
+                <li>Nel problema del contadino, qual è l'output richiesto?</li>
+                <li>Perché nella bilancia conviene dividere le 18 monete in tre gruppi da 6?</li>
+                <li>Qual è la differenza tra algoritmo e programma?</li>
+                <li>Perché una soluzione deve rispettare i vincoli anche negli stati intermedi?</li>
+            </ol>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn-concetti" data-label="le risposte" aria-controls="sol-concetti" aria-expanded="false" onclick="toggleBox('btn-concetti','sol-concetti')">Mostra le risposte ▼</button>
+            </div>
+            <div id="sol-concetti" hidden>
+                <ol>
+                    <li>Il problema è la domanda generale; l'istanza è un caso specifico descritto da determinati input.</li>
+                    <li>Una sequenza finita di attraversamenti leciti che porta tutti dalla riva A alla riva B.</li>
+                    <li>Perché una pesata ha tre esiti e ciascun esito deve lasciare lo stesso numero di casi sospetti.</li>
+                    <li>L'algoritmo è una procedura astratta; il programma la esprime in un linguaggio eseguibile in un determinato ambiente.</li>
+                    <li>Perché una sequenza che raggiunge l'obiettivo violando un vincolo durante il percorso non è una soluzione valida.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="inner-box">
+            <h2>Pagina originale degli esercizi</h2>
+            <p>L'immagine rimane disponibile come riferimento, mentre gli enunciati precedenti sono stati riportati in formato HTML.</p>
+            <div class="nav-buttons" style="justify-content:left">
+                <button id="btn-originale" data-label="l'immagine" aria-controls="box-originale" aria-expanded="false" onclick="toggleBox('btn-originale','box-originale')">Mostra l'immagine ▼</button>
+            </div>
+            <div id="box-originale" hidden>
+                <img src="img/eser_lez1_1.png" alt="Pagina originale con i sei esercizi di verifica della lezione 1" style="max-width:95%;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+            </div>
         </div>
     </div>
 
-    <!-- ESERCIZIO 4 -->
-    <div class="inner-box">
-      <h2>4) Fuga da Alcatraz (Δpeso ≤ 15 kg)</h2>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn4" onclick="toggleBox('btn4','sol4')">Mostra la soluzione ▼</button>
-      </div>
-      <div id="sol4" style="display:none;margin-top:10px">
-        <p><strong>Assunzione standard del rompicapo:</strong> è lecito usare nello stesso cestello un
-           <strong>uomo + blocco</strong> come contrappeso; il vincolo è solo sulla differenza di peso tra i due lati
-           (|Δ| ≤ 15 kg). Senza questa possibilità la fuga non è realizzabile rispettando il vincolo.</p>
-        <p><strong>Sequenza corretta (|Δ| ≤ 15 kg):</strong></p>
-        <ol>
-          <li><strong>195↓</strong> bilanciato con <strong>105 + 75↑</strong>  → differenza 15</li>
-          <li><strong>105↓</strong> bilanciato con <strong>90↑</strong>       → differenza 15</li>
-          <li><strong>90↓</strong>  bilanciato con <strong>75↑</strong>       → differenza 15</li>
-        </ol>
-        <p>Alla fine i tre detenuti (90, 105, 195) sono a terra; il blocco da 75 kg resta in alto.</p>
-      </div>
+    <div class="nav-buttons">
+        <button onclick="prevSlide()">&#8592; Indietro</button>
+        <button onclick="nextSlide()">Avanti &#8594;</button>
     </div>
-
-    <!-- ESERCIZIO 5 -->
-    <div class="inner-box">
-      <h2>5) Due aerei uno contro l’altro</h2>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn5" onclick="toggleBox('btn5','sol5')">Mostra la soluzione ▼</button>
-      </div>
-      <div id="sol5" style="display:none;margin-top:10px">
-        <p>Velocità di avvicinamento: <strong>700 + 800 = 1500 km/h</strong>.<br>
-           <strong>Un’ora prima</strong> dell’incrocio la distanza è <strong>1500 km</strong>.</p>
-      </div>
-    </div>
-
-    <!-- ESERCIZIO 6 -->
-    <div class="inner-box">
-      <h2>6) L’innaffiatoio (ottenere esattamente 20 L)</h2>
-      <div class="nav-buttons" style="justify-content:left">
-        <button id="btn6" onclick="toggleBox('btn6','sol6')">Mostra la soluzione ▼</button>
-      </div>
-      <div id="sol6" style="display:none;margin-top:10px">
-        <p>L’annaffiatoio contiene <strong>16 L</strong>. Con i contenitori da <strong>5 L</strong> e <strong>3 L</strong> misura
-           <strong>4 L</strong> e aggiungili per arrivare a <strong>20 L</strong> (si assume disponibilità d’acqua).</p>
-        <ol>
-          <li>Riempi <strong>5 L</strong> e travasa nel <strong>3 L</strong> → nel 5 L restano <strong>2 L</strong>. Svuota il 3 L.</li>
-          <li>Travaso i <strong>2 L</strong> dal 5 L nel 3 L.</li>
-          <li>Riempi di nuovo il <strong>5 L</strong> e travasa nel <strong>3 L</strong> (che contiene 2 L): ne entrano <strong>1 L</strong>,
-              nel 5 L rimangono <strong>4 L</strong>.</li>
-          <li>Versa questi <strong>4 L</strong> nell’annaffiatoio: 16 + 4 = <strong>20 L</strong>.</li>
-        </ol>
-      </div>
-    </div>
-  </div>
-
-  <div class="nav-buttons">
-    <button onclick="prevSlide()">&#8592; Indietro</button>
-    <button onclick="nextSlide()">Avanti &#8594;</button>
-  </div>
 </div>
-
-<script>
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>

@@ -1,4 +1,7 @@
 function toggleMenu() {
     const menu = document.getElementById('menu');
-    menu.classList.toggle('open');
+    if (!menu) return;
+    const opening = menu.classList.toggle('open');
+    const button = document.querySelector('.menu-toggle');
+    if (button) button.setAttribute('aria-expanded', opening ? 'true' : 'false');
 }

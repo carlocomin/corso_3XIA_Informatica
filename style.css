@@ -7,6 +7,12 @@ body {
 	font-size: 18px;
 }
 
+.slide,
+.content-box,
+.inner-box {
+    box-sizing: border-box;
+}
+
 /* Elenco allineato a sinistra */
 ul {
     list-style-position: outside;
@@ -43,12 +49,18 @@ li {
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: #26a69a;
+    background-color: #00796b;
     color: white;
     transition: background 0.3s;
 }
 .nav-buttons button:hover {
-    background-color: #00897b;
+    background-color: #00695c;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid #ffb300;
+    outline-offset: 3px;
 }
 
 /* Primo box centrato */
@@ -94,25 +106,43 @@ li {
     background-color: rgba(225, 245, 242, 0.97);  /* leggermente trasparente */
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-    overflow-y: auto;
-    transition: left 0.3s ease;
+    overflow-y: hidden;
+    transition: left 0.3s ease, visibility 0s linear 0.3s, overflow-y 0s linear 0.3s;
     z-index: 999;
+    visibility: hidden;
 }
 
 .sidebar.open {
     left: 0;
-}
-
-/* Di base nascondi la scrollbar */
-.sidebar {
-    overflow-y: hidden;
-    transition: left 0.3s ease, overflow-y 0s linear 0.3s; /* ritardo per nascondere dopo la chiusura */
-}
-
-/* Quando il menu è aperto rendi visibile la scrollbar */
-.sidebar.open {
+    visibility: visible;
     overflow-y: auto;
-    transition: left 0.3s ease, overflow-y 0s;
+    transition: left 0.3s ease, visibility 0s, overflow-y 0s;
+}
+
+@media (max-width: 720px) {
+    body {
+        padding: 8px;
+        font-size: 16px;
+    }
+
+    .slide,
+    .content-box,
+    .inner-box {
+        width: 100%;
+    }
+
+    .slide {
+        padding-top: 52px;
+    }
+
+    .content-box,
+    .inner-box {
+        padding: 12px;
+    }
+
+    .image-container img {
+        width: min(90%, 420px);
+    }
 }
 
 

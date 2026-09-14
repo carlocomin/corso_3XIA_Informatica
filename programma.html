@@ -3,33 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Programma del Corso</title>
+  <title>Programma del corso – Informatica 3BIA</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="default.css">
+  <script src="menu.js" defer></script>
   <script>
     function prevSlide(){ window.location.href = "index.html"; }
-    function nextSlide(){ window.location.href = "lez1/lez1.html"; } // prima pagina della Lezione 1
-    function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+    function nextSlide(){ window.location.href = "raccomandazioni.html"; }
   </script>
   <style>
     /* allineamento a sinistra per gli elenchi dentro le inner-box */
-    .inner-box, .inner-box ul, .inner-box li { text-align: left !important; }
-    .inner-box ul { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position: outside; }
+    .inner-box, .inner-box ul, .inner-box ol, .inner-box li { text-align: left !important; }
+    .inner-box ul, .inner-box ol { margin:.5rem 0 .75rem 1rem; padding-left:1.25rem; list-style-position: outside; }
     .inner-box li { margin:.25rem 0; }
   </style>
 </head>
 <body>
 <!-- BEGIN MENU -->
-<button class="menu-toggle" onclick="toggleMenu()">&#9776; Menu</button>
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
 <div class="sidebar" id="menu">
   <h2>Menu Lezioni</h2>
   <ul>
-    <li><a href="lez1/lez1.html">Lezione 1</a></li>
-    <li><a href="lez2/lez2_1.html">Lezione 2</a></li>
-    <li><a href="lez3/lez3_1.html">Lezione 3</a></li>
-    <li><a href="lez4/lez4_1.html">Lezione 4</a></li>
-    <li><a href="lez5/lez5_1.html">Lezione 5</a></li>
-	<li><a href="lez6/lez6_1.html">Lezione 6</a></li>
+    <li><a href="lez1/lez1_1.html">Lezione 1 — Problemi e algoritmi</a></li>
+    <li><a href="lez2/lez2_1.html">Lezione 2 — Diagrammi e pseudocodice</a></li>
+    <li><a href="lez3/lez3_1.html">Lezione 3 — Selezione</a></li>
+    <li><a href="lez4/lez4_1.html">Lezione 4 — Cicli</a></li>
+    <li><a href="lez5/lez5_1.html">Lezione 5 — Array</a></li>
+    <li><a href="lez6/lez6_1.html">Lezione 6 — C e C++</a></li>
   </ul>
 </div>
 <!-- END MENU -->
@@ -43,36 +43,16 @@
   </div>
 
 <div class="inner-box">
-  <!-- LEZIONE 1 -->
-    <ul>
-      <li><a href="lez1/lez1_1.html">Lezione 1 — Problemi, Algoritmi e Programmi</a></li>
-    </ul>
-  
-  <!-- LEZIONE 2 -->
-    <ul>
-      <li><a href="lez2/lez2_1.html">Lezione 2 — Flowchart &amp; Pseudocodice</a></li>
-    </ul>
-  
-  <!-- LEZIONE 3 -->
-    <ul>
-      <li><a href="lez3/lez3_1.html">Lezione 3 — Istruzione di Selezione (if / else)</a></li>
-    </ul>
-  
-  <!-- LEZIONE 4 -->
-    <ul>
-      <li><a href="lez4/lez4_1.html">Lezione 4 — Istruzioni di Iterazione (cicli)</a></li>
-    </ul>
-  
-  <!-- LEZIONE 5 -->
-  
-    <ul>
-      <li><a href="lez5/lez5_1.html">Lezione 5 — Array (pseudocodice, senza codice C/C++)</a></li>
-    </ul>
-  <!-- LEZIONE 6 -->
-  
-    <ul>
-      <li><a href="lez6/lez6_1.html">Lezione 6 — Introduzione a C/C++</a></li>
-    </ul>
+  <h2>Percorso didattico</h2>
+  <p><strong>Prima di iniziare:</strong> <a href="raccomandazioni.html">metodo di studio e patto di lavoro</a> · <a href="impatto-ai.html">AI, didattica e lavoro informatico</a></p>
+  <ol>
+    <li><a href="lez1/lez1_1.html">Problemi, algoritmi e programmi</a></li>
+    <li><a href="lez2/lez2_1.html">Diagrammi di flusso, variabili e sequenze</a></li>
+    <li><a href="lez3/lez3_1.html">Decisioni e condizioni booleane</a></li>
+    <li><a href="lez4/lez4_1.html">Cicli e iterazioni annidate</a></li>
+    <li><a href="lez5/lez5_1.html">Array: caricamento, scansione, ricerca e frequenze</a></li>
+    <li><a href="lez6/lez6_1.html">Traduzione dei concetti in C e C++</a></li>
+  </ol>
   </div>
   
   <div class="nav-buttons">
@@ -81,8 +61,5 @@
   </div>
 </div>
 
-<script>
-  function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-</script>
 </body>
 </html>
