@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 1.6 – Origine e storia degli algoritmi</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <link rel="stylesheet" href="storia.css">
+  <script src="../menu.js" defer></script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_5.html"; }
+    function nextSlide(){ window.location.href = "lez1_7.html"; }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezione 1</h2>
+  <ul>
+    <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    <li><a href="lez1_6.html">1.6 — Origine e storia degli algoritmi</a></li>
+    <li><a href="lez1_7.html">1.7 — Calcolabilità e macchina di Turing</a></li>
+    <li><a href="lez1_8.html">1.8 — Alan Turing</a></li>
+    <li><a href="lez1_9.html">1.9 — Il programma memorizzato</a></li>
+    <li><a href="lez1_10.html">1.10 — Architettura di von Neumann</a></li>
+    <li><a href="lez1_11.html">1.11 — John von Neumann</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 1.6 — Origine e storia degli algoritmi</h1>
+  <p><strong>Obiettivo:</strong> capire come un nome medievale sia diventato un concetto fondamentale dell'informatica moderna.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <main class="content-box history-content">
+    <section class="inner-box hero-split">
+      <div>
+        <h2>Dal nome di uno studioso a una parola universale</h2>
+        <p>La parola <em>algoritmo</em> risale alla forma latina del nome di <strong>Muḥammad ibn Mūsā al-Khwārizmī</strong>, matematico, astronomo e geografo attivo nel IX secolo. Il riferimento geografico nel suo nome rimanda alla regione del Khwārezm, in Asia centrale.</p>
+        <p>Le traduzioni latine delle sue opere diffusero in Europa metodi sistematici di calcolo basati sulle cifre indo-arabiche. Nel Medioevo termini come <em>algorismus</em> indicavano soprattutto l'arte di eseguire questi calcoli.</p>
+        <p class="key-idea"><strong>Passaggio storico:</strong> il significato si è allargato. Da “procedimento per fare calcoli con le cifre” si è arrivati a “procedimento preciso ed eseguibile per trasformare dati o risolvere una classe di problemi”.</p>
+      </div>
+      <figure>
+        <img class="portrait" src="img/al-khwarizmi.jpg" alt="Ritratto illustrato di Muhammad ibn Musa al-Khwarizmi">
+        <figcaption>Muḥammad ibn Mūsā al-Khwārizmī, circa 780–850. Immagine estratta dal documento integrativo.</figcaption>
+      </figure>
+    </section>
+
+    <section class="inner-box">
+      <h2>Una storia più antica della parola</h2>
+      <p>Gli esseri umani descrivevano procedure ripetibili molto prima che esistesse il termine moderno. Ricette di calcolo, metodi geometrici e tecniche amministrative erano trasmessi come successioni ordinate di operazioni.</p>
+      <ol class="timeline">
+        <li><time>Antichità</time><span>Procedure aritmetiche e geometriche vengono annotate e insegnate; l'algoritmo di Euclide ne è un esempio celebre già incontrato nel corso.</span></li>
+        <li><time>IX secolo</time><span>Al-Khwārizmī raccoglie e sistematizza metodi di calcolo e algebra nel mondo islamico.</span></li>
+        <li><time>Medioevo</time><span>Le traduzioni latine diffondono metodi e numerazione indo-arabica in Europa; nasce la famiglia di parole da cui deriva <em>algoritmo</em>.</span></li>
+        <li><time>Età moderna</time><span>Le procedure di calcolo diventano sempre più formalizzate e vengono affidate anche a macchine meccaniche.</span></li>
+        <li><time>XX secolo</time><span>Logici e matematici cercano una definizione rigorosa di “procedimento calcolabile”, preparando la nascita dell'informatica teorica.</span></li>
+      </ol>
+    </section>
+
+    <section class="inner-box">
+      <h2>Tre trasformazioni del concetto</h2>
+      <div class="concept-cards">
+        <div class="concept-card">
+          <h3>Da caso singolo a metodo generale</h3>
+          <p>Il valore non sta nel risultato di un solo calcolo, ma nelle regole applicabili a tutte le istanze ammesse.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Da sapere personale a descrizione</h3>
+          <p>Il procedimento deve poter essere comunicato, controllato e ripetuto da un altro esecutore.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Da esecutore umano a macchina</h3>
+          <p>Quando ogni passo è elementare e non ambiguo, l'esecutore può essere anche un dispositivo automatico.</p>
+        </div>
+      </div>
+      <p class="note"><strong>Algoritmo, rappresentazione, esecutore:</strong> lo stesso metodo può essere espresso in linguaggio naturale, pseudocodice, diagramma o programma. Cambia la forma; deve restare invariata la logica del procedimento.</p>
+    </section>
+
+    <section class="inner-box">
+      <h2>Il raccordo con le pagine già studiate</h2>
+      <p>Il primo PDF prosegue con MCD, algoritmo di Euclide e problema del contadino. Questi argomenti sono già sviluppati nelle lezioni 1.2 e 1.4, quindi qui non vengono ripetuti.</p>
+      <details class="recall-box">
+        <summary><strong>Apri la galleria delle immagini presenti nel PDF</strong></summary>
+        <div class="source-gallery">
+          <figure>
+            <img src="img/mcd-euclide-documento.jpg" alt="Calcolo del massimo comun divisore di 108 e 30 mediante divisioni successive">
+            <figcaption>Divisioni successive dell'algoritmo di Euclide: richiamo alla lezione 1.4.</figcaption>
+          </figure>
+          <figure>
+            <img src="img/niccolo-tartaglia.jpg" alt="Ritratto inciso di Niccolo Tartaglia">
+            <figcaption>Niccolò Tartaglia, collegato nel documento al problema del contadino.</figcaption>
+          </figure>
+          <figure>
+            <img src="img/contadino-documento.jpg" alt="Contadino con lupo, capra e cavolo sulla riva di un fiume">
+            <figcaption>La situazione iniziale del problema studiato nella lezione 1.2.</figcaption>
+          </figure>
+          <figure>
+            <img src="img/contadino-soluzione-documento.png" alt="Sequenza illustrata dei sette attraversamenti che risolvono il problema del contadino">
+            <figcaption>Una soluzione ottimale in sette attraversamenti.</figcaption>
+          </figure>
+        </div>
+      </details>
+    </section>
+
+    <aside class="inner-box source-box">
+      <p><strong>Documento completo:</strong> <a href="../docs/lez1/0.Appunti-integrativi-algoritmi.pdf" target="_blank" rel="noopener">Dai problemi agli algoritmi — appunti integrativi (PDF)</a>.</p>
+      <p>Il PDF contiene le definizioni estese, gli esempi sul MCD e il problema del contadino nella forma originale.</p>
+    </aside>
+  </main>
+
+  <div class="nav-buttons" style="margin-top:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>

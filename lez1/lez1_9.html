@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 1.9 – Il programma memorizzato</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <link rel="stylesheet" href="storia.css">
+  <script src="../menu.js" defer></script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_8.html"; }
+    function nextSlide(){ window.location.href = "lez1_10.html"; }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezione 1</h2>
+  <ul>
+    <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    <li><a href="lez1_6.html">1.6 — Origine e storia degli algoritmi</a></li>
+    <li><a href="lez1_7.html">1.7 — Calcolabilità e macchina di Turing</a></li>
+    <li><a href="lez1_8.html">1.8 — Alan Turing</a></li>
+    <li><a href="lez1_9.html">1.9 — Il programma memorizzato</a></li>
+    <li><a href="lez1_10.html">1.10 — Architettura di von Neumann</a></li>
+    <li><a href="lez1_11.html">1.11 — John von Neumann</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 1.9 — Il programma memorizzato</h1>
+  <p><strong>Obiettivo:</strong> capire perché conservare istruzioni e dati in memoria rende un computer realmente flessibile.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <main class="content-box history-content">
+    <section class="inner-box hero-split">
+      <div>
+        <h2>Prima del programma in memoria</h2>
+        <p>Le prime macchine automatiche ricevevano dati o istruzioni attraverso supporti e configurazioni esterne: schede e nastri perforati, pannelli di collegamento, cavi, interruttori o parti meccaniche.</p>
+        <p>Cambiare lavoro poteva significare preparare un nuovo mazzo di schede oppure riconfigurare fisicamente la macchina. Il confine tra “programma” e “configurazione dell'hardware” era quindi molto più visibile di oggi.</p>
+        <p class="note"><strong>Precisazione:</strong> una scheda perforata poteva contenere istruzioni, dati o informazioni di controllo. Non tutte le schede perforate erano programmi.</p>
+      </div>
+      <figure>
+        <img class="document-image" src="img/scheda-perforata.jpg" alt="Scheda perforata a ottanta colonne con fori rettangolari">
+        <figcaption>Scheda perforata a 80 colonne. Immagine estratta dal documento integrativo.</figcaption>
+      </figure>
+    </section>
+
+    <section class="inner-box">
+      <h2>L'idea decisiva</h2>
+      <p>In un computer a <strong>programma memorizzato</strong>, le istruzioni sono codificate come sequenze di bit e conservate in memoria. Nella stessa memoria si trovano anche i dati sui quali le istruzioni operano.</p>
+      <div class="concept-cards">
+        <div class="concept-card"><h3>Una sola memoria</h3><p>Programmi e dati occupano celle indirizzabili e possono essere trasferiti verso il processore.</p></div>
+        <div class="concept-card"><h3>Comportamento modificabile</h3><p>Per cambiare compito si carica un altro programma, senza ricostruire la macchina.</p></div>
+        <div class="concept-card"><h3>Istruzioni come dati</h3><p>Un programma può essere copiato, salvato, trasmesso e prodotto da un altro programma.</p></div>
+      </div>
+      <p class="key-idea"><strong>Programmare</strong> significa fornire alla macchina una rappresentazione delle operazioni da eseguire. L'hardware rimane generale; è il programma caricato a specializzarne temporaneamente il comportamento.</p>
+    </section>
+
+    <section class="inner-box">
+      <h2>Un esempio concettuale</h2>
+      <p>Supponiamo che alcune celle di memoria contengano dati e altre contengano istruzioni:</p>
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead><tr><th>Indirizzo</th><th>Contenuto simbolico</th><th>Interpretazione</th></tr></thead>
+          <tbody>
+            <tr><td><code>100</code></td><td><code>LOAD 200</code></td><td>Carica nel processore il valore conservato all'indirizzo 200.</td></tr>
+            <tr><td><code>101</code></td><td><code>ADD 201</code></td><td>Somma il valore conservato all'indirizzo 201.</td></tr>
+            <tr><td><code>102</code></td><td><code>STORE 202</code></td><td>Salva il risultato all'indirizzo 202.</td></tr>
+            <tr><td><code>200</code></td><td><code>7</code></td><td>Primo dato.</td></tr>
+            <tr><td><code>201</code></td><td><code>5</code></td><td>Secondo dato.</td></tr>
+            <tr><td><code>202</code></td><td><code>?</code></td><td>Cella destinata al risultato, che diventerà 12.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>La distinzione tra istruzione e dato dipende da <strong>come</strong> il processore usa quei bit e dall'indirizzo dal quale li preleva.</p>
+    </section>
+
+    <section class="inner-box two-columns equal">
+      <div>
+        <h2>Conseguenze pratiche</h2>
+        <ul>
+          <li>caricare e sostituire rapidamente programmi;</li>
+          <li>usare salti e cicli per cambiare il flusso di esecuzione;</li>
+          <li>costruire compilatori, sistemi operativi e librerie;</li>
+          <li>salvare e distribuire il software come informazione.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Nuove responsabilità</h2>
+        <ul>
+          <li>proteggere memoria e programmi da modifiche indesiderate;</li>
+          <li>distinguere aree eseguibili e aree destinate ai dati;</li>
+          <li>controllare chi può caricare o avviare un programma;</li>
+          <li>verificare integrità e provenienza del software.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Dalla teoria alla realizzazione</h2>
+      <p>La macchina universale di Turing aveva mostrato sul piano teorico che descrizione della macchina e dati potevano essere codificati insieme. Negli anni Quaranta questa intuizione entrò nei progetti di calcolatori elettronici a programma memorizzato.</p>
+      <p>Il rapporto sull'EDVAC diffuso nel 1945 con il nome di John von Neumann descrisse in modo influente l'organizzazione di una macchina di questo tipo. La realizzazione pratica fu il risultato del lavoro collettivo di matematici, ingegneri e tecnici, tra cui John Mauchly, J. Presper Eckert e il gruppo dell'EDVAC.</p>
+      <p class="warning"><strong>Attenzione alle semplificazioni storiche:</strong> “macchina di von Neumann” è un nome convenzionale molto utile, ma non significa che l'idea e i primi computer siano opera di una sola persona.</p>
+    </section>
+
+    <aside class="inner-box source-box">
+      <p><strong>Documento completo:</strong> <a href="../docs/lez1/1.Appunti-Integrativi-turing-vonneumann.pdf" target="_blank" rel="noopener">Turing e architettura di von Neumann — appunti integrativi (PDF)</a>.</p>
+    </aside>
+  </main>
+
+  <div class="nav-buttons" style="margin-top:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>

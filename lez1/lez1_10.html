@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 1.10 – Architettura di von Neumann</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <link rel="stylesheet" href="storia.css">
+  <script src="../menu.js" defer></script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_9.html"; }
+    function nextSlide(){ window.location.href = "lez1_11.html"; }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezione 1</h2>
+  <ul>
+    <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    <li><a href="lez1_6.html">1.6 — Origine e storia degli algoritmi</a></li>
+    <li><a href="lez1_7.html">1.7 — Calcolabilità e macchina di Turing</a></li>
+    <li><a href="lez1_8.html">1.8 — Alan Turing</a></li>
+    <li><a href="lez1_9.html">1.9 — Il programma memorizzato</a></li>
+    <li><a href="lez1_10.html">1.10 — Architettura di von Neumann</a></li>
+    <li><a href="lez1_11.html">1.11 — John von Neumann</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 1.10 — Architettura di von Neumann</h1>
+  <p><strong>Obiettivo:</strong> riconoscere i componenti di un computer a programma memorizzato e seguire il ciclo di esecuzione di un'istruzione.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <main class="content-box history-content">
+    <section class="inner-box">
+      <h2>Il modello generale</h2>
+      <p>L'architettura di von Neumann descrive un computer digitale composto da memoria, unità di elaborazione, dispositivi di ingresso/uscita e collegamenti per trasferire informazioni.</p>
+      <div class="architecture" role="img" aria-label="Schema dell'architettura di von Neumann con memoria, CPU, input output e bus di sistema">
+        <div><strong>Memoria</strong><br>istruzioni e dati</div>
+        <div class="cpu"><strong>CPU</strong><div class="cpu-parts"><span>unità di controllo</span><span>ALU</span><span>registri</span></div></div>
+        <div><strong>Input / Output</strong><br>periferiche e mondo esterno</div>
+        <div class="system-bus"><strong>Bus di sistema:</strong> indirizzi, dati e segnali di controllo</div>
+      </div>
+      <p class="key-idea">Il programma e i dati condividono la memoria. La CPU preleva un'istruzione, la interpreta, la esegue e passa alla successiva.</p>
+    </section>
+
+    <section class="inner-box">
+      <h2>I componenti, uno per uno</h2>
+      <div class="concept-cards">
+        <div class="concept-card">
+          <h3>Memoria</h3>
+          <p>È organizzata in celle identificate da indirizzi. Conserva sia le istruzioni del programma sia i dati e i risultati intermedi.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Unità di controllo</h3>
+          <p>Coordina il ciclo di esecuzione, interpreta l'istruzione corrente e produce i segnali necessari agli altri componenti.</p>
+        </div>
+        <div class="concept-card">
+          <h3>ALU</h3>
+          <p>L'unità aritmetico-logica esegue operazioni come somme, confronti, operazioni logiche e spostamenti di bit.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Registri</h3>
+          <p>Sono piccole memorie molto veloci interne alla CPU. Conservano istruzioni, indirizzi, operandi e risultati immediati.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Input / Output</h3>
+          <p>Permette lo scambio di dati con tastiera, schermo, dischi, rete, sensori e altre periferiche.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Bus</h3>
+          <p>Trasporta indirizzi, valori e segnali di controllo tra CPU, memoria e dispositivi di ingresso/uscita.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Il ciclo fetch–decode–execute</h2>
+      <div class="cycle-steps">
+        <div><strong>Fetch</strong><br>La CPU preleva dalla memoria l'istruzione indicata dal Program Counter.</div>
+        <div><strong>Decode</strong><br>L'unità di controllo riconosce operazione, registri e indirizzi richiesti.</div>
+        <div><strong>Execute</strong><br>ALU, memoria o unità di I/O compiono l'azione specificata.</div>
+        <div><strong>Write back</strong><br>Il risultato viene conservato e il flusso prosegue dalla prossima istruzione.</div>
+      </div>
+      <p>Il <strong>Program Counter (PC)</strong> contiene l'indirizzo della prossima istruzione. Normalmente avanza in sequenza; salti, condizioni e chiamate di funzione possono sostituirne il valore.</p>
+    </section>
+
+    <section class="inner-box">
+      <h2>Esempio: eseguire <code>C = A + B</code></h2>
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead><tr><th>Fase</th><th>Operazione simbolica</th><th>Effetto</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>LOAD A</code></td><td>La CPU legge dalla memoria il valore di A e lo porta in un registro.</td></tr>
+            <tr><td>2</td><td><code>ADD B</code></td><td>La CPU legge B; l'ALU somma i due valori e conserva il risultato in un registro.</td></tr>
+            <tr><td>3</td><td><code>STORE C</code></td><td>Il valore prodotto viene scritto nella cella di memoria assegnata a C.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Una singola istruzione di un linguaggio ad alto livello può richiedere più istruzioni macchina. Sarà il compilatore a tradurre la forma leggibile dal programmatore nella sequenza adatta alla CPU.</p>
+    </section>
+
+    <section class="inner-box two-columns equal">
+      <div>
+        <h2>Codice operativo e operandi</h2>
+        <p>Ogni istruzione macchina contiene almeno un <strong>opcode</strong>, che identifica l'operazione. Può inoltre specificare registri, valori immediati o indirizzi di memoria.</p>
+        <p>Esempio simbolico: in <code>ADD R1, R2</code>, <code>ADD</code> è l'operazione e i registri sono gli operandi.</p>
+      </div>
+      <div>
+        <h2>Sequenza e salti</h2>
+        <p>L'esecuzione ordinaria procede verso indirizzi consecutivi. Un'istruzione di salto cambia il Program Counter e rende possibili selezioni, cicli e funzioni.</p>
+        <p>Le strutture che programmeremo sono quindi costruite sopra un meccanismo hardware molto semplice.</p>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Il collo di bottiglia di von Neumann</h2>
+      <p>Istruzioni e dati devono viaggiare tra memoria e CPU. Se il processore può elaborare più rapidamente di quanto la memoria riesca a fornire informazioni, il trasferimento diventa un limite alle prestazioni.</p>
+      <ul>
+        <li>cache e prefetch avvicinano alla CPU le informazioni usate più spesso;</li>
+        <li>pipeline e più unità di esecuzione sovrappongono diverse fasi del lavoro;</li>
+        <li>nei processori moderni le cache di istruzioni e dati possono essere separate, pur mantenendo per il software una memoria sostanzialmente unificata;</li>
+        <li>l'architettura Harvard separa invece memorie o percorsi di istruzioni e dati.</li>
+      </ul>
+      <p class="note">I computer contemporanei sono molto più complessi dello schema, ma memoria, CPU, I/O e ciclo delle istruzioni restano un modello utile per capire il loro funzionamento.</p>
+    </section>
+
+    <aside class="inner-box source-box">
+      <p><strong>Documento completo:</strong> <a href="../docs/lez1/1.Appunti-Integrativi-turing-vonneumann.pdf" target="_blank" rel="noopener">Turing e architettura di von Neumann — appunti integrativi (PDF)</a>.</p>
+    </aside>
+  </main>
+
+  <div class="nav-buttons" style="margin-top:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>

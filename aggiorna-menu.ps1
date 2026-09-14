@@ -11,7 +11,7 @@ $newMenu = @'
 <div class="sidebar" id="menu">
   <h2>Menu Lezioni</h2>
   <ul>
-    <li><a href="lez1/lez1_1.html">Lezione 1 — Problemi e algoritmi</a></li>
+    <li><a href="lez1/lez1_1.html">Lezione 1 — Problemi, algoritmi e storia</a></li>
     <li><a href="lez2/lez2_1.html">Lezione 2 — Diagrammi e pseudocodice</a></li>
     <li><a href="lez3/lez3_1.html">Lezione 3 — Selezione</a></li>
     <li><a href="lez4/lez4_1.html">Lezione 4 — Cicli</a></li>

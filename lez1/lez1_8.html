@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 1.8 – Alan Turing</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <link rel="stylesheet" href="storia.css">
+  <script src="../menu.js" defer></script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_7.html"; }
+    function nextSlide(){ window.location.href = "lez1_9.html"; }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezione 1</h2>
+  <ul>
+    <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    <li><a href="lez1_6.html">1.6 — Origine e storia degli algoritmi</a></li>
+    <li><a href="lez1_7.html">1.7 — Calcolabilità e macchina di Turing</a></li>
+    <li><a href="lez1_8.html">1.8 — Alan Turing</a></li>
+    <li><a href="lez1_9.html">1.9 — Il programma memorizzato</a></li>
+    <li><a href="lez1_10.html">1.10 — Architettura di von Neumann</a></li>
+    <li><a href="lez1_11.html">1.11 — John von Neumann</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 1.8 — Alan Turing</h1>
+  <p><strong>Obiettivo:</strong> collegare calcolabilità, crittoanalisi e nascita dei primi computer programmabili.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <main class="content-box history-content">
+    <section class="inner-box hero-split">
+      <div>
+        <h2>Un matematico tra teoria e costruzione</h2>
+        <p><strong>Alan Mathison Turing</strong> nacque a Londra nel 1912. Studiò matematica al King's College di Cambridge e conseguì il dottorato a Princeton sotto la supervisione del logico Alonzo Church.</p>
+        <p>Il suo lavoro attraversò campi che oggi riconosciamo come informatica teorica, crittografia, progettazione di calcolatori, intelligenza artificiale e modellazione matematica dei fenomeni biologici.</p>
+        <p class="key-idea">Il filo comune era una domanda: quali attività del pensiero e del calcolo possono essere descritte come regole abbastanza precise da essere eseguite da una macchina?</p>
+      </div>
+      <figure>
+        <img class="portrait" src="img/alan-turing.jpg" alt="Ritratto fotografico in bianco e nero di Alan Turing">
+        <figcaption>Alan Turing (1912–1954). Immagine estratta dal documento integrativo.</figcaption>
+      </figure>
+    </section>
+
+    <section class="inner-box">
+      <h2>Una cronologia essenziale</h2>
+      <ol class="timeline">
+        <li><time>1931–1934</time><span>Studia matematica al King's College di Cambridge, dove si distingue nel campo della logica e della probabilità.</span></li>
+        <li><time>1936</time><span>Pubblica <em>On Computable Numbers</em>: introduce il modello oggi chiamato macchina di Turing e l'idea di macchina universale.</span></li>
+        <li><time>1936–1938</time><span>Studia a Princeton con Alonzo Church e consegue il dottorato in matematica.</span></li>
+        <li><time>1939–1945</time><span>Lavora a Bletchley Park alla crittoanalisi delle comunicazioni tedesche durante la Seconda guerra mondiale.</span></li>
+        <li><time>1945–1947</time><span>Al National Physical Laboratory elabora il progetto ACE, uno dei primi progetti dettagliati di calcolatore elettronico a programma memorizzato.</span></li>
+        <li><time>Dal 1948</time><span>Lavora all'Università di Manchester su calcolatori, programmazione e temi che oggi appartengono all'intelligenza artificiale.</span></li>
+        <li><time>1950–1952</time><span>Propone il celebre gioco dell'imitazione e studia con modelli matematici la formazione di strutture negli organismi viventi.</span></li>
+      </ol>
+    </section>
+
+    <section class="inner-box two-columns equal">
+      <div>
+        <h2>Bletchley Park ed Enigma</h2>
+        <p>Turing lavorò nel centro britannico di crittoanalisi di Bletchley Park. Contribuì ai metodi per decifrare messaggi protetti dalla macchina Enigma e alla progettazione della <strong>Bombe britannica</strong>, sviluppata insieme ad altri studiosi e tecnici.</p>
+        <p>Il lavoro richiedeva matematica, conoscenza delle procedure operative avversarie, progettazione elettromeccanica e gestione di grandi quantità di messaggi.</p>
+      </div>
+      <div>
+        <h2>Due macchine diverse</h2>
+        <p><strong>Macchina di Turing:</strong> modello matematico generale, usato per studiare ciò che è calcolabile.</p>
+        <p><strong>Bombe:</strong> dispositivo elettromeccanico specializzato, costruito per aiutare a individuare le configurazioni giornaliere di Enigma.</p>
+        <p class="warning">Condividono il nome di Turing, ma hanno scopi e natura completamente differenti.</p>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Dalla teoria ai computer reali</h2>
+      <div class="concept-cards">
+        <div class="concept-card"><h3>Universalità</h3><p>Una macchina generale può simulare procedure differenti leggendo descrizioni codificate.</p></div>
+        <div class="concept-card"><h3>ACE</h3><p>Turing tradusse molte idee teoriche in un progetto concreto di computer elettronico programmabile.</p></div>
+        <div class="concept-card"><h3>Programmazione</h3><p>Studiò organizzazione delle istruzioni, memoria, sottoprogrammi e modi efficienti di usare le macchine.</p></div>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Una figura scientifica più ampia</h2>
+      <ul>
+        <li><strong>Intelligenza artificiale:</strong> nel 1950 trasformò la domanda “le macchine possono pensare?” in una prova basata sul comportamento durante una conversazione.</li>
+        <li><strong>Biologia matematica:</strong> studiò come reazioni e diffusione possano produrre motivi ordinati, come macchie e strisce.</li>
+        <li><strong>Sport:</strong> fu un ottimo corridore di lunga distanza e raggiunse tempi di rilievo nella maratona.</li>
+      </ul>
+      <p>Morì nel 1954. Il valore del suo contributo scientifico e bellico fu riconosciuto pienamente dal grande pubblico solo molti anni più tardi.</p>
+    </section>
+
+    <aside class="inner-box source-box">
+      <p><strong>Documento completo:</strong> <a href="../docs/lez1/1.Appunti-Integrativi-turing-vonneumann.pdf" target="_blank" rel="noopener">Turing e architettura di von Neumann — appunti integrativi (PDF)</a>.</p>
+      <p>Nel PDF trovi una biografia narrativa più estesa e l'immagine originale.</p>
+    </aside>
+  </main>
+
+  <div class="nav-buttons" style="margin-top:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>

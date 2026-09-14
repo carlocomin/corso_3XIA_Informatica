@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 1.7 – Calcolabilità e macchina di Turing</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <link rel="stylesheet" href="storia.css">
+  <script src="../menu.js" defer></script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_6.html"; }
+    function nextSlide(){ window.location.href = "lez1_8.html"; }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezione 1</h2>
+  <ul>
+    <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    <li><a href="lez1_6.html">1.6 — Origine e storia degli algoritmi</a></li>
+    <li><a href="lez1_7.html">1.7 — Calcolabilità e macchina di Turing</a></li>
+    <li><a href="lez1_8.html">1.8 — Alan Turing</a></li>
+    <li><a href="lez1_9.html">1.9 — Il programma memorizzato</a></li>
+    <li><a href="lez1_10.html">1.10 — Architettura di von Neumann</a></li>
+    <li><a href="lez1_11.html">1.11 — John von Neumann</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 1.7 — Calcolabilità e macchina di Turing</h1>
+  <p><strong>Obiettivo:</strong> comprendere come l'idea intuitiva di algoritmo sia stata trasformata in un modello matematico.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <main class="content-box history-content">
+    <section class="inner-box">
+      <h2>Una domanda nuova: che cosa significa “calcolabile”?</h2>
+      <p>All'inizio del Novecento i matematici avevano bisogno di distinguere con precisione ciò che può essere ottenuto mediante un procedimento meccanico da ciò che non può esserlo.</p>
+      <div class="concept-cards">
+        <div class="concept-card"><h3>Esistenza</h3><p>Esiste un metodo che risolve tutte le istanze ammesse del problema?</p></div>
+        <div class="concept-card"><h3>Correttezza</h3><p>Quando termina, il metodo produce sempre il risultato richiesto?</p></div>
+        <div class="concept-card"><h3>Terminazione</h3><p>Il metodo si arresta per ogni input per il quale dichiara di risolvere il problema?</p></div>
+      </div>
+      <p class="key-idea">Un algoritmo che <strong>risolve</strong> un problema deve avere una descrizione finita, passi elementari applicabili meccanicamente e deve terminare con la risposta corretta per ogni input ammesso.</p>
+    </section>
+
+    <section class="inner-box">
+      <h2>Il modello proposto da Alan Turing nel 1936</h2>
+      <p>La <strong>macchina di Turing</strong> non è un progetto dettagliato di computer da costruire. È un modello astratto volutamente semplice, usato per definire che cosa può essere eseguito da una procedura automatica.</p>
+      <div class="turing-machine" role="img" aria-label="Schema di una macchina di Turing con nastro, testina e controllo a stati">
+        <div class="tape" aria-hidden="true">
+          <span>…</span><span>0</span><span>1</span><span>1</span><span>0</span><span>□</span><span>□</span><span>□</span><span>…</span>
+        </div>
+        <div class="machine-head">↑ testina</div>
+        <div class="machine-control">controllo finito: stato corrente + simbolo letto → azione</div>
+      </div>
+      <ul>
+        <li><strong>Nastro:</strong> una successione teoricamente illimitata di celle, usata come memoria.</li>
+        <li><strong>Alfabeto:</strong> un insieme finito di simboli che possono comparire nelle celle.</li>
+        <li><strong>Testina:</strong> legge un simbolo, può riscriverlo e si sposta di una cella a sinistra o a destra.</li>
+        <li><strong>Stati:</strong> una memoria di controllo finita che descrive la fase corrente del calcolo.</li>
+        <li><strong>Funzione di transizione:</strong> per ogni coppia stato/simbolo stabilisce che cosa scrivere, dove muoversi e quale sarà il nuovo stato.</li>
+      </ul>
+    </section>
+
+    <section class="inner-box">
+      <h2>Come avviene un singolo passo</h2>
+      <ol>
+        <li>La testina osserva il simbolo nella cella corrente.</li>
+        <li>Il controllo combina quel simbolo con lo stato corrente.</li>
+        <li>La regola scelta può scrivere un simbolo sulla cella.</li>
+        <li>La testina si sposta a sinistra o a destra.</li>
+        <li>La macchina entra in un nuovo stato oppure si arresta.</li>
+      </ol>
+      <p>Una computazione è la ripetizione di questi passi. Input e risultati sono codificati sul nastro; la sequenza delle configurazioni permette di ricostruire l'intero calcolo.</p>
+    </section>
+
+    <section class="inner-box">
+      <h2>La macchina universale</h2>
+      <p>Turing mostrò che si può descrivere una macchina capace di ricevere sul proprio nastro:</p>
+      <ul>
+        <li>la codifica delle regole di un'altra macchina;</li>
+        <li>la codifica dei dati sui quali quella macchina deve lavorare.</li>
+      </ul>
+      <p>La macchina universale legge entrambe le descrizioni e <strong>simula</strong> il comportamento della macchina specificata. Il medesimo dispositivo può quindi eseguire procedure diverse quando cambia la descrizione fornita.</p>
+      <p class="note"><strong>Idea che anticipa il computer programmabile:</strong> non serve costruire una macchina fisica differente per ogni compito; è possibile cambiare il comportamento fornendo un programma diverso.</p>
+    </section>
+
+    <section class="inner-box two-columns equal">
+      <div>
+        <h2>Problemi decidibili</h2>
+        <p>Un problema di decisione è <strong>decidibile</strong> se esiste un algoritmo che termina sempre e risponde correttamente sì oppure no.</p>
+      </div>
+      <div>
+        <h2>Problemi indecidibili</h2>
+        <p>Esistono problemi ben formulati per i quali nessun algoritmo può produrre sempre la risposta. Il problema dell'arresto è l'esempio fondamentale.</p>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Il problema dell'arresto, in forma intuitiva</h2>
+      <p>Vorremmo un programma universale capace di ricevere qualunque programma e qualunque input e stabilire sempre se quell'esecuzione terminerà. Turing dimostrò che un simile decisore generale non può esistere.</p>
+      <p class="warning"><strong>Conseguenza:</strong> alcuni limiti non dipendono dalla velocità, dalla memoria o dalla qualità del computer. Appartengono alla natura stessa del problema.</p>
+    </section>
+
+    <aside class="inner-box source-box">
+      <p><strong>Documenti di riferimento:</strong> <a href="../docs/lez1/0.Appunti-integrativi-algoritmi.pdf" target="_blank" rel="noopener">Dai problemi agli algoritmi (PDF)</a> e <a href="../docs/lez1/1.Appunti-Integrativi-turing-vonneumann.pdf" target="_blank" rel="noopener">Turing e architettura di von Neumann (PDF)</a>.</p>
+    </aside>
+  </main>
+
+  <div class="nav-buttons" style="margin-top:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>

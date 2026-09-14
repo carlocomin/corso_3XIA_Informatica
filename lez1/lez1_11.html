@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezione 1.11 – John von Neumann</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../default.css">
+  <link rel="stylesheet" href="storia.css">
+  <script src="../menu.js" defer></script>
+  <script>
+    function prevSlide(){ window.location.href = "lez1_10.html"; }
+    function nextSlide(){ window.location.href = "../lez2/lez2_1.html"; }
+  </script>
+</head>
+<body>
+<!-- BEGIN MENU -->
+<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="toggleMenu()">&#9776; Menu</button>
+<div class="sidebar" id="menu">
+  <h2>Menu Lezione 1</h2>
+  <ul>
+    <li><a href="lez1_1.html">1.1 — Il concetto di problema</a></li>
+    <li><a href="lez1_2.html">1.2 — Il problema del contadino</a></li>
+    <li><a href="lez1_3.html">1.3 — Il problema della bilancia</a></li>
+    <li><a href="lez1_4.html">1.4 — Il concetto di algoritmo</a></li>
+    <li><a href="lez1_5.html">1.5 — Verifica delle competenze</a></li>
+    <li><a href="lez1_6.html">1.6 — Origine e storia degli algoritmi</a></li>
+    <li><a href="lez1_7.html">1.7 — Calcolabilità e macchina di Turing</a></li>
+    <li><a href="lez1_8.html">1.8 — Alan Turing</a></li>
+    <li><a href="lez1_9.html">1.9 — Il programma memorizzato</a></li>
+    <li><a href="lez1_10.html">1.10 — Architettura di von Neumann</a></li>
+    <li><a href="lez1_11.html">1.11 — John von Neumann</a></li>
+  </ul>
+</div>
+<!-- END MENU -->
+
+<div class="slide">
+  <h1>Lezione 1.11 — John von Neumann</h1>
+  <p><strong>Obiettivo:</strong> conoscere il contributo di von Neumann e distinguere una figura storica dal modello architetturale che porta il suo nome.</p>
+
+  <div class="nav-buttons" style="margin-bottom:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+
+  <main class="content-box history-content">
+    <section class="inner-box hero-split">
+      <div>
+        <h2>Uno scienziato tra molte discipline</h2>
+        <p><strong>John von Neumann</strong>, nato János Lajos Neumann a Budapest nel 1903, fu matematico, fisico e informatico. Lavorò su logica, teoria degli insiemi, meccanica quantistica, economia, teoria dei giochi, calcolo numerico e progettazione di computer.</p>
+        <p>La sua capacità di collegare teoria matematica, problemi applicati e progettazione contribuì a trasformare i calcolatori elettronici in strumenti scientifici generali.</p>
+        <p class="key-idea">Il suo nome è legato all'architettura a programma memorizzato perché contribuì a descriverla, diffonderla e realizzarla in progetti concreti.</p>
+      </div>
+      <figure>
+        <img class="portrait" src="img/john-von-neumann.jpg" alt="Ritratto fotografico in bianco e nero di John von Neumann">
+        <figcaption>John von Neumann (1903–1957). Immagine estratta dal documento integrativo.</figcaption>
+      </figure>
+    </section>
+
+    <section class="inner-box">
+      <h2>Una cronologia essenziale</h2>
+      <ol class="timeline">
+        <li><time>1903</time><span>Nasce a Budapest e mostra fin da giovane eccezionali capacità matematiche.</span></li>
+        <li><time>1920–1926</time><span>Studia contemporaneamente chimica e matematica; consegue titoli in ingegneria chimica a Zurigo e matematica a Budapest.</span></li>
+        <li><time>1926–1927</time><span>Lavora a Gottinga nell'ambiente scientifico di David Hilbert e sviluppa ricerche in logica e fisica matematica.</span></li>
+        <li><time>1928</time><span>Pubblica risultati fondamentali che contribuiscono alla nascita della teoria matematica dei giochi.</span></li>
+        <li><time>1930–1933</time><span>È invitato a Princeton; nel 1933 diventa uno dei primi docenti dell'Institute for Advanced Study.</span></li>
+        <li><time>Anni 1940</time><span>Lavora su problemi di calcolo scientifico e militare e collabora al progetto Manhattan.</span></li>
+        <li><time>1945–1951</time><span>Partecipa alla definizione dell'EDVAC e guida la costruzione della macchina IAS, modello per numerosi computer successivi.</span></li>
+        <li><time>1957</time><span>Muore a Washington dopo aver lasciato contributi in una straordinaria varietà di discipline.</span></li>
+      </ol>
+    </section>
+
+    <section class="inner-box">
+      <h2>Contributi che si incontrano ancora oggi</h2>
+      <div class="concept-cards">
+        <div class="concept-card"><h3>Teoria dei giochi</h3><p>Formalizza decisioni strategiche nelle quali il risultato di ciascun soggetto dipende anche dalle scelte degli altri.</p></div>
+        <div class="concept-card"><h3>Calcolo scientifico</h3><p>Promuove l'uso dei computer per simulazioni, equazioni numeriche e problemi troppo lunghi per il calcolo manuale.</p></div>
+        <div class="concept-card"><h3>Computer programmabili</h3><p>Contribuisce all'organizzazione logica delle macchine a programma memorizzato e allo sviluppo della macchina IAS.</p></div>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Turing e von Neumann: contributi distinti e collegati</h2>
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead><tr><th>Aspetto</th><th>Alan Turing</th><th>John von Neumann</th></tr></thead>
+          <tbody>
+            <tr><td>Domanda centrale</td><td>Che cosa può essere calcolato da una procedura meccanica?</td><td>Come organizzare e usare efficacemente un calcolatore elettronico generale?</td></tr>
+            <tr><td>Contributo simbolo</td><td>Macchina di Turing e macchina universale.</td><td>Descrizione e diffusione dell'architettura a programma memorizzato.</td></tr>
+            <tr><td>Natura</td><td>Modello matematico astratto.</td><td>Modello logico vicino alla costruzione dell'hardware.</td></tr>
+            <tr><td>Relazione</td><td colspan="2">Si conobbero a Princeton. Von Neumann apprezzò il lavoro di Turing e gli propose una posizione di ricerca, che Turing non accettò.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Le idee si svilupparono in una comunità scientifica ampia. Turing, von Neumann, Church, Eckert, Mauchly e molti altri contribuirono con modelli, circuiti, memoria, metodi numerici e organizzazione dei sistemi.</p>
+    </section>
+
+    <section class="inner-box two-columns equal">
+      <div>
+        <h2>Il nome dell'architettura</h2>
+        <p>Il <em>First Draft of a Report on the EDVAC</em> circolò con il solo nome di von Neumann e rese molto influente lo schema. La denominazione è rimasta, anche se il progetto derivava da un lavoro collettivo.</p>
+      </div>
+      <div>
+        <h2>Scienza e responsabilità</h2>
+        <p>Von Neumann partecipò attivamente a programmi militari e nucleari. La sua biografia ricorda che le competenze scientifiche operano dentro decisioni politiche, sociali ed etiche.</p>
+      </div>
+    </section>
+
+    <section class="inner-box">
+      <h2>Che cosa portiamo nella prossima lezione</h2>
+      <ul>
+        <li>un algoritmo è una descrizione eseguibile, distinta dalla macchina fisica;</li>
+        <li>un computer generale cambia comportamento caricando istruzioni diverse;</li>
+        <li>la CPU esegue passi elementari, mentre il programmatore ragiona con strutture più astratte;</li>
+        <li>per comunicare bene un procedimento servono rappresentazioni chiare e controllabili.</li>
+      </ul>
+      <p class="key-idea">Nella Lezione 2 passeremo dalla storia alla rappresentazione: useremo diagrammi di flusso e pseudocodice per rendere visibile la struttura di un algoritmo.</p>
+    </section>
+
+    <aside class="inner-box source-box">
+      <p><strong>Documento completo:</strong> <a href="../docs/lez1/1.Appunti-Integrativi-turing-vonneumann.pdf" target="_blank" rel="noopener">Turing e architettura di von Neumann — appunti integrativi (PDF)</a>.</p>
+      <p>Il PDF contiene una biografia narrativa più ampia di von Neumann e il ritratto originale.</p>
+    </aside>
+  </main>
+
+  <div class="nav-buttons" style="margin-top:10px">
+    <button onclick="prevSlide()">&#8592; Indietro</button>
+    <button onclick="nextSlide()">Avanti &#8594;</button>
+  </div>
+</div>
+</body>
+</html>
