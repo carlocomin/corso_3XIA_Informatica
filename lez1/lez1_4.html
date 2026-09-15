@@ -162,8 +162,13 @@ s = b mod r</code></pre>
                 <p>In entrambi i casi, dopo due iterazioni il nuovo secondo valore è minore della metà del precedente. Il numero di iterazioni cresce quindi in modo proporzionale a <code>log(min(a,b))</code>: la complessità temporale è <strong>O(log min(a,b))</strong>.</p>
 
                 <h3>Il caso peggiore</h3>
-                <p>Le sequenze più lente si ottengono con coppie di numeri di Fibonacci consecutivi. Anche in quel caso il numero di iterazioni cresce come <strong>Θ(log min(a,b))</strong>.</p>
+                <p>I <strong>numeri di Fibonacci</strong> formano la successione definita da <code>F<sub>0</sub> = 0</code>, <code>F<sub>1</sub> = 1</code> e <code>F<sub>n</sub> = F<sub>n-1</sub> + F<sub>n-2</sub></code> per <code>n ≥ 2</code>: <code>0, 1, 1, 2, 3, 5, 8, ...</code>. Le sequenze più lente per l'algoritmo di Euclide si ottengono con coppie di numeri di Fibonacci consecutivi. Anche in quel caso il numero di iterazioni cresce come <strong>Θ(log min(a,b))</strong>.</p>
             </div>
+
+            <figure style="margin:24px 0 0;text-align:center">
+                <img src="img/euclid_complexity.png" alt="Mappa cromatica del numero di iterazioni dell'algoritmo di Euclide per coppie di valori comprese tra 1 e 500" style="display:block;width:100%;height:auto;border-radius:10px;box-shadow:3px 3px 8px rgba(0,0,0,0.2)">
+                <figcaption style="margin-top:8px">Complessità sperimentale dell'algoritmo di Euclide per coppie di input fino a 500: ogni punto rappresenta una coppia di valori e il colore indica il numero di iterazioni, secondo la scala laterale.</figcaption>
+            </figure>
         </div>
 
         <div class="inner-box">
@@ -175,7 +180,7 @@ s = b mod r</code></pre>
             <div id="box-risposta" hidden>
                 <ul>
                     <li>L'<strong>algoritmo</strong> descrive una soluzione generale indipendente dal linguaggio.</li>
-                    <li>Il <strong>programma</strong> esprime quella soluzione in istruzioni adatte a un determinato ambiente.</li>
+                    <li>Il <strong>programma</strong> esprime quella soluzione in istruzioni adatte a un determinato ambiente, in un determinato linguaggio di programmazione.</li>
                     <li>L'<strong>esecutore</strong> comprende ed esegue le istruzioni e determina quali operazioni possono essere considerate elementari.</li>
                 </ul>
             </div>
