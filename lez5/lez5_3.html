@@ -175,12 +175,17 @@ fine per</code></pre>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Passo</th><th>i</th><th>A[i]</th><th>posizione prima</th><th class="left">Azione</th><th>posizione dopo</th></tr>
+            <tr><th>Passo</th><th class="left">Istruzione o condizione</th><th>A</th><th>n</th><th>x</th><th>i</th><th>posizione</th><th class="left">Esito / osservazione</th></tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td>0</td><td>3</td><td>-1</td><td class="left">3 ≠ 5, incrementa i</td><td>-1</td></tr>
-            <tr><td>2</td><td>1</td><td>5</td><td>-1</td><td class="left">5 = 5, salva l'indice</td><td>1</td></tr>
-            <tr><td>uscita</td><td>1</td><td>—</td><td>1</td><td class="left">la condizione del WHILE è falsa</td><td>1</td></tr>
+            <tr><td>0</td><td class="left">stato iniziale del ciclo</td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>0</td><td>-1</td><td class="left">valori dopo l'inizializzazione</td></tr>
+            <tr><td>1</td><td class="left"><code>i &lt; n ∧ posizione = -1</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>0</td><td>-1</td><td class="left"><code>True</code></td></tr>
+            <tr><td>2</td><td class="left"><code>A[i] = x</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>0</td><td>-1</td><td class="left"><code>3 = 5</code> è <code>False</code></td></tr>
+            <tr><td>3</td><td class="left"><code>i ← i + 1</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td><strong>1</strong></td><td>-1</td><td class="left">prosegue la ricerca</td></tr>
+            <tr><td>4</td><td class="left"><code>i &lt; n ∧ posizione = -1</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>1</td><td>-1</td><td class="left"><code>True</code></td></tr>
+            <tr><td>5</td><td class="left"><code>A[i] = x</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>1</td><td>-1</td><td class="left"><code>5 = 5</code> è <code>True</code></td></tr>
+            <tr><td>6</td><td class="left"><code>posizione ← i</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>1</td><td><strong>1</strong></td><td class="left">prima occorrenza trovata</td></tr>
+            <tr><td>7</td><td class="left"><code>i &lt; n ∧ posizione = -1</code></td><td><code>[3,5,7,5]</code></td><td>4</td><td>5</td><td>1</td><td>1</td><td class="left"><code>False</code>: uscita dal ciclo</td></tr>
           </tbody>
         </table>
       </div>
@@ -268,19 +273,45 @@ fine se</code></pre>
 
     <div class="inner-box">
       <h2>Traccia dell'istogramma</h2>
-      <p>Con <code>A=[7,7,2,10,12,0]</code>, il valore 12 è fuori dal dominio 0–10.</p>
+      <p>Con <code>A=[7,7,2,10,12,0]</code>, il valore 12 è fuori dal dominio 0–10. Nella colonna <code>freq</code> sono elencate soltanto le celle diverse da zero.</p>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>i</th><th>A[i]</th><th class="left">Azione</th><th class="left">Cella aggiornata</th><th>validi</th><th>errori</th></tr>
+            <tr><th>Passo</th><th class="left">Istruzione o condizione</th><th>A</th><th>n</th><th>i</th><th>freq</th><th>validi</th><th>errori</th><th class="left">Esito / osservazione</th></tr>
           </thead>
           <tbody>
-            <tr><td>0</td><td>7</td><td class="left">incrementa</td><td class="left"><code>freq[7]=1</code></td><td>1</td><td>0</td></tr>
-            <tr><td>1</td><td>7</td><td class="left">incrementa</td><td class="left"><code>freq[7]=2</code></td><td>2</td><td>0</td></tr>
-            <tr><td>2</td><td>2</td><td class="left">incrementa</td><td class="left"><code>freq[2]=1</code></td><td>3</td><td>0</td></tr>
-            <tr><td>3</td><td>10</td><td class="left">incrementa</td><td class="left"><code>freq[10]=1</code></td><td>4</td><td>0</td></tr>
-            <tr><td>4</td><td>12</td><td class="left">fuori dominio</td><td class="left">nessuna</td><td>4</td><td>1</td></tr>
-            <tr><td>5</td><td>0</td><td class="left">incrementa</td><td class="left"><code>freq[0]=1</code></td><td>5</td><td>1</td></tr>
+            <tr><td>0</td><td class="left">stato prima del FOR</td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>—</td><td>tutte 0</td><td>0</td><td>0</td><td class="left">istogramma azzerato</td></tr>
+            <tr><td>1</td><td class="left"><code>i ← 0</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>0</strong></td><td>tutte 0</td><td>0</td><td>0</td><td class="left">inizializzazione del FOR</td></tr>
+            <tr><td>2</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>0</td><td>tutte 0</td><td>0</td><td>0</td><td class="left"><code>True</code></td></tr>
+            <tr><td>3</td><td class="left"><code>0 ≤ A[i] &lt; Size(freq)</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>0</td><td>tutte 0</td><td>0</td><td>0</td><td class="left"><code>True</code> per <code>A[0]=7</code></td></tr>
+            <tr><td>4</td><td class="left"><code>freq[A[i]] ← freq[A[i]] + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>0</td><td><strong><code>{7:1}</code></strong></td><td>0</td><td>0</td><td class="left">aggiornata <code>freq[7]</code></td></tr>
+            <tr><td>5</td><td class="left"><code>validi ← validi + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>0</td><td><code>{7:1}</code></td><td><strong>1</strong></td><td>0</td><td class="left">primo valore valido</td></tr>
+            <tr><td>6</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>1</strong></td><td><code>{7:1}</code></td><td>1</td><td>0</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>7</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>1</td><td><code>{7:1}</code></td><td>1</td><td>0</td><td class="left"><code>True</code></td></tr>
+            <tr><td>8</td><td class="left"><code>0 ≤ A[i] &lt; Size(freq)</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>1</td><td><code>{7:1}</code></td><td>1</td><td>0</td><td class="left"><code>True</code> per <code>A[1]=7</code></td></tr>
+            <tr><td>9</td><td class="left"><code>freq[A[i]] ← freq[A[i]] + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>1</td><td><strong><code>{7:2}</code></strong></td><td>1</td><td>0</td><td class="left">aggiornata <code>freq[7]</code></td></tr>
+            <tr><td>10</td><td class="left"><code>validi ← validi + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>1</td><td><code>{7:2}</code></td><td><strong>2</strong></td><td>0</td><td class="left">secondo valore valido</td></tr>
+            <tr><td>11</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>2</strong></td><td><code>{7:2}</code></td><td>2</td><td>0</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>12</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>2</td><td><code>{7:2}</code></td><td>2</td><td>0</td><td class="left"><code>True</code></td></tr>
+            <tr><td>13</td><td class="left"><code>0 ≤ A[i] &lt; Size(freq)</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>2</td><td><code>{7:2}</code></td><td>2</td><td>0</td><td class="left"><code>True</code> per <code>A[2]=2</code></td></tr>
+            <tr><td>14</td><td class="left"><code>freq[A[i]] ← freq[A[i]] + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>2</td><td><strong><code>{2:1, 7:2}</code></strong></td><td>2</td><td>0</td><td class="left">aggiornata <code>freq[2]</code></td></tr>
+            <tr><td>15</td><td class="left"><code>validi ← validi + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>2</td><td><code>{2:1, 7:2}</code></td><td><strong>3</strong></td><td>0</td><td class="left">terzo valore valido</td></tr>
+            <tr><td>16</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>3</strong></td><td><code>{2:1, 7:2}</code></td><td>3</td><td>0</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>17</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>3</td><td><code>{2:1, 7:2}</code></td><td>3</td><td>0</td><td class="left"><code>True</code></td></tr>
+            <tr><td>18</td><td class="left"><code>0 ≤ A[i] &lt; Size(freq)</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>3</td><td><code>{2:1, 7:2}</code></td><td>3</td><td>0</td><td class="left"><code>True</code> per <code>A[3]=10</code></td></tr>
+            <tr><td>19</td><td class="left"><code>freq[A[i]] ← freq[A[i]] + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>3</td><td><strong><code>{2:1, 7:2, 10:1}</code></strong></td><td>3</td><td>0</td><td class="left">aggiornata <code>freq[10]</code></td></tr>
+            <tr><td>20</td><td class="left"><code>validi ← validi + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>3</td><td><code>{2:1, 7:2, 10:1}</code></td><td><strong>4</strong></td><td>0</td><td class="left">quarto valore valido</td></tr>
+            <tr><td>21</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>4</strong></td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td>0</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>22</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>4</td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td>0</td><td class="left"><code>True</code></td></tr>
+            <tr><td>23</td><td class="left"><code>0 ≤ A[i] &lt; Size(freq)</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>4</td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td>0</td><td class="left"><code>False</code> per <code>A[4]=12</code></td></tr>
+            <tr><td>24</td><td class="left"><code>errori ← errori + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>4</td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td><strong>1</strong></td><td class="left">valore fuori dominio</td></tr>
+            <tr><td>25</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>5</strong></td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td>1</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>26</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>5</td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td>1</td><td class="left"><code>True</code></td></tr>
+            <tr><td>27</td><td class="left"><code>0 ≤ A[i] &lt; Size(freq)</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>5</td><td><code>{2:1, 7:2, 10:1}</code></td><td>4</td><td>1</td><td class="left"><code>True</code> per <code>A[5]=0</code></td></tr>
+            <tr><td>28</td><td class="left"><code>freq[A[i]] ← freq[A[i]] + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>5</td><td><strong><code>{0:1, 2:1, 7:2, 10:1}</code></strong></td><td>4</td><td>1</td><td class="left">aggiornata <code>freq[0]</code></td></tr>
+            <tr><td>29</td><td class="left"><code>validi ← validi + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>5</td><td><code>{0:1, 2:1, 7:2, 10:1}</code></td><td><strong>5</strong></td><td>1</td><td class="left">quinto valore valido</td></tr>
+            <tr><td>30</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td><strong>6</strong></td><td><code>{0:1, 2:1, 7:2, 10:1}</code></td><td>5</td><td>1</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>31</td><td class="left"><code>i &lt; n</code></td><td><code>[7,7,2,10,12,0]</code></td><td>6</td><td>6</td><td><code>{0:1, 2:1, 7:2, 10:1}</code></td><td>5</td><td>1</td><td class="left"><code>False</code>: uscita dal ciclo</td></tr>
           </tbody>
         </table>
       </div>

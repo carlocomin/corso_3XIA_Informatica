@@ -181,14 +181,27 @@ fine per</code></pre>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>i</th><th>Valore letto</th><th class="left">Cella modificata</th><th class="left">Parte inizializzata</th></tr>
+            <tr><th>Passo</th><th class="left">Istruzione o condizione</th><th>A</th><th>n</th><th>i</th><th class="left">Esito / osservazione</th></tr>
           </thead>
           <tbody>
-            <tr><td>0</td><td>4</td><td class="left"><code>A[0] ← 4</code></td><td class="left"><code>[4]</code></td></tr>
-            <tr><td>1</td><td>7</td><td class="left"><code>A[1] ← 7</code></td><td class="left"><code>[4, 7]</code></td></tr>
-            <tr><td>2</td><td>2</td><td class="left"><code>A[2] ← 2</code></td><td class="left"><code>[4, 7, 2]</code></td></tr>
-            <tr><td>3</td><td>9</td><td class="left"><code>A[3] ← 9</code></td><td class="left"><code>[4, 7, 2, 9]</code></td></tr>
-            <tr><td>4</td><td>5</td><td class="left"><code>A[4] ← 5</code></td><td class="left"><code>[4, 7, 2, 9, 5]</code></td></tr>
+            <tr><td>0</td><td class="left">stato prima del FOR</td><td><code>[—, —, —, —, —]</code></td><td>5</td><td>—</td><td class="left">sono mostrate le prime cinque celle</td></tr>
+            <tr><td>1</td><td class="left"><code>i ← 0</code></td><td><code>[—, —, —, —, —]</code></td><td>5</td><td><strong>0</strong></td><td class="left">inizializzazione del FOR</td></tr>
+            <tr><td>2</td><td class="left"><code>i &lt; n</code></td><td><code>[—, —, —, —, —]</code></td><td>5</td><td>0</td><td class="left"><code>True</code></td></tr>
+            <tr><td>3</td><td class="left"><code>leggi A[i]</code></td><td><code>[<strong>4</strong>, —, —, —, —]</code></td><td>5</td><td>0</td><td class="left">letto <code>4</code> in <code>A[0]</code></td></tr>
+            <tr><td>4</td><td class="left"><code>i ← i + 1</code></td><td><code>[4, —, —, —, —]</code></td><td>5</td><td><strong>1</strong></td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>5</td><td class="left"><code>i &lt; n</code></td><td><code>[4, —, —, —, —]</code></td><td>5</td><td>1</td><td class="left"><code>True</code></td></tr>
+            <tr><td>6</td><td class="left"><code>leggi A[i]</code></td><td><code>[4, <strong>7</strong>, —, —, —]</code></td><td>5</td><td>1</td><td class="left">letto <code>7</code> in <code>A[1]</code></td></tr>
+            <tr><td>7</td><td class="left"><code>i ← i + 1</code></td><td><code>[4, 7, —, —, —]</code></td><td>5</td><td><strong>2</strong></td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>8</td><td class="left"><code>i &lt; n</code></td><td><code>[4, 7, —, —, —]</code></td><td>5</td><td>2</td><td class="left"><code>True</code></td></tr>
+            <tr><td>9</td><td class="left"><code>leggi A[i]</code></td><td><code>[4, 7, <strong>2</strong>, —, —]</code></td><td>5</td><td>2</td><td class="left">letto <code>2</code> in <code>A[2]</code></td></tr>
+            <tr><td>10</td><td class="left"><code>i ← i + 1</code></td><td><code>[4, 7, 2, —, —]</code></td><td>5</td><td><strong>3</strong></td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>11</td><td class="left"><code>i &lt; n</code></td><td><code>[4, 7, 2, —, —]</code></td><td>5</td><td>3</td><td class="left"><code>True</code></td></tr>
+            <tr><td>12</td><td class="left"><code>leggi A[i]</code></td><td><code>[4, 7, 2, <strong>9</strong>, —]</code></td><td>5</td><td>3</td><td class="left">letto <code>9</code> in <code>A[3]</code></td></tr>
+            <tr><td>13</td><td class="left"><code>i ← i + 1</code></td><td><code>[4, 7, 2, 9, —]</code></td><td>5</td><td><strong>4</strong></td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>14</td><td class="left"><code>i &lt; n</code></td><td><code>[4, 7, 2, 9, —]</code></td><td>5</td><td>4</td><td class="left"><code>True</code></td></tr>
+            <tr><td>15</td><td class="left"><code>leggi A[i]</code></td><td><code>[4, 7, 2, 9, <strong>5</strong>]</code></td><td>5</td><td>4</td><td class="left">letto <code>5</code> in <code>A[4]</code></td></tr>
+            <tr><td>16</td><td class="left"><code>i ← i + 1</code></td><td><code>[4, 7, 2, 9, 5]</code></td><td>5</td><td><strong>5</strong></td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>17</td><td class="left"><code>i &lt; n</code></td><td><code>[4, 7, 2, 9, 5]</code></td><td>5</td><td>5</td><td class="left"><code>False</code>: caricamento terminato</td></tr>
           </tbody>
         </table>
       </div>

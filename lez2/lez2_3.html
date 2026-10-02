@@ -134,12 +134,20 @@
     </div>
 
     <div class="inner-box">
+      <h2>Che cos'è una tabella di traccia?</h2>
+      <p>Data un'esecuzione con specifici valori di input, una <strong>tabella di traccia</strong> è la rappresentazione tabellare della successione degli <strong>stati</strong> attraversati dal programma o dall'algoritmo. Ogni riga identifica un preciso passo dell'esecuzione e registra lo stato ottenuto dopo quel passo; le colonne riportano l'istruzione eseguita e i valori correnti delle variabili rilevanti, oltre a eventuali condizioni valutate e output prodotti.</p>
+      <p>La traccia può riguardare un <strong>programma completo</strong> oppure un suo <strong>frammento delimitato</strong>, per esempio una sottosequenza di istruzioni o un ciclo iterativo. Quando si analizza soltanto un frammento, occorre specificare lo stato delle variabili al suo ingresso; nel caso di un ciclo, le righe possono rappresentare le successive iterazioni.</p>
+      <p class="note">Una tabella di traccia descrive una particolare esecuzione: cambiando i dati di input o lo stato iniziale può cambiare anche la successione degli stati.</p>
+    </div>
+
+    <div class="inner-box">
       <h2>Come compilare una tabella di traccia</h2>
       <ol>
         <li>Individua le <strong>dichiarazioni</strong> e annota nome e tipo di ogni variabile.</li>
+        <li>Prepara una sola colonna per ciascuna variabile: non creare colonne separate con il valore “prima” e “dopo”.</li>
         <li>Scrivi nella riga 0 lo <strong>stato iniziale</strong>.</li>
         <li>Leggi una sola istruzione e valuta il suo lato destro usando i valori della riga precedente.</li>
-        <li>Aggiorna soltanto la variabile scritta dall'istruzione; copia senza modifiche tutti gli altri valori.</li>
+        <li>Aggiungi una nuova riga per ogni istruzione eseguita o condizione valutata; aggiorna soltanto le variabili modificate e copia senza variazioni tutti gli altri valori.</li>
         <li>Ripeti fino all'ultima istruzione e controlla lo stato finale.</li>
       </ol>
       <p class="note">Una riga rappresenta lo stato <strong>dopo</strong> l'esecuzione dell'istruzione indicata.</p>

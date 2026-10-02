@@ -218,14 +218,35 @@ media ← somma / n</code></pre>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>i</th><th>A[i]</th><th>somma</th><th>minimo</th><th>indiceMin</th><th>massimo</th><th>indiceMax</th></tr>
+            <tr><th>Passo</th><th class="left">Istruzione o condizione</th><th>A</th><th>n</th><th>i</th><th>somma</th><th>minimo</th><th>indiceMin</th><th>massimo</th><th>indiceMax</th><th>media</th><th class="left">Esito / osservazione</th></tr>
           </thead>
           <tbody>
-            <tr><td>inizio</td><td>7</td><td>7</td><td>7</td><td>0</td><td>7</td><td>0</td></tr>
-            <tr><td>1</td><td>-2</td><td>5</td><td>-2</td><td>1</td><td>7</td><td>0</td></tr>
-            <tr><td>2</td><td>5</td><td>10</td><td>-2</td><td>1</td><td>7</td><td>0</td></tr>
-            <tr><td>3</td><td>5</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td></tr>
-            <tr><td>4</td><td>0</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td></tr>
+            <tr><td>0</td><td class="left">stato prima del FOR</td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>—</td><td>7</td><td>7</td><td>0</td><td>7</td><td>0</td><td>—</td><td class="left">candidati inizializzati da <code>A[0]</code></td></tr>
+            <tr><td>1</td><td class="left"><code>i ← 1</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td><strong>1</strong></td><td>7</td><td>7</td><td>0</td><td>7</td><td>0</td><td>—</td><td class="left">inizializzazione del FOR</td></tr>
+            <tr><td>2</td><td class="left"><code>i &lt; n</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>1</td><td>7</td><td>7</td><td>0</td><td>7</td><td>0</td><td>—</td><td class="left"><code>True</code></td></tr>
+            <tr><td>3</td><td class="left"><code>somma ← somma + A[i]</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>1</td><td><strong>5</strong></td><td>7</td><td>0</td><td>7</td><td>0</td><td>—</td><td class="left"><code>7 + (-2) = 5</code></td></tr>
+            <tr><td>4</td><td class="left"><code>A[i] &lt; minimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>1</td><td>5</td><td>7</td><td>0</td><td>7</td><td>0</td><td>—</td><td class="left"><code>True</code></td></tr>
+            <tr><td>5</td><td class="left"><code>minimo ← A[i]</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>1</td><td>5</td><td><strong>-2</strong></td><td>0</td><td>7</td><td>0</td><td>—</td><td class="left">nuovo minimo</td></tr>
+            <tr><td>6</td><td class="left"><code>indiceMin ← i</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>1</td><td>5</td><td>-2</td><td><strong>1</strong></td><td>7</td><td>0</td><td>—</td><td class="left">indice del nuovo minimo</td></tr>
+            <tr><td>7</td><td class="left"><code>A[i] &gt; massimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>1</td><td>5</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>8</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td><strong>2</strong></td><td>5</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>9</td><td class="left"><code>i &lt; n</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>2</td><td>5</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>True</code></td></tr>
+            <tr><td>10</td><td class="left"><code>somma ← somma + A[i]</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>2</td><td><strong>10</strong></td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>5 + 5 = 10</code></td></tr>
+            <tr><td>11</td><td class="left"><code>A[i] &lt; minimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>2</td><td>10</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>12</td><td class="left"><code>A[i] &gt; massimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>2</td><td>10</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>13</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td><strong>3</strong></td><td>10</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>14</td><td class="left"><code>i &lt; n</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>3</td><td>10</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>True</code></td></tr>
+            <tr><td>15</td><td class="left"><code>somma ← somma + A[i]</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>3</td><td><strong>15</strong></td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>10 + 5 = 15</code></td></tr>
+            <tr><td>16</td><td class="left"><code>A[i] &lt; minimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>3</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>17</td><td class="left"><code>A[i] &gt; massimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>3</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>18</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td><strong>4</strong></td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>19</td><td class="left"><code>i &lt; n</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>4</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>True</code></td></tr>
+            <tr><td>20</td><td class="left"><code>somma ← somma + A[i]</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>4</td><td><strong>15</strong></td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>15 + 0 = 15</code></td></tr>
+            <tr><td>21</td><td class="left"><code>A[i] &lt; minimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>4</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>22</td><td class="left"><code>A[i] &gt; massimo</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>4</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code></td></tr>
+            <tr><td>23</td><td class="left"><code>i ← i + 1</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td><strong>5</strong></td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left">aggiornamento del FOR</td></tr>
+            <tr><td>24</td><td class="left"><code>i &lt; n</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>5</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td>—</td><td class="left"><code>False</code>: uscita dal ciclo</td></tr>
+            <tr><td>25</td><td class="left"><code>media ← somma / n</code></td><td><code>[7,-2,5,5,0]</code></td><td>5</td><td>5</td><td>15</td><td>-2</td><td>1</td><td>7</td><td>0</td><td><strong>3</strong></td><td class="left">calcolo finale</td></tr>
           </tbody>
         </table>
       </div>
