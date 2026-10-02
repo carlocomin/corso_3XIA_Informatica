@@ -211,7 +211,7 @@ fine se</code></pre>
       <h2>Esempio completo: segno di un numero</h2>
       <p>La seconda decisione viene raggiunta soltanto se <code>x &gt; 0</code> è falsa. Perciò l'ultimo ramo contiene necessariamente un numero negativo.</p>
       <div class="fc-card">
-        <svg class="fc-svg" viewBox="0 0 900 650" role="img" aria-label="Diagramma di flusso che classifica un numero come positivo, zero o negativo">
+        <svg class="fc-svg" viewBox="0 0 900 740" role="img" aria-label="Diagramma di flusso che dichiara la variabile reale x e classifica un numero come positivo, zero o negativo">
           <defs>
             <marker id="decision-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
               <path d="M0,0 L10,5 L0,10 z"></path>
@@ -221,44 +221,49 @@ fine se</code></pre>
           <ellipse class="fc-shape" cx="450" cy="42" rx="78" ry="28"></ellipse>
           <text class="fc-text" x="450" y="49" text-anchor="middle">Inizio</text>
 
-          <polygon class="fc-shape" points="350,105 550,105 520,165 320,165"></polygon>
-          <text class="fc-text" x="435" y="142" text-anchor="middle">Leggi x</text>
+          <rect class="fc-shape" x="325" y="95" width="250" height="58" rx="5"></rect>
+          <text class="fc-text" x="450" y="130" text-anchor="middle">dichiara x: Real</text>
 
-          <polygon class="fc-shape" points="450,205 565,270 450,335 335,270"></polygon>
-          <text class="fc-text" x="450" y="277" text-anchor="middle">x &gt; 0 ?</text>
+          <polygon class="fc-shape" points="350,185 550,185 520,245 320,245"></polygon>
+          <text class="fc-text" x="435" y="222" text-anchor="middle">Leggi x</text>
 
-          <polygon class="fc-shape" points="690,235 835,235 810,295 665,295"></polygon>
-          <text class="fc-text" x="750" y="272" text-anchor="middle">Scrivi “positivo”</text>
+          <polygon class="fc-shape" points="450,285 565,350 450,415 335,350"></polygon>
+          <text class="fc-text" x="450" y="357" text-anchor="middle">x &gt; 0 ?</text>
 
-          <polygon class="fc-shape" points="450,375 565,440 450,505 335,440"></polygon>
-          <text class="fc-text" x="450" y="447" text-anchor="middle">x = 0 ?</text>
+          <polygon class="fc-shape" points="690,315 835,315 810,375 665,375"></polygon>
+          <text class="fc-text" x="750" y="352" text-anchor="middle">Scrivi “positivo”</text>
 
-          <polygon class="fc-shape" points="90,405 250,405 225,465 65,465"></polygon>
-          <text class="fc-text" x="158" y="442" text-anchor="middle">Scrivi “negativo”</text>
+          <polygon class="fc-shape" points="450,455 565,520 450,585 335,520"></polygon>
+          <text class="fc-text" x="450" y="527" text-anchor="middle">x = 0 ?</text>
 
-          <polygon class="fc-shape" points="690,405 835,405 810,465 665,465"></polygon>
-          <text class="fc-text" x="750" y="442" text-anchor="middle">Scrivi “zero”</text>
+          <polygon class="fc-shape" points="90,485 250,485 225,545 65,545"></polygon>
+          <text class="fc-text" x="158" y="522" text-anchor="middle">Scrivi “negativo”</text>
 
-          <ellipse class="fc-shape" cx="450" cy="605" rx="78" ry="28"></ellipse>
-          <text class="fc-text" x="450" y="612" text-anchor="middle">Fine</text>
+          <polygon class="fc-shape" points="690,485 835,485 810,545 665,545"></polygon>
+          <text class="fc-text" x="750" y="522" text-anchor="middle">Scrivi “zero”</text>
 
-          <line class="fc-line" x1="450" y1="70" x2="450" y2="105" marker-end="url(#decision-arrow)"></line>
-          <line class="fc-line" x1="435" y1="165" x2="443" y2="205" marker-end="url(#decision-arrow)"></line>
-          <line class="fc-line" x1="565" y1="270" x2="665" y2="265" marker-end="url(#decision-arrow)"></line>
-          <text class="fc-label" x="610" y="250" text-anchor="middle">True</text>
-          <line class="fc-line" x1="450" y1="335" x2="450" y2="375" marker-end="url(#decision-arrow)"></line>
-          <text class="fc-label" x="480" y="360">False</text>
-          <line class="fc-line" x1="565" y1="440" x2="665" y2="435" marker-end="url(#decision-arrow)"></line>
-          <text class="fc-label" x="610" y="420" text-anchor="middle">True</text>
-          <line class="fc-line" x1="335" y1="440" x2="250" y2="435" marker-end="url(#decision-arrow)"></line>
-          <text class="fc-label" x="292" y="420" text-anchor="middle">False</text>
+          <ellipse class="fc-shape" cx="450" cy="685" rx="78" ry="28"></ellipse>
+          <text class="fc-text" x="450" y="692" text-anchor="middle">Fine</text>
 
-          <path class="fc-line" d="M750 295 L750 545 L450 545 L450 577" marker-end="url(#decision-arrow)"></path>
-          <path class="fc-line" d="M750 465 L750 545 L450 545"></path>
-          <path class="fc-line" d="M158 465 L158 545 L450 545"></path>
+          <line class="fc-line" x1="450" y1="70" x2="450" y2="95" marker-end="url(#decision-arrow)"></line>
+          <line class="fc-line" x1="450" y1="153" x2="450" y2="185" marker-end="url(#decision-arrow)"></line>
+          <line class="fc-line" x1="435" y1="245" x2="443" y2="285" marker-end="url(#decision-arrow)"></line>
+          <line class="fc-line" x1="565" y1="350" x2="665" y2="345" marker-end="url(#decision-arrow)"></line>
+          <text class="fc-label" x="610" y="330" text-anchor="middle">True</text>
+          <line class="fc-line" x1="450" y1="415" x2="450" y2="455" marker-end="url(#decision-arrow)"></line>
+          <text class="fc-label" x="480" y="440">False</text>
+          <line class="fc-line" x1="565" y1="520" x2="665" y2="515" marker-end="url(#decision-arrow)"></line>
+          <text class="fc-label" x="610" y="500" text-anchor="middle">True</text>
+          <line class="fc-line" x1="335" y1="520" x2="250" y2="515" marker-end="url(#decision-arrow)"></line>
+          <text class="fc-label" x="292" y="500" text-anchor="middle">False</text>
+
+          <path class="fc-line" d="M750 375 L750 625 L450 625 L450 657" marker-end="url(#decision-arrow)"></path>
+          <path class="fc-line" d="M750 545 L750 625 L450 625"></path>
+          <path class="fc-line" d="M158 545 L158 625 L450 625"></path>
         </svg>
       </div>
-<pre><code class="language-none">leggi x
+<pre><code class="language-none">dichiara x: Real
+leggi x
 se x &gt; 0 allora
     scrivi "positivo"
 altrimenti se x = 0 allora

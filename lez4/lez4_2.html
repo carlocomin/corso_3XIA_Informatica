@@ -197,7 +197,7 @@ end while</code></pre>
     <div class="inner-box">
       <h2>Il flusso di un FOR</h2>
       <div class="fc-card">
-        <svg class="fc-svg" viewBox="0 0 900 590" role="img" aria-label="Diagramma di un ciclo for crescente con inizializzazione, test, corpo e aggiornamento">
+        <svg class="fc-svg" viewBox="0 0 900 680" role="img" aria-label="Diagramma di un ciclo for crescente con dichiarazione del contatore intero i, inizializzazione, test, corpo e aggiornamento">
           <defs>
             <marker id="for-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
               <path d="M0,0 L10,5 L0,10 z"></path>
@@ -205,24 +205,27 @@ end while</code></pre>
           </defs>
           <ellipse class="fc-shape" cx="450" cy="40" rx="78" ry="28"></ellipse>
           <text class="fc-text" x="450" y="47" text-anchor="middle">Inizio</text>
-          <rect class="fc-shape" x="345" y="105" width="210" height="62" rx="6"></rect>
-          <text class="fc-text" x="450" y="142" text-anchor="middle">i ← valore iniziale</text>
-          <polygon class="fc-shape" points="450,210 575,280 450,350 325,280"></polygon>
-          <text class="fc-text" x="450" y="286" text-anchor="middle">i ≤ valore finale?</text>
-          <rect class="fc-shape" x="650" y="250" width="180" height="62" rx="6"></rect>
-          <text class="fc-text" x="740" y="287" text-anchor="middle">corpo</text>
-          <rect class="fc-shape" x="650" y="390" width="180" height="62" rx="6"></rect>
-          <text class="fc-text" x="740" y="427" text-anchor="middle">i ← i + passo</text>
-          <ellipse class="fc-shape" cx="170" cy="280" rx="78" ry="28"></ellipse>
-          <text class="fc-text" x="170" y="287" text-anchor="middle">Fine</text>
-          <line class="fc-line" x1="450" y1="68" x2="450" y2="105" marker-end="url(#for-arrow)"></line>
-          <line class="fc-line" x1="450" y1="167" x2="450" y2="210" marker-end="url(#for-arrow)"></line>
-          <path class="fc-line" d="M575 280 L650 280" marker-end="url(#for-arrow)"></path>
-          <text class="fc-label" x="610" y="262">True</text>
-          <path class="fc-line" d="M325 280 L248 280" marker-end="url(#for-arrow)"></path>
-          <text class="fc-label" x="270" y="262">False</text>
-          <line class="fc-line" x1="740" y1="312" x2="740" y2="390" marker-end="url(#for-arrow)"></line>
-          <path class="fc-line" d="M650 421 L450 421 L450 350" marker-end="url(#for-arrow)"></path>
+          <rect class="fc-shape" x="345" y="95" width="210" height="58" rx="6"></rect>
+          <text class="fc-text" x="450" y="130" text-anchor="middle">dichiara i: Integer</text>
+          <rect class="fc-shape" x="345" y="185" width="210" height="62" rx="6"></rect>
+          <text class="fc-text" x="450" y="222" text-anchor="middle">i ← valore iniziale</text>
+          <polygon class="fc-shape" points="450,280 575,350 450,420 325,350"></polygon>
+          <text class="fc-text" x="450" y="356" text-anchor="middle">i ≤ valore finale?</text>
+          <rect class="fc-shape" x="650" y="320" width="180" height="62" rx="6"></rect>
+          <text class="fc-text" x="740" y="357" text-anchor="middle">corpo</text>
+          <rect class="fc-shape" x="650" y="460" width="180" height="62" rx="6"></rect>
+          <text class="fc-text" x="740" y="497" text-anchor="middle">i ← i + passo</text>
+          <ellipse class="fc-shape" cx="170" cy="350" rx="78" ry="28"></ellipse>
+          <text class="fc-text" x="170" y="357" text-anchor="middle">Fine</text>
+          <line class="fc-line" x1="450" y1="68" x2="450" y2="95" marker-end="url(#for-arrow)"></line>
+          <line class="fc-line" x1="450" y1="153" x2="450" y2="185" marker-end="url(#for-arrow)"></line>
+          <line class="fc-line" x1="450" y1="247" x2="450" y2="280" marker-end="url(#for-arrow)"></line>
+          <path class="fc-line" d="M575 350 L650 350" marker-end="url(#for-arrow)"></path>
+          <text class="fc-label" x="610" y="332">True</text>
+          <path class="fc-line" d="M325 350 L248 350" marker-end="url(#for-arrow)"></path>
+          <text class="fc-label" x="270" y="332">False</text>
+          <line class="fc-line" x1="740" y1="382" x2="740" y2="460" marker-end="url(#for-arrow)"></line>
+          <path class="fc-line" d="M650 491 L450 491 L450 420" marker-end="url(#for-arrow)"></path>
         </svg>
       </div>
       <p class="ok">Nella figura FOR, inizializzazione e aggiornamento sono gestiti dalla struttura: il corpo contiene soltanto il lavoro da ripetere.</p>
@@ -231,7 +234,8 @@ end while</code></pre>
     <div class="inner-box">
       <h2>Esempio con traccia: somma dei quadrati</h2>
       <p>Per <code>N=3</code>, calcoliamo <code>somma = 1² + 2² + 3²</code>.</p>
-<pre><code class="language-none">leggi N
+<pre><code class="language-none">dichiara N, i, somma: Integer
+leggi N
 somma ← 0
 per i da 1 a N, crescente, passo 1
     somma ← somma + i * i

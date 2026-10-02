@@ -100,7 +100,7 @@
       <h2>Un frammento sequenziale</h2>
       <p>Supponiamo che lo stato iniziale sia <code>a=2</code>, <code>b=5</code>, <code>s=0</code>.</p>
       <div class="fc-card">
-        <svg class="fc-svg" viewBox="0 0 720 620" role="img" aria-label="Sequenza di tre assegnamenti">
+        <svg class="fc-svg" viewBox="0 0 720 680" role="img" aria-label="Diagramma con dichiarazione delle variabili intere a, b e s seguito da tre assegnamenti">
           <defs>
             <marker id="sequence-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
               <path d="M0,0 L10,5 L0,10 z"></path>
@@ -109,22 +109,26 @@
           <ellipse class="fc-shape" cx="360" cy="45" rx="85" ry="28"></ellipse>
           <text class="fc-text" x="360" y="51" text-anchor="middle">Inizio sequenza</text>
 
-          <rect class="fc-shape" x="225" y="135" width="270" height="62" rx="5"></rect>
-          <text class="fc-text" x="360" y="172" text-anchor="middle">s ← a + b</text>
+          <rect class="fc-shape" x="205" y="105" width="310" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="142" text-anchor="middle">dichiara a, b, s: Integer</text>
 
-          <rect class="fc-shape" x="225" y="270" width="270" height="62" rx="5"></rect>
-          <text class="fc-text" x="360" y="307" text-anchor="middle">a ← s − 1</text>
+          <rect class="fc-shape" x="225" y="215" width="270" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="252" text-anchor="middle">s ← a + b</text>
 
-          <rect class="fc-shape" x="225" y="405" width="270" height="62" rx="5"></rect>
-          <text class="fc-text" x="360" y="442" text-anchor="middle">b ← a × 2</text>
+          <rect class="fc-shape" x="225" y="325" width="270" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="362" text-anchor="middle">a ← s − 1</text>
 
-          <ellipse class="fc-shape" cx="360" cy="570" rx="85" ry="28"></ellipse>
-          <text class="fc-text" x="360" y="576" text-anchor="middle">Fine sequenza</text>
+          <rect class="fc-shape" x="225" y="435" width="270" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="472" text-anchor="middle">b ← a × 2</text>
 
-          <line x1="360" y1="73" x2="360" y2="135" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
-          <line x1="360" y1="197" x2="360" y2="270" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
-          <line x1="360" y1="332" x2="360" y2="405" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
-          <line x1="360" y1="467" x2="360" y2="542" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <ellipse class="fc-shape" cx="360" cy="625" rx="85" ry="28"></ellipse>
+          <text class="fc-text" x="360" y="631" text-anchor="middle">Fine sequenza</text>
+
+          <line x1="360" y1="73" x2="360" y2="105" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="167" x2="360" y2="215" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="277" x2="360" y2="325" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="387" x2="360" y2="435" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
+          <line x1="360" y1="497" x2="360" y2="597" stroke="#263238" stroke-width="2.5" marker-end="url(#sequence-arrow)"></line>
         </svg>
       </div>
     </div>
@@ -132,6 +136,7 @@
     <div class="inner-box">
       <h2>Come compilare una tabella di traccia</h2>
       <ol>
+        <li>Individua le <strong>dichiarazioni</strong> e annota nome e tipo di ogni variabile.</li>
         <li>Scrivi nella riga 0 lo <strong>stato iniziale</strong>.</li>
         <li>Leggi una sola istruzione e valuta il suo lato destro usando i valori della riga precedente.</li>
         <li>Aggiorna soltanto la variabile scritta dall'istruzione; copia senza modifiche tutti gli altri valori.</li>
@@ -142,7 +147,8 @@
 
     <div class="inner-box">
       <h2>Esempio guidato</h2>
-<pre><code class="language-none">1) s ← a + b
+<pre><code class="language-none">dichiara a, b, s: Integer
+1) s ← a + b
 2) a ← s − 1
 3) b ← a × 2</code></pre>
       <div class="table-wrap">
@@ -162,7 +168,7 @@
 
     <div class="inner-box">
       <h2>Stesse istruzioni, ordine diverso</h2>
-      <p>Stato iniziale per entrambe le sequenze: <code>x=2</code>, <code>y=5</code>.</p>
+      <p>Per entrambe le sequenze dichiariamo <code>x, y: Integer</code>. Lo stato iniziale è <code>x=2</code>, <code>y=5</code>.</p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -184,8 +190,10 @@
     <div class="inner-box">
       <h2>Divisione: tracciare anche il tipo</h2>
       <p>In Flowgorithm <code>/</code> produce un reale. Con <code>n=7</code>:</p>
-<pre><code class="language-none">x ← n / 2    # x è Integer
-y ← n / 2    # y è Real</code></pre>
+<pre><code class="language-none">dichiara n, x: Integer
+dichiara y: Real
+x ← n / 2
+y ← n / 2</code></pre>
       <div class="table-wrap">
         <table>
           <thead>
@@ -203,7 +211,8 @@ y ← n / 2    # y è Real</code></pre>
     <div class="inner-box">
       <h2>Esercizio guidato — Completa la tabella</h2>
       <p><strong>Stato iniziale:</strong> <code>x=10</code>, <code>y=3</code>, <code>t=0</code>.</p>
-<pre><code class="language-none">1) t ← x − y
+<pre><code class="language-none">dichiara x, y, t: Integer
+1) t ← x − y
 2) x ← y
 3) y ← t + 1</code></pre>
       <div class="table-wrap">

@@ -138,7 +138,8 @@
     <div class="inner-box">
       <h2>Esempio guida: tabella pitagorica</h2>
       <p>Leggiamo <code>N</code> tra 1 e 10 e stampiamo una tabella <code>N × N</code>. La figura Output del prodotto va configurata senza ritorno a capo; al termine del ciclo interno si produce invece un ritorno a capo.</p>
-<pre><code class="language-none">leggi N
+<pre><code class="language-none">dichiara N, riga, colonna: Integer
+leggi N
 se N &lt; 1 ∨ N &gt; 10 allora
     scrivi "N non valido"
 altrimenti
@@ -164,7 +165,7 @@ fine se</code></pre>
     <div class="inner-box">
       <h2>Modello operativo dell'annidamento</h2>
       <div class="fc-card">
-        <svg class="fc-svg" viewBox="0 0 1000 760" role="img" aria-label="Diagramma operativo di due cicli annidati per righe e colonne">
+        <svg class="fc-svg" viewBox="0 0 1000 850" role="img" aria-label="Diagramma operativo con dichiarazione delle variabili intere N, riga e colonna e due cicli annidati">
           <defs>
             <marker id="nested-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
               <path d="M0,0 L10,5 L0,10 z"></path>
@@ -172,41 +173,44 @@ fine se</code></pre>
           </defs>
           <ellipse class="fc-shape" cx="360" cy="38" rx="78" ry="28"></ellipse>
           <text class="fc-text" x="360" y="45" text-anchor="middle">Inizio</text>
-          <rect class="fc-shape" x="255" y="100" width="210" height="58" rx="6"></rect>
-          <text class="fc-text" x="360" y="135" text-anchor="middle">riga ← 1</text>
-          <polygon class="fc-shape" points="360,205 485,270 360,335 235,270"></polygon>
-          <text class="fc-text" x="360" y="276" text-anchor="middle">riga ≤ N?</text>
+          <rect class="fc-shape" x="190" y="90" width="340" height="58" rx="6"></rect>
+          <text class="fc-text" x="360" y="125" text-anchor="middle">dichiara N, riga, colonna: Integer</text>
+          <rect class="fc-shape" x="255" y="180" width="210" height="58" rx="6"></rect>
+          <text class="fc-text" x="360" y="215" text-anchor="middle">riga ← 1</text>
+          <polygon class="fc-shape" points="360,285 485,350 360,415 235,350"></polygon>
+          <text class="fc-text" x="360" y="356" text-anchor="middle">riga ≤ N?</text>
 
-          <rect class="fc-shape" x="255" y="375" width="210" height="58" rx="6"></rect>
-          <text class="fc-text" x="360" y="410" text-anchor="middle">colonna ← 1</text>
-          <polygon class="fc-shape" points="360,475 485,540 360,605 235,540"></polygon>
-          <text class="fc-text" x="360" y="546" text-anchor="middle">colonna ≤ N?</text>
+          <rect class="fc-shape" x="255" y="455" width="210" height="58" rx="6"></rect>
+          <text class="fc-text" x="360" y="490" text-anchor="middle">colonna ← 1</text>
+          <polygon class="fc-shape" points="360,550 485,615 360,680 235,615"></polygon>
+          <text class="fc-text" x="360" y="621" text-anchor="middle">colonna ≤ N?</text>
 
-          <rect class="fc-shape" x="620" y="475" width="260" height="58" rx="6"></rect>
-          <text class="fc-text" x="750" y="510" text-anchor="middle">scrivi prodotto</text>
-          <rect class="fc-shape" x="620" y="590" width="260" height="58" rx="6"></rect>
-          <text class="fc-text" x="750" y="625" text-anchor="middle">colonna ← colonna + 1</text>
+          <rect class="fc-shape" x="620" y="550" width="260" height="58" rx="6"></rect>
+          <text class="fc-text" x="750" y="585" text-anchor="middle">scrivi riga × colonna</text>
+          <rect class="fc-shape" x="620" y="665" width="260" height="58" rx="6"></rect>
+          <text class="fc-text" x="750" y="700" text-anchor="middle">colonna ← colonna + 1</text>
 
-          <rect class="fc-shape" x="65" y="625" width="250" height="58" rx="6"></rect>
-          <text class="fc-text" x="190" y="660" text-anchor="middle">a capo; riga ← riga + 1</text>
+          <rect class="fc-shape" x="65" y="700" width="250" height="58" rx="6"></rect>
+          <text class="fc-text" x="190" y="735" text-anchor="middle">a capo; riga ← riga + 1</text>
 
-          <ellipse class="fc-shape" cx="750" cy="270" rx="78" ry="28"></ellipse>
-          <text class="fc-text" x="750" y="277" text-anchor="middle">Fine</text>
+          <ellipse class="fc-shape" cx="750" cy="350" rx="78" ry="28"></ellipse>
+          <text class="fc-text" x="750" y="357" text-anchor="middle">Fine</text>
 
-          <line class="fc-line" x1="360" y1="66" x2="360" y2="100" marker-end="url(#nested-arrow)"></line>
-          <line class="fc-line" x1="360" y1="158" x2="360" y2="205" marker-end="url(#nested-arrow)"></line>
-          <line class="fc-line" x1="360" y1="335" x2="360" y2="375" marker-end="url(#nested-arrow)"></line>
-          <text class="fc-label" x="385" y="358">True</text>
-          <path class="fc-line" d="M485 270 L672 270" marker-end="url(#nested-arrow)"></path>
-          <text class="fc-label" x="575" y="252">False</text>
-          <line class="fc-line" x1="360" y1="433" x2="360" y2="475" marker-end="url(#nested-arrow)"></line>
-          <path class="fc-line" d="M485 540 L620 510" marker-end="url(#nested-arrow)"></path>
-          <text class="fc-label" x="545" y="505">True</text>
-          <line class="fc-line" x1="750" y1="533" x2="750" y2="590" marker-end="url(#nested-arrow)"></line>
-          <path class="fc-line" d="M620 619 L540 619 L540 700 L500 700 L500 540 L485 540" marker-end="url(#nested-arrow)"></path>
-          <path class="fc-line" d="M235 540 L190 540 L190 625" marker-end="url(#nested-arrow)"></path>
-          <text class="fc-label" x="205" y="522">False</text>
-          <path class="fc-line" d="M190 683 L30 683 L30 270 L235 270" marker-end="url(#nested-arrow)"></path>
+          <line class="fc-line" x1="360" y1="66" x2="360" y2="90" marker-end="url(#nested-arrow)"></line>
+          <line class="fc-line" x1="360" y1="148" x2="360" y2="180" marker-end="url(#nested-arrow)"></line>
+          <line class="fc-line" x1="360" y1="238" x2="360" y2="285" marker-end="url(#nested-arrow)"></line>
+          <line class="fc-line" x1="360" y1="415" x2="360" y2="455" marker-end="url(#nested-arrow)"></line>
+          <text class="fc-label" x="385" y="438">True</text>
+          <path class="fc-line" d="M485 350 L672 350" marker-end="url(#nested-arrow)"></path>
+          <text class="fc-label" x="575" y="332">False</text>
+          <line class="fc-line" x1="360" y1="513" x2="360" y2="550" marker-end="url(#nested-arrow)"></line>
+          <path class="fc-line" d="M485 615 L620 579" marker-end="url(#nested-arrow)"></path>
+          <text class="fc-label" x="545" y="580">True</text>
+          <line class="fc-line" x1="750" y1="608" x2="750" y2="665" marker-end="url(#nested-arrow)"></line>
+          <path class="fc-line" d="M620 694 L540 694 L540 790 L500 790 L500 615 L485 615" marker-end="url(#nested-arrow)"></path>
+          <path class="fc-line" d="M235 615 L190 615 L190 700" marker-end="url(#nested-arrow)"></path>
+          <text class="fc-label" x="205" y="597">False</text>
+          <path class="fc-line" d="M190 758 L190 800 L30 800 L30 350 L235 350" marker-end="url(#nested-arrow)"></path>
         </svg>
       </div>
       <p class="ok">Il ramo falso del ciclo interno conclude la riga; il ramo falso del ciclo esterno conclude l'intera tabella.</p>

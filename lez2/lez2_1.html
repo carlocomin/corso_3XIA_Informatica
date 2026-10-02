@@ -186,7 +186,7 @@
       <h2>Esempio completo — Area di un rettangolo</h2>
       <p><strong>Input:</strong> <code>base</code> e <code>altezza</code>. <strong>Output:</strong> il valore di <code>area</code>.</p>
       <div class="fc-card">
-        <svg class="fc-svg" viewBox="0 0 720 590" role="img" aria-label="Diagramma di flusso per calcolare l'area di un rettangolo">
+        <svg class="fc-svg" viewBox="0 0 720 760" role="img" aria-label="Diagramma di flusso con dichiarazione delle variabili reali base, altezza e area per calcolare l'area di un rettangolo">
           <defs>
             <marker id="area-arrow" class="fc-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
               <path d="M0,0 L10,5 L0,10 z"></path>
@@ -195,22 +195,26 @@
           <ellipse class="fc-shape" cx="360" cy="45" rx="85" ry="28"></ellipse>
           <text class="fc-text" x="360" y="51" text-anchor="middle">Inizio</text>
 
-          <polygon class="fc-shape" points="260,130 500,130 460,195 220,195"></polygon>
-          <text class="fc-text" x="360" y="169" text-anchor="middle">leggi base, altezza</text>
+          <rect class="fc-shape" x="180" y="125" width="360" height="62" rx="5"></rect>
+          <text class="fc-text" x="360" y="163" text-anchor="middle">dichiara base, altezza, area: Real</text>
 
-          <rect class="fc-shape" x="220" y="265" width="280" height="65" rx="5"></rect>
-          <text class="fc-text" x="360" y="304" text-anchor="middle">area ← base × altezza</text>
+          <polygon class="fc-shape" points="240,255 520,255 480,320 200,320"></polygon>
+          <text class="fc-text" x="360" y="294" text-anchor="middle">leggi base, altezza</text>
 
-          <polygon class="fc-shape" points="260,400 500,400 460,465 220,465"></polygon>
-          <text class="fc-text" x="360" y="439" text-anchor="middle">stampa area</text>
+          <rect class="fc-shape" x="220" y="390" width="280" height="65" rx="5"></rect>
+          <text class="fc-text" x="360" y="429" text-anchor="middle">area ← base × altezza</text>
 
-          <ellipse class="fc-shape" cx="360" cy="545" rx="85" ry="28"></ellipse>
-          <text class="fc-text" x="360" y="551" text-anchor="middle">Fine</text>
+          <polygon class="fc-shape" points="260,525 500,525 460,590 220,590"></polygon>
+          <text class="fc-text" x="360" y="564" text-anchor="middle">stampa area</text>
 
-          <line x1="360" y1="73" x2="360" y2="130" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
-          <line x1="360" y1="195" x2="360" y2="265" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
-          <line x1="360" y1="330" x2="360" y2="400" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
-          <line x1="360" y1="465" x2="360" y2="517" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
+          <ellipse class="fc-shape" cx="360" cy="690" rx="85" ry="28"></ellipse>
+          <text class="fc-text" x="360" y="696" text-anchor="middle">Fine</text>
+
+          <line x1="360" y1="73" x2="360" y2="125" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
+          <line x1="360" y1="187" x2="360" y2="255" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
+          <line x1="360" y1="320" x2="360" y2="390" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
+          <line x1="360" y1="455" x2="360" y2="525" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
+          <line x1="360" y1="590" x2="360" y2="662" stroke="#263238" stroke-width="2.5" marker-end="url(#area-arrow)"></line>
         </svg>
       </div>
       <p class="ok">Il diagramma contiene una sola sequenza: non incontra decisioni e non ripete alcuna istruzione.</p>
